@@ -7,18 +7,18 @@
 <style>
 :root{--ink:#16202c;--mut:#64748b;--line:#dde4ec;--bg:#f5f7fa;--card:#fff;--nav:#1f3864;
  --acc:#2563eb;--good:#166534;--goodbg:#dcfce7;--warn:#92400e;--warnbg:#fef3c7;
- --bad:#991b1b;--badbg:#fee2e2;--est:#7c3aed}
+ --bad:#991b1b;--badbg:#fee2e2;--est:#7c3aed;--bub:#f6c344;--new:#5b9bd5;--old:#3f4550}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);
  font:14px/1.55 "Segoe UI",-apple-system,BlinkMacSystemFont,Arial,sans-serif}
-header{background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;
- gap:16px;flex-wrap:wrap}
+header{background:var(--nav);color:#fff;padding:11px 20px;display:flex;align-items:center;
+ gap:14px;flex-wrap:wrap}
 header h1{margin:0;font-size:16px;font-weight:600}
 header .sp{flex:1}
 header button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);
  padding:5px 11px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
 header button:hover{background:rgba(255,255,255,.26)}
-.rounds{display:flex;gap:5px;padding:10px 20px 0;flex-wrap:wrap;background:var(--bg)}
+.rounds{display:flex;gap:5px;padding:10px 20px 0;flex-wrap:wrap}
 .rounds button{border:1px solid var(--line);background:var(--card);padding:6px 13px;
  border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--mut)}
 .rounds button.on{background:var(--nav);color:#fff;border-color:var(--nav)}
@@ -26,46 +26,67 @@ nav{display:flex;gap:4px;padding:10px 20px 0;flex-wrap:wrap;border-bottom:2px so
 nav button{border:1px solid var(--line);border-bottom:none;background:#eef2f7;padding:8px 16px;
  border-radius:8px 8px 0 0;cursor:pointer;font-size:13px;font-weight:600;color:var(--mut)}
 nav button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 0 0 var(--card)}
-.wrap{padding:18px 20px 70px;max-width:1500px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:15px 17px;
- margin-bottom:16px}
-.card h2{margin:0 0 3px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}
-.card p.sub{margin:0 0 10px;font-size:12px;color:var(--mut)}
-.row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
-.col{flex:1;min-width:340px}
-table{border-collapse:collapse;width:100%;font-size:13px}
+.wrap{padding:16px 20px 70px;max-width:1560px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:14px 17px;
+ margin-bottom:15px}
+.card h2{margin:0 0 3px;font-size:12.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}
+.card p.sub{margin:0 0 9px;font-size:12px;color:var(--mut)}
+.row{display:flex;gap:15px;align-items:flex-start;flex-wrap:wrap}
+.col{flex:1;min-width:330px}
+.col.narrow{max-width:600px}
+/* product sub-tabs, styled like the sim */
+.ptabs{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:14px}
+.ptabs button{flex:1;border:none;border-right:1px solid var(--line);background:#eceff3;
+ padding:9px 6px;cursor:pointer;font-size:13px;font-weight:650;color:var(--mut)}
+.ptabs button:last-child{border-right:none}
+.ptabs button.on{background:var(--card);color:var(--ink);box-shadow:inset 0 -3px 0 0 var(--acc)}
+/* slider block */
+.sld{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:center;
+ padding:9px 0;border-bottom:1px solid var(--line)}
+.sld:last-child{border-bottom:none}
+.sld .lab{font-size:12.5px;font-weight:650}
+.sld .lab small{display:block;font-weight:400;color:var(--mut);font-size:10.5px}
+.track{display:flex;align-items:center;gap:9px}
+.track .mm{font-size:10.5px;color:var(--mut);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;height:6px;border-radius:4px;
+ background:#d6dde5;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;
+ border-radius:50%;background:#fff;border:2px solid #9aa7b5;cursor:pointer}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;
+ border:2px solid #9aa7b5;cursor:pointer}
+.bub{width:74px;padding:3px 4px;border:1px solid #d9b93c;border-radius:5px;background:var(--bub);
+ font:inherit;font-size:12.5px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.bub:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input[type=date]{padding:4px 6px;border:1px solid var(--line);border-radius:5px;font:inherit;
+ font-size:12.5px;background:#fffbe6;width:140px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
 th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center}
 th{background:#f2f6fa;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;
  color:var(--mut);font-weight:700}
 td.l,th.l{text-align:left}
 td.name{text-align:left;font-weight:650}
 tr.tot td{font-weight:700;background:#f7f9fc;border-top:2px solid var(--nav)}
+tr.hi td{background:#eef4fc}
 .num{font-variant-numeric:tabular-nums}
-input[type=number],input[type=date],input[type=text]{width:78px;padding:4px 6px;
- border:1px solid var(--line);border-radius:5px;font:inherit;font-size:12.5px;
- text-align:center;background:#fffbe6}
-input[type=date]{width:126px}
-input:focus{outline:2px solid var(--acc);outline-offset:-1px}
 .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:700}
 .yes{background:var(--goodbg);color:var(--good)}
 .rough{background:var(--warnbg);color:var(--warn)}
 .no{background:var(--badbg);color:var(--bad)}
-.est{background:#ede9fe;color:var(--est)}
-.legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:9px;font-size:11.5px;color:var(--mut)}
+.legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--mut)}
 .legend span{display:flex;align-items:center;gap:5px}
 .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
-.bar{display:flex;gap:10px;align-items:center;margin-bottom:11px;flex-wrap:wrap}
+.bar{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
 .bar label{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:5px;cursor:pointer}
 .btn{border:1px solid var(--line);background:var(--card);padding:5px 12px;border-radius:6px;
  cursor:pointer;font-size:12px;font-weight:600;color:var(--mut)}
 .btn:hover{background:#f2f6fa}
-.note{font-size:12px;color:var(--mut);margin-top:11px;line-height:1.6}
+.note{font-size:11.5px;color:var(--mut);margin-top:10px;line-height:1.6}
 .note b{color:var(--warn)}
-.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-bottom:14px}
-.kpi div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:11px;text-align:center}
-.kpi b{display:block;font-size:19px;font-weight:700;letter-spacing:-.4px}
-.kpi span{font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut)}
-.flag{padding:8px 12px;border-radius:6px;margin:6px 0;font-size:12.5px;font-weight:600}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin-bottom:14px}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.kpi b{display:block;font-size:18px;font-weight:700;letter-spacing:-.4px}
+.kpi span{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut)}
+.flag{padding:7px 12px;border-radius:6px;margin:5px 0;font-size:12.5px;font-weight:600}
 .flag.w{background:var(--warnbg);color:var(--warn)}
 .flag.e{background:var(--badbg);color:var(--bad)}
 .flag.o{background:var(--goodbg);color:var(--good)}
@@ -98,30 +119,19 @@ input:focus{outline:2px solid var(--acc);outline-offset:-1px}
 <script>
 "use strict";
 /* ============================================================================
-   DIGBY CAPSIM PLANNER
-   Single-file planning tool. No backend. State lives in localStorage, and can be
-   exported as JSON or encoded into a share link (#d=...).
+   DIGBY CAPSIM PLANNER — single file, no backend.
 
-   MODEL HONESTY:
-     EXACT   - follows published rules or arithmetic: positions, drift, age,
-               corridor/overlap geometry, revenue, contribution margin, plant
-               investment cost, capacity utilisation, financial roll-ups.
-     EST     - marked with a purple dot. Awareness, accessibility and customer
-               survey score use curves fitted to the Capstone guide, not the
-               sim's exact internals. Calibrate them on the Calibration tab as
-               real results come in.
-     ABSENT  - material cost and R&D project cost/duration. Capsim's formulas
-               could not be reproduced from observed data. Enter them from the
-               R&D screen, which computes them live.
+   MODEL HONESTY
+     EXACT  positions, drift, age, corridor/overlap geometry, revenue, variable
+            cost, contribution margin, utilisation, plant investment, P&L.
+     EST    marked with a purple dot: awareness, accessibility, customer survey
+            score, future segment demand. Editable on the Calibration tab.
+     ABSENT material cost and R&D project cost/duration (formulas would not
+            reproduce); balance sheet, equity, share count.
    ========================================================================== */
-
 const NR=8, YR0=2027;
 const R=r=>`R${r+1} · ${YR0+r}`;
 
-/* ---- segment geometry: measured out of the Capsim chart SVG ---------------
-   Circles are centred on the SEGMENT CENTRE. The IDEAL SPOT is at a fixed
-   offset. Consideration (fine 2.5 / rough 4.0) is judged from the centre;
-   positioning score from the ideal spot. Radii measured 2.53 and 4.02.        */
 const SEG=[
  {n:"Traditional",cp:5.7,cs:14.3,ox:0,oy:0,dp:.7,ds:-.7,age:2.0,mlo:14000,mhi:19000,
   plo:19.5,phi:29.5,w:{age:.47,price:.23,pos:.21,mtbf:.09},c:"#2563eb",u26:6156,g:.099},
@@ -134,553 +144,576 @@ const SEG=[
  {n:"Size",cp:3.7,cs:11.0,ox:1.0,oy:-1.4,dp:.7,ds:-1.0,age:1.5,mlo:16000,mhi:21000,
   plo:24.5,phi:34.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#7c3aed",u26:1653,g:.190}
 ];
-const PRICE_DRIFT=-0.50;
+const PD=-0.50;
 const centreAt=(i,r)=>({p:+(SEG[i].cp+SEG[i].dp*r).toFixed(2),s:+(SEG[i].cs+SEG[i].ds*r).toFixed(2)});
-const idealAt=(i,r)=>{const c=centreAt(i,r);
-  return {p:+(c.p+SEG[i].ox).toFixed(2),s:+(c.s+SEG[i].oy).toFixed(2)};};
-const priceLo=(i,r)=>SEG[i].plo+PRICE_DRIFT*r, priceHi=(i,r)=>SEG[i].phi+PRICE_DRIFT*r;
+const idealAt=(i,r)=>{const c=centreAt(i,r);return{p:+(c.p+SEG[i].ox).toFixed(2),s:+(c.s+SEG[i].oy).toFixed(2)};};
+const priceLo=(i,r)=>SEG[i].plo+PD*r, priceHi=(i,r)=>SEG[i].phi+PD*r;
 const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
 
-/* ---- calibration constants (editable) ----------------------------------- */
-const DEF_CAL={
-  // labour $/unit = laborBase - laborSlope * automation   (fitted to R2 actuals:
-  // Daze auto 4.5 -> $8.07, Duck/Dot/Dune auto 3.0 -> $9.94)
-  laborBase:13.68, laborSlope:1.2467, shiftPremium:0.5,
-  capCost:6.0, autoCost:4.0,        // plant: $6/unit capacity + $4 per automation point
-  awarenessKeep:0.667,              // one third of awareness is lost each year
-  accessKeep:0.667,
-  awareMax:0.87, awareHalf:1400,    // saturating curve: a = max*(1-exp(-b/half*ln2))
-  accessMax:0.85, accessHalf:1700,
-  taxRate:0.35, depYears:15, interestLT:0.125, interestST:0.1025
-};
+const DEF_CAL={laborBase:13.68,laborSlope:1.2467,shiftPremium:.5,capCost:6,autoCost:4,
+ awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
+ taxRate:.35,depYears:15,interestLT:.125,interestST:.1025};
 
-/* ---- seed state: real Round 1 decisions + current Round 2 board ---------- */
 function seed(){
-  const P=[
-   {n:"Daze",seg:0,sp:5.5,ss:14.5,sm:17500,sa:3.1, r1:[5.7,14.3,14000,"2027-05-09"],
-    price:26.50,promo:1500,sales:1600,fc:1360,cap:1800,auto:4.5,sched:1380,inv:404,mat:9.25},
-   {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6, r1:[3.0,17.0,12000,"2027-01-30"],
-    price:19.50,promo:1500,sales:1425,fc:1750,cap:1400,auto:5.7,sched:1750,inv:0,mat:6.05},
-   {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7, r1:[8.9,10.8,25000,"2028-01-01"],
-    price:39.50,promo:1500,sales:1425,fc:500,cap:600,auto:3.0,sched:500,inv:0,mat:15.79},
-   {n:"Dot",seg:3,sp:9.4,ss:15.5,sm:25000,sa:2.5, r1:[9.4,14.0,24100,"2027-11-30"],
-    price:33.00,promo:1500,sales:1425,fc:420,cap:600,auto:3.0,sched:420,inv:0,mat:14.41},
-   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6, r1:[5.0,11.0,18000,"2027-08-02"],
-    price:31.50,promo:1500,sales:1425,fc:400,cap:600,auto:3.0,sched:400,inv:0,mat:12.00}
-  ];
-  return {round:1, cal:{...DEF_CAL},
-    products:P.map(o=>({name:o.n,seg:o.seg,launch:0,added:false,
-      sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,
-      rounds:Array.from({length:NR},(_,r)=>({
-        p:r===0?o.r1[0]:o.r1[0], s:r===0?o.r1[1]:o.r1[1], m:r===0?o.r1[2]:o.r1[2],
-        date:r===0?o.r1[3]:"",
-        price:+(o.price+(r>0?PRICE_DRIFT*(r-1):0)).toFixed(2),
-        promo:o.promo, sales:o.sales, fc:o.fc,
-        cap:o.cap, auto:o.auto, sched:o.sched, inv:r===1?o.inv:0, mat:o.mat,
-        aware:r===1?0.72:0.5, access:r===1?0.68:0.5
-      }))})),
-    fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
+ const P=[
+  {n:"Daze",seg:0,sp:5.5,ss:14.5,sm:17500,sa:3.1,r1:[5.7,14.3,14000,"2027-05-09"],m0:11.59,
+   m1:10.43,m2:9.25,pr:26.5,pm:1500,sl:1600,fc:1360,cap:1800,au:4.5,sc:1380,inv:404},
+  {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,r1:[3.0,17.0,12000,"2027-01-30"],m0:7.81,
+   m1:6.75,m2:6.05,pr:19.5,pm:1500,sl:1425,fc:1750,cap:1400,au:5.7,sc:1750,inv:0},
+  {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,r1:[8.9,10.8,25000,"2028-01-01"],m0:15.98,
+   m1:15.23,m2:15.79,pr:39.5,pm:1500,sl:1425,fc:500,cap:600,au:3.0,sc:500,inv:0},
+  {n:"Dot",seg:3,sp:9.4,ss:15.5,sm:25000,sa:2.5,r1:[9.4,14.0,24100,"2027-11-30"],m0:15.87,
+   m1:15.22,m2:14.41,pr:33.0,pm:1500,sl:1425,fc:420,cap:600,au:3.0,sc:420,inv:0},
+  {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,r1:[5.0,11.0,18000,"2027-08-02"],m0:13.62,
+   m1:12.97,m2:12.00,pr:31.5,pm:1500,sl:1425,fc:400,cap:600,au:3.0,sc:400,inv:0}];
+ return {round:1,cal:{...DEF_CAL},
+  products:P.map(o=>({name:o.n,seg:o.seg,launch:0,added:false,sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,m0:o.m0,
+   rounds:Array.from({length:NR},(_,r)=>({
+    p:o.r1[0],s:o.r1[1],m:o.r1[2],date:r===0?o.r1[3]:"",
+    price:+(o.pr+(r>1?PD*(r-1):0)).toFixed(2),promo:o.pm,sales:o.sl,fc:o.fc,
+    cap:o.cap,auto:o.au,sched:o.sc,inv:r===1?o.inv:0,
+    mat:r===0?o.m1:o.m2, aware:r===1?.72:.5, access:r===1?.68:.5}))})),
+  fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
 }
+let S=load()||seed(), tab=0, sel=0;
+const O={corridor:true,trails:false};
 
-let S=load()||seed(), tab=0;
-
-/* ================= persistence ========================================== */
-function save(){ try{localStorage.setItem("digbyCapsim",JSON.stringify(S));}catch(e){} }
+function save(){try{localStorage.setItem("digbyCapsim",JSON.stringify(S));}catch(e){}}
 function load(){
-  const h=location.hash.match(/#d=(.+)$/);
-  if(h){ try{ const o=JSON.parse(decodeURIComponent(escape(atob(h[1]))));
-    if(o&&o.products) return o; }catch(e){} }
-  try{ const t=localStorage.getItem("digbyCapsim"); if(t) return JSON.parse(t); }catch(e){}
-  return null;
-}
+ const h=location.hash.match(/#d=(.+)$/);
+ if(h){try{const o=JSON.parse(decodeURIComponent(escape(atob(h[1]))));if(o&&o.products)return o;}catch(e){}}
+ try{const t=localStorage.getItem("digbyCapsim");if(t)return JSON.parse(t);}catch(e){}
+ return null;}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");
-  setTimeout(()=>t.classList.remove("on"),1900);}
+ setTimeout(()=>t.classList.remove("on"),1900);}
 
-/* ================= shared model ========================================= */
+/* ---------------- model (validated against the live board) --------------- */
 const DAYMS=864e5;
-function revFrac(pi,r){
-  const c=S.products[pi].rounds[r]; if(!c.date) return 0;
-  const t=Date.parse(c.date+"T00:00:00Z"); if(isNaN(t)) return 0;
-  return (t-Date.UTC(YR0+r,0,1))/(365*DAYMS);
-}
-// age halves ONLY on a position change; MTBF-only revisions age normally
-function posChanged(pi,r){
-  const P=S.products[pi], c=P.rounds[r];
-  const pp = r===0? P.sp : P.rounds[r-1].p;
-  const ps = r===0? P.ss : P.rounds[r-1].s;
-  return Math.abs(c.p-pp)>1e-9 || Math.abs(c.s-ps)>1e-9;
-}
-function ages(pi){
-  const P=S.products[pi], out=[]; let prev=P.sa;
-  for(let r=0;r<NR;r++){
-    if(r<P.launch){out.push(null);continue;}
-    const f = posChanged(pi,r)? revFrac(pi,r) : 0;
-    if(r===P.launch&&P.launch>0){const e=(f>0&&f<1)?1-f:1;out.push(e);prev=e;continue;}
-    let e,nx;
-    if(f<=0){e=prev+1;nx=e;}
-    else if(f<1){e=(prev+f)/2+(1-f);nx=e;}
-    else{e=prev+1;nx=(prev+f)/2;}
-    out.push(e); prev=nx;
-  }
-  return out;
-}
-const laborUnit=(auto,shift)=>{
-  const base=Math.max(0,S.cal.laborBase-S.cal.laborSlope*auto);
-  return base*(1+S.cal.shiftPremium*(shift||0));
-};
-const shiftPct=(sched,cap)=>cap>0? Math.max(0,Math.min(1,(sched-cap)/cap)) : 0;
-// EST: saturating response curves
+function revFrac(pi,r){const c=S.products[pi].rounds[r];if(!c.date)return 0;
+ const t=Date.parse(c.date+"T00:00:00Z");if(isNaN(t))return 0;
+ return (t-Date.UTC(YR0+r,0,1))/(365*DAYMS);}
+function posChanged(pi,r){const P=S.products[pi],c=P.rounds[r];
+ const pp=r===0?P.sp:P.rounds[r-1].p, ps=r===0?P.ss:P.rounds[r-1].s;
+ return Math.abs(c.p-pp)>1e-9||Math.abs(c.s-ps)>1e-9;}
+function ageInfo(pi){
+ const P=S.products[pi],end=[],start=[];let prev=P.sa;
+ for(let r=0;r<NR;r++){
+  if(r<P.launch){end.push(null);start.push(null);continue;}
+  start.push(prev);
+  const f=posChanged(pi,r)?revFrac(pi,r):0;
+  if(r===P.launch&&P.launch>0){const e=(f>0&&f<1)?1-f:1;end.push(e);prev=e;continue;}
+  let e,nx;
+  if(f<=0){e=prev+1;nx=e;}else if(f<1){e=(prev+f)/2+(1-f);nx=e;}else{e=prev+1;nx=(prev+f)/2;}
+  end.push(e);prev=nx;}
+ return {end,start};}
+const ages=pi=>ageInfo(pi).end;
+const laborUnit=(a,sh)=>Math.max(0,S.cal.laborBase-S.cal.laborSlope*a)*(1+S.cal.shiftPremium*(sh||0));
+const shiftPct=(sc,cap)=>cap>0?Math.max(0,Math.min(1,(sc-cap)/cap)):0;
 const awareGain=b=>S.cal.awareMax*(1-Math.pow(2,-b/S.cal.awareHalf));
 const accessGain=b=>S.cal.accessMax*(1-Math.pow(2,-b/S.cal.accessHalf));
-function awareness(pi,r){
-  const c=S.products[pi].rounds[r];
-  const prev = r>0 ? awareness(pi,r-1) : (c.aware||0);
-  return Math.min(1, prev*S.cal.awarenessKeep + awareGain(c.promo));
-}
-function accessibility(pi,r){
-  const c=S.products[pi].rounds[r];
-  const prev = r>0 ? accessibility(pi,r-1) : (c.access||0);
-  return Math.min(1, prev*S.cal.accessKeep + accessGain(c.sales));
-}
-// EST: customer survey score from the published criteria weights
+function awareness(pi,r){const c=S.products[pi].rounds[r];
+ const prev=r>0?awareness(pi,r-1):(c.aware||0);
+ return Math.min(1,prev*S.cal.awarenessKeep+awareGain(c.promo));}
+function accessibility(pi,r){const c=S.products[pi].rounds[r];
+ const prev=r>0?accessibility(pi,r-1):(c.access||0);
+ return Math.min(1,prev*S.cal.accessKeep+accessGain(c.sales));}
 function survey(pi,r,si){
-  const c=S.products[pi].rounds[r], g=SEG[si], id=idealAt(si,r), cen=centreAt(si,r);
-  const dCen=dist(c.p,c.s,cen.p,cen.s);
-  if(dCen>4) return 0;                                  // outside the rough cut
-  const dId=dist(c.p,c.s,id.p,id.s);
-  const pos=Math.max(0,1-dId/4);
-  const lo=priceLo(si,r), hi=priceHi(si,r);
-  const price = c.price<=lo?1 : c.price>=hi?0 : (hi-c.price)/(hi-lo);
-  const A=ages(pi)[r]||0;
-  const age = Math.max(0,1-Math.abs(A-g.age)/Math.max(1.5,g.age||1.5));
-  const mtbf = c.m<g.mlo||c.m>g.mhi ? 0 : 0.5+0.5*((c.m-g.mlo)/(g.mhi-g.mlo));
-  const w=g.w;
-  return 100*((w.pos||0)*pos+(w.price||0)*price+(w.age||0)*age+(w.mtbf||0)*mtbf);
-}
-function segDemand(si,r){ return Math.round(SEG[si].u26*Math.pow(1+SEG[si].g,r+1)); }
-function unitsFor(pi,r){ const c=S.products[pi].rounds[r]; return c.fc||0; }
-function varCost(pi,r){
-  const c=S.products[pi].rounds[r];
-  return (c.mat||0)+laborUnit(c.auto,shiftPct(c.sched,c.cap));
-}
-function plantInvest(pi,r){
-  const c=S.products[pi].rounds[r];
-  const pc = r>0? S.products[pi].rounds[r-1] : c;
-  const dCap=Math.max(0,(c.cap||0)-(pc.cap||0));
-  const dAut=Math.max(0,(c.auto||0)-(pc.auto||0));
-  return dCap*(S.cal.capCost+S.cal.autoCost*(c.auto||0)) + dAut*S.cal.autoCost*(pc.cap||0);
-}
-function pnl(r){
-  let rev=0,vc=0,fixed=0,inv=0;
-  S.products.forEach((P,i)=>{
-    if(r<P.launch) return;
-    const c=P.rounds[r], u=unitsFor(i,r);
-    rev+=u*c.price; vc+=u*varCost(i,r);
-    fixed+=(c.promo||0)+(c.sales||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
-    inv+=plantInvest(i,r);
-  });
-  const cm=rev-vc, ebit=cm-fixed;
-  const f=S.fin[r]||{};
-  const interest=((f.curDebt||0)*S.cal.interestST)+0;
-  const pre=ebit-interest, tax=Math.max(0,pre)*S.cal.taxRate, net=pre-tax;
-  return {rev,vc,cm,fixed,ebit,interest,pre,tax,net,inv,
-          cmPct:rev>0?cm/rev:0, ros:rev>0?net/rev:0};
-}
-const money=v=>(v<0?"($"+Math.abs(Math.round(v)).toLocaleString()+")":"$"+Math.round(v).toLocaleString());
+ const c=S.products[pi].rounds[r],g=SEG[si],id=idealAt(si,r),cen=centreAt(si,r);
+ if(dist(c.p,c.s,cen.p,cen.s)>4)return 0;
+ const pos=Math.max(0,1-dist(c.p,c.s,id.p,id.s)/4);
+ const lo=priceLo(si,r),hi=priceHi(si,r);
+ const price=c.price<=lo?1:c.price>=hi?0:(hi-c.price)/(hi-lo);
+ const A=ages(pi)[r]||0;
+ const age=Math.max(0,1-Math.abs(A-g.age)/Math.max(1.5,g.age||1.5));
+ const mt=c.m<g.mlo||c.m>g.mhi?0:.5+.5*((c.m-g.mlo)/(g.mhi-g.mlo));
+ const w=g.w;
+ return 100*((w.pos||0)*pos+(w.price||0)*price+(w.age||0)*age+(w.mtbf||0)*mt);}
+const segDemand=(si,r)=>Math.round(SEG[si].u26*Math.pow(1+SEG[si].g,r+1));
+const units=(pi,r)=>S.products[pi].rounds[r].fc||0;
+const varCost=(pi,r)=>{const c=S.products[pi].rounds[r];
+ return (c.mat||0)+laborUnit(c.auto,shiftPct(c.sched,c.cap));};
+function plantInvest(pi,r){const c=S.products[pi].rounds[r],pc=r>0?S.products[pi].rounds[r-1]:c;
+ return Math.max(0,(c.cap||0)-(pc.cap||0))*(S.cal.capCost+S.cal.autoCost*(c.auto||0))
+      + Math.max(0,(c.auto||0)-(pc.auto||0))*S.cal.autoCost*(pc.cap||0);}
+function pnl(r){let rev=0,vc=0,fx=0,inv=0;
+ S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r],u=units(i,r);
+  rev+=u*c.price;vc+=u*varCost(i,r);
+  fx+=(c.promo||0)+(c.sales||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
+  inv+=plantInvest(i,r);});
+ const cm=rev-vc,ebit=cm-fx,f=S.fin[r]||{};
+ const int=(f.curDebt||0)*S.cal.interestST;
+ const pre=ebit-int,tax=Math.max(0,pre)*S.cal.taxRate,net=pre-tax;
+ return {rev,vc,cm,fx,ebit,int,pre,tax,net,inv,cmPct:rev>0?cm/rev:0,ros:rev>0?net/rev:0};}
+const money=v=>v<0?"($"+Math.abs(Math.round(v)).toLocaleString()+")":"$"+Math.round(v).toLocaleString();
 const pct=v=>(100*v).toFixed(1)+"%";
 const EST='<span class="estmark" title="Estimated — calibrate on the Calibration tab">&bull;</span>';
 
-/* ================= perceptual map ======================================= */
-const M=52,W=560,IN=W-M*2;
-const X=v=>M+(v/20)*IN, Y=v=>M+(1-v/20)*IN, RR=u=>(u/20)*IN;
-function mapSVG(r,opt){
-  let g=`<defs><radialGradient id="sg" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#9fc5e8" stop-opacity=".92"/>
-    <stop offset="62%" stop-color="#7fb1de" stop-opacity=".8"/>
-    <stop offset="100%" stop-color="#5b9bd5" stop-opacity=".55"/></radialGradient></defs>
-    <rect x="${M}" y="${M}" width="${IN}" height="${IN}" fill="#fff" stroke="#9aa7b5"/>`;
-  for(let v=0;v<=20;v+=2){
-    g+=`<line x1="${X(v)}" y1="${M}" x2="${X(v)}" y2="${M+IN}" stroke="#d7dee6"/>
-        <line x1="${M}" y1="${Y(v)}" x2="${M+IN}" y2="${Y(v)}" stroke="#d7dee6"/>
-        <text x="${X(v)}" y="${M+IN+16}" font-size="10" fill="#94a3b8" text-anchor="middle">${v}</text>
-        <text x="${M-9}" y="${Y(v)+3}" font-size="10" fill="#94a3b8" text-anchor="end">${v}</text>`;
-  }
-  g+=`<text x="${M+IN/2}" y="${M+IN+36}" font-size="11" fill="#64748b" text-anchor="middle">Performance</text>
-      <text x="16" y="${M+IN/2}" font-size="11" fill="#64748b" text-anchor="middle"
-       transform="rotate(-90 16 ${M+IN/2})">Size</text>`;
-  if(opt.corridor){
-    g+=`<line x1="${X(0)}" y1="${Y(20)}" x2="${X(20)}" y2="${Y(0)}" stroke="#0f172a"
-         stroke-width="1.6" stroke-dasharray="7 5" opacity=".55"/>`;
-    zones(r).forEach(z=>{
-      if(z.rough) g+=`<line x1="${X(z.rough[0])}" y1="${Y(20-z.rough[0])}"
-        x2="${X(z.rough[1])}" y2="${Y(20-z.rough[1])}" stroke="#f59e0b" stroke-width="9"
-        opacity=".33" stroke-linecap="round"/>`;
-      if(z.fine) g+=`<line x1="${X(z.fine[0])}" y1="${Y(20-z.fine[0])}"
-        x2="${X(z.fine[1])}" y2="${Y(20-z.fine[1])}" stroke="#16a34a" stroke-width="9"
-        opacity=".75" stroke-linecap="round"/>`;
-    });
-  }
-  SEG.forEach((s,i)=>{
-    if(opt.trails){let pts=[];for(let k=0;k<NR;k++){const q=centreAt(i,k);pts.push(`${X(q.p)},${Y(q.s)}`);}
-      g+=`<polyline points="${pts.join(' ')}" fill="none" stroke="${s.c}" stroke-width="1"
-           stroke-dasharray="3 3" opacity=".45"/>`;}
-    const q=centreAt(i,r);
-    g+=`<circle cx="${X(q.p)}" cy="${Y(q.s)}" r="${RR(4)}" fill="none" stroke="#7a7a7a" stroke-width="1.1"/>
-        <circle cx="${X(q.p)}" cy="${Y(q.s)}" r="${RR(2.5)}" fill="url(#sg)" stroke="#5b9bd5"/>
-        <circle cx="${X(q.p)}" cy="${Y(q.s)}" r="3.2" fill="#111"/>`;
-  });
-  SEG.forEach((s,i)=>{
-    const q=centreAt(i,r), d=idealAt(i,r);
-    if(s.ox||s.oy) g+=`<line x1="${X(q.p)}" y1="${Y(q.s)}" x2="${X(d.p)}" y2="${Y(d.s)}"
-      stroke="${s.c}" stroke-width="1" opacity=".7"/>`;
-    g+=`<path d="M${X(d.p)-4.5},${Y(d.s)} h9 M${X(d.p)},${Y(d.s)-4.5} v9" stroke="${s.c}"
-         stroke-width="2" stroke-linecap="round"/>
-        <text x="${X(q.p)}" y="${Y(q.s)-RR(2.5)-6}" font-size="10.5" font-weight="700" fill="${s.c}"
-         text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3"
-         stroke-linejoin="round">${s.n}</text>`;
-  });
-  S.products.forEach((P,i)=>{
-    if(r<P.launch) return;
-    const c=P.rounds[r];
-    g+=`<rect x="${X(c.p)-4.2}" y="${Y(c.s)-4.2}" width="8.4" height="8.4"
-         fill="${P.added?"#fff":"#111"}" stroke="#111" stroke-width="1.6"/>
-        <text x="${X(c.p)+8}" y="${Y(c.s)+4}" font-size="11" font-weight="700" fill="#111"
-         paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${P.name}</text>`;
-  });
-  return `<svg viewBox="0 0 560 560" width="100%">${g}</svg>`;
-}
-const RT2=Math.SQRT2, RF=2.5/RT2, RGH=4/RT2;
-function zones(r){
-  const P=i=>SEG[i].cp+SEG[i].dp*r;
-  const pair=(a,b)=>{const lo=P(a),hi=P(b),gap=(hi-lo)*RT2;
-    const rl=hi-RGH,rh=lo+RGH,fl=hi-RF,fh=lo+RF,mid=(lo+hi)/2;
-    return {a:SEG[a].n,b:SEG[b].n,gap,rough:rh>rl?[rl,rh]:null,fine:fh>fl?[fl,fh]:null,
-            mid,midS:20-mid,md:gap/2};};
-  return [pair(1,0),pair(0,2)];
-}
+/* ---------------- charts (inline SVG, no libraries) ---------------------- */
+function axes(w,h,pad,maxV,ticks,fmt){
+ let g=`<line x1="${pad.l}" y1="${h-pad.b}" x2="${w-pad.r}" y2="${h-pad.b}" stroke="#c3ccd6"/>`;
+ for(let i=0;i<=ticks;i++){
+  const v=maxV*i/ticks, y=h-pad.b-(h-pad.b-pad.t)*i/ticks;
+  g+=`<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="#eef2f7"/>
+      <text x="${pad.l-6}" y="${y+3.5}" font-size="9.5" fill="#94a3b8" text-anchor="end">${fmt(v)}</text>`;}
+ return g;}
+/* grouped vertical bars: items=[{label,newV,oldV}] */
+function vbars(items,opt){
+ const w=opt.w||330,h=opt.h||170,pad={l:opt.l||40,r:8,t:10,b:26};
+ const maxV=opt.max||Math.max(...items.flatMap(i=>[i.newV,i.oldV||0]))*1.15||1;
+ const bw=(w-pad.l-pad.r)/items.length, gw=Math.min(30,bw*.32);
+ let g=axes(w,h,pad,maxV,4,opt.fmt||(v=>v.toFixed(0)));
+ items.forEach((it,k)=>{
+  const cx=pad.l+bw*(k+.5), H=h-pad.b-pad.t;
+  const bh=v=>Math.max(0,(v/maxV)*H);
+  if(it.oldV!==undefined){
+   g+=`<rect x="${cx+1}" y="${h-pad.b-bh(it.oldV)}" width="${gw}" height="${bh(it.oldV)}" fill="${opt.oldC||"#3f4550"}"/>`;
+   g+=`<rect x="${cx-gw-1}" y="${h-pad.b-bh(it.newV)}" width="${gw}" height="${bh(it.newV)}" fill="${it.c||opt.newC||"#5b9bd5"}"/>`;
+  }else{
+   g+=`<rect x="${cx-gw/2}" y="${h-pad.b-bh(it.newV)}" width="${gw}" height="${bh(it.newV)}" fill="${it.c||opt.newC||"#5b9bd5"}"/>`;
+   g+=`<text x="${cx}" y="${h-pad.b-bh(it.newV)-4}" font-size="9.5" font-weight="700" fill="#334155"
+        text-anchor="middle">${(opt.fmt||(v=>v.toFixed(0)))(it.newV)}</text>`;}
+  g+=`<text x="${cx}" y="${h-pad.b+13}" font-size="10" fill="#475569" text-anchor="middle">${it.label}</text>`;});
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%">${g}</svg>`;}
+/* grouped horizontal bars: items=[{label,newV,oldV}] */
+function hbars(items,opt){
+ const w=opt.w||330,rowH=opt.rowH||30,pad={l:opt.l||46,r:44,t:6,b:20};
+ const h=pad.t+pad.b+items.length*rowH;
+ const maxV=opt.max||Math.max(...items.flatMap(i=>[i.newV,i.oldV||0]))*1.12||1;
+ const IW=w-pad.l-pad.r;
+ let g="";
+ items.forEach((it,k)=>{
+  const y=pad.t+rowH*k, bw=v=>Math.max(0,(v/maxV)*IW);
+  g+=`<rect x="${pad.l}" y="${y+3}" width="${bw(it.newV)}" height="10" fill="${opt.newC||"#5b9bd5"}"/>
+      <text x="${pad.l+bw(it.newV)+4}" y="${y+12}" font-size="9.5" font-weight="700"
+       fill="#334155">${(opt.fmt||(v=>"$"+v.toFixed(2)))(it.newV)}</text>`;
+  if(it.oldV!==undefined)
+   g+=`<rect x="${pad.l}" y="${y+15}" width="${bw(it.oldV)}" height="10" fill="${opt.oldC||"#3f4550"}"/>
+       <text x="${pad.l+bw(it.oldV)+4}" y="${y+24}" font-size="9.5"
+        fill="#64748b">${(opt.fmt||(v=>"$"+v.toFixed(2)))(it.oldV)}</text>`;
+  g+=`<text x="${pad.l-6}" y="${y+16}" font-size="10.5" font-weight="600" fill="#475569"
+       text-anchor="end">${it.label}</text>`;});
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%">${g}</svg>`;}
+/* age profile: old -> new connected, mirrors the sim's chart */
+function ageChart(r){
+ const w=340,h=190,pad={l:34,r:10,t:10,b:26};
+ const pts=S.products.map((P,i)=>{const a=ageInfo(i);return {n:P.name,o:a.start[r],e:a.end[r],c:SEG[P.seg].c};})
+   .filter(o=>o.o!=null);
+ const maxV=Math.max(4,...pts.flatMap(o=>[o.o,o.e]))*1.12;
+ let g=axes(w,h,pad,maxV,4,v=>v.toFixed(1));
+ const bw=(w-pad.l-pad.r)/Math.max(1,pts.length), H=h-pad.b-pad.t;
+ const Y=v=>h-pad.b-(v/maxV)*H;
+ pts.forEach((o,k)=>{
+  const x1=pad.l+bw*(k+.32), x2=pad.l+bw*(k+.68);
+  g+=`<line x1="${x1}" y1="${Y(o.o)}" x2="${x2}" y2="${Y(o.e)}" stroke="${o.c}" stroke-width="2"/>
+      <circle cx="${x1}" cy="${Y(o.o)}" r="4" fill="#fff" stroke="${o.c}" stroke-width="2"/>
+      <circle cx="${x2}" cy="${Y(o.e)}" r="4.5" fill="${o.c}"/>
+      <text x="${pad.l+bw*(k+.5)}" y="${h-pad.b+13}" font-size="10" fill="#475569"
+       text-anchor="middle">${o.n}</text>`;});
+ // segment age targets as dashed guides
+ SEG.forEach(s=>{g+=`<line x1="${pad.l}" y1="${Y(s.age)}" x2="${w-pad.r}" y2="${Y(s.age)}"
+   stroke="${s.c}" stroke-dasharray="2 3" opacity=".45"/>`;});
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%">${g}</svg>`;}
 
-/* ================= tabs ================================================= */
-const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration"];
-const inp=(pi,f,v,step,min,max,type)=>
- `<input type="${type||'number'}" ${step?`step="${step}"`:''} ${min!==undefined?`min="${min}"`:''}
-   ${max!==undefined?`max="${max}"`:''} value="${v}" data-p="${pi}" data-f="${f}">`;
+/* ---------------- perceptual map ---------------------------------------- */
+const M=50,W=560,IN=W-M*2;
+const X=v=>M+(v/20)*IN, Y=v=>M+(1-v/20)*IN, RAD=u=>(u/20)*IN;
+const RT2=Math.SQRT2, RFI=2.5/RT2, RGH=4/RT2;
+function zones(r){const P=i=>SEG[i].cp+SEG[i].dp*r;
+ const pair=(a,b)=>{const lo=P(a),hi=P(b),gap=(hi-lo)*RT2;
+  const rl=hi-RGH,rh=lo+RGH,fl=hi-RFI,fh=lo+RFI,mid=(lo+hi)/2;
+  return{a:SEG[a].n,b:SEG[b].n,gap,rough:rh>rl?[rl,rh]:null,fine:fh>fl?[fl,fh]:null,mid,midS:20-mid,md:gap/2};};
+ return [pair(1,0),pair(0,2)];}
+function mapSVG(r){
+ let g=`<defs><radialGradient id="sg" cx="50%" cy="50%" r="50%">
+  <stop offset="0%" stop-color="#9fc5e8" stop-opacity=".92"/>
+  <stop offset="62%" stop-color="#7fb1de" stop-opacity=".8"/>
+  <stop offset="100%" stop-color="#5b9bd5" stop-opacity=".55"/></radialGradient></defs>
+  <rect x="${M}" y="${M}" width="${IN}" height="${IN}" fill="#fff" stroke="#9aa7b5"/>`;
+ for(let v=0;v<=20;v+=2)
+  g+=`<line x1="${X(v)}" y1="${M}" x2="${X(v)}" y2="${M+IN}" stroke="#d7dee6"/>
+      <line x1="${M}" y1="${Y(v)}" x2="${M+IN}" y2="${Y(v)}" stroke="#d7dee6"/>
+      <text x="${X(v)}" y="${M+IN+15}" font-size="9.5" fill="#94a3b8" text-anchor="middle">${v}</text>
+      <text x="${M-8}" y="${Y(v)+3}" font-size="9.5" fill="#94a3b8" text-anchor="end">${v}</text>`;
+ g+=`<text x="${M+IN/2}" y="${M+IN+34}" font-size="11" fill="#64748b" text-anchor="middle">Performance</text>
+     <text x="14" y="${M+IN/2}" font-size="11" fill="#64748b" text-anchor="middle"
+      transform="rotate(-90 14 ${M+IN/2})">Size</text>`;
+ if(O.corridor){
+  g+=`<line x1="${X(0)}" y1="${Y(20)}" x2="${X(20)}" y2="${Y(0)}" stroke="#0f172a"
+       stroke-width="1.6" stroke-dasharray="7 5" opacity=".55"/>`;
+  zones(r).forEach(z=>{
+   if(z.rough)g+=`<line x1="${X(z.rough[0])}" y1="${Y(20-z.rough[0])}" x2="${X(z.rough[1])}"
+     y2="${Y(20-z.rough[1])}" stroke="#f59e0b" stroke-width="9" opacity=".33" stroke-linecap="round"/>`;
+   if(z.fine)g+=`<line x1="${X(z.fine[0])}" y1="${Y(20-z.fine[0])}" x2="${X(z.fine[1])}"
+     y2="${Y(20-z.fine[1])}" stroke="#16a34a" stroke-width="9" opacity=".75" stroke-linecap="round"/>`;});}
+ SEG.forEach((s,i)=>{
+  if(O.trails){let pts=[];for(let k=0;k<NR;k++){const q=centreAt(i,k);pts.push(`${X(q.p)},${Y(q.s)}`);}
+   g+=`<polyline points="${pts.join(' ')}" fill="none" stroke="${s.c}" stroke-width="1"
+        stroke-dasharray="3 3" opacity=".45"/>`;}
+  const q=centreAt(i,r);
+  g+=`<circle cx="${X(q.p)}" cy="${Y(q.s)}" r="${RAD(4)}" fill="none" stroke="#7a7a7a" stroke-width="1.1"/>
+      <circle cx="${X(q.p)}" cy="${Y(q.s)}" r="${RAD(2.5)}" fill="url(#sg)" stroke="#5b9bd5"/>
+      <circle cx="${X(q.p)}" cy="${Y(q.s)}" r="3.2" fill="#111"/>`;});
+ SEG.forEach((s,i)=>{const q=centreAt(i,r),d=idealAt(i,r);
+  if(s.ox||s.oy)g+=`<line x1="${X(q.p)}" y1="${Y(q.s)}" x2="${X(d.p)}" y2="${Y(d.s)}"
+    stroke="${s.c}" stroke-width="1" opacity=".7"/>`;
+  g+=`<path d="M${X(d.p)-4.5},${Y(d.s)} h9 M${X(d.p)},${Y(d.s)-4.5} v9" stroke="${s.c}"
+       stroke-width="2" stroke-linecap="round"/>
+      <text x="${X(q.p)}" y="${Y(q.s)-RAD(2.5)-6}" font-size="10.5" font-weight="700" fill="${s.c}"
+       text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3"
+       stroke-linejoin="round">${s.n}</text>`;});
+ S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r];
+  const on=i===sel;
+  g+=`<rect x="${X(c.p)-(on?5.5:4.2)}" y="${Y(c.s)-(on?5.5:4.2)}" width="${on?11:8.4}"
+       height="${on?11:8.4}" fill="${P.added?"#fff":"#111"}" stroke="${on?"#f59e0b":"#111"}"
+       stroke-width="${on?2.6:1.6}"/>
+      <text x="${X(c.p)+9}" y="${Y(c.s)+4}" font-size="11" font-weight="700" fill="#111"
+       paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${P.name}</text>`;});
+ return `<svg viewBox="0 0 560 560" width="100%">${g}</svg>`;}
 
+/* ---------------- UI helpers -------------------------------------------- */
+function ptabs(){
+ return `<div class="ptabs">`+S.products.map((P,i)=>
+  `<button data-sel="${i}" class="${i===sel?'on':''}">${P.name}</button>`).join("")+
+  `<button data-sel="add" style="flex:0 0 90px">+ Add</button></div>`;}
+function sld(f,label,sub,v,min,max,step,fmt){
+ return `<div class="sld"><div class="lab">${label}<small>${sub||""}</small></div>
+  <div class="track"><span class="mm">${fmt?fmt(min):min}</span>
+   <input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-f="${f}">
+   <input class="bub" type="number" min="${min}" max="${max}" step="${step}" value="${v}" data-f="${f}">
+   <span class="mm">${fmt?fmt(max):max}</span></div></div>`;}
+const $m=v=>"$"+(+v).toFixed(2), $k=v=>"$"+(+v).toLocaleString();
+
+/* ---------------- tabs --------------------------------------------------- */
 function tRD(r){
-  let h=`<div class="row"><div class="col" style="max-width:600px"><div class="card">
-   <h2>Perceptual map — ${R(r)}</h2>
-   <div class="bar">
-     <label><input type="checkbox" id="ccor" ${O.corridor?"checked":""}> Core corridor &amp; overlaps</label>
-     <label><input type="checkbox" id="ctra" ${O.trails?"checked":""}> Drift trails</label>
-     <button class="btn" id="addP">+ Add product</button>
-   </div>${mapSVG(r,O)}
-   <div class="legend">
-     <span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
-     <span><i class="sw" style="background:#fff;border:1px solid #7a7a7a"></i>rough cut 4.0</span>
-     <span><i class="sw" style="background:#111"></i>segment centre</span>
-     <span><b>+</b> ideal spot</span>
-     <span><i class="sw" style="background:#111;border-radius:0"></i>products</span>
-   </div></div>
-   <div class="card"><h2>Overlap zones — ${R(r)}</h2><table><tr><th class="l">Pair</th>
-   <th>Centres apart</th><th>Rough zone</th><th>Fine zone</th><th>Midpoint</th></tr>`;
-  zones(r).forEach(z=>{const rg=a=>a?`${a[0].toFixed(2)}–${a[1].toFixed(2)}`:'<span class="pill no">none</span>';
-    h+=`<tr><td class="name" style="font-size:12px">${z.a} ∩ ${z.b}</td>
-      <td class="num">${z.gap.toFixed(2)}</td><td class="num">${rg(z.rough)}</td>
-      <td>${z.fine?'<span class="pill yes">'+rg(z.fine)+'</span>':'<span class="pill no">none</span>'}</td>
-      <td class="num">${z.mid.toFixed(2)} / ${z.midS.toFixed(2)}</td></tr>`;});
-  h+=`</table></div></div><div class="col"><div class="card"><h2>Products — ${R(r)}</h2>
-   <table><tr><th class="l">Product</th><th>Pfmn</th><th>Size</th><th>MTBF</th>
-   <th>Revision date</th><th>Age</th><th>Nearest ideal</th><th>Cut</th><th>To corridor</th></tr>`;
-  S.products.forEach((P,i)=>{
-    if(r<P.launch){h+=`<tr><td class="name">${P.name}</td>
-      <td colspan="8" style="color:var(--mut);font-style:italic">not launched until ${R(P.launch)}</td></tr>`;return;}
-    const c=P.rounds[r], A=ages(i)[r], f=revFrac(i,r), pc=posChanged(i,r);
-    let best=0,bd=1e9,nf=0,ng=0;
-    SEG.forEach((s,k)=>{const id=idealAt(k,r),cen=centreAt(k,r);
-      const d=dist(c.p,c.s,id.p,id.s); if(d<bd){bd=d;best=k;}
-      const dc=dist(c.p,c.s,cen.p,cen.s); if(dc<=2.5)nf++; else if(dc<=4)ng++;});
-    const note=!c.date?'<span style="font-size:10px;color:var(--mut)">no project</span>'
-      :!pc?'<span style="font-size:10px;color:var(--warn)">MTBF only — no age reset</span>'
-      :f>=1?`<span style="font-size:10px;color:var(--warn)">lands ${R(r+1)}</span>`
-      :`<span style="font-size:10px;color:var(--mut)">frac ${f.toFixed(3)}</span>`;
-    h+=`<tr><td class="name">${P.name}</td>
-      <td>${inp(i,"p",c.p,.1,0,20)}</td><td>${inp(i,"s",c.s,.1,0,20)}</td>
-      <td>${inp(i,"m",c.m,100,10000,27000)}</td>
-      <td>${inp(i,"date",c.date,null,YR0+r+"-01-01",(YR0+r+1)+"-12-31","date")}<br>${note}</td>
-      <td class="num">${A==null?"—":A.toFixed(2)}</td>
-      <td style="color:${SEG[best].c};font-weight:700;font-size:11.5px">${SEG[best].n}<br>
-        <span class="num" style="color:var(--mut);font-weight:400">${bd.toFixed(2)}</span></td>
-      <td><span class="pill ${nf?'yes':ng?'rough':'no'}">${nf?nf+" fine":""}${nf&&ng?" + ":""}${ng?ng+" rough":""}${!nf&&!ng?"outside":""}</span></td>
-      <td class="num">${(Math.abs(c.p+c.s-20)/RT2).toFixed(2)}</td></tr>`;
-  });
-  h+=`</table><div class="note"><b>Age halves only on a position change.</b> An MTBF-only revision
-   ages normally — verified against Dell in Round 1. A revision dated in the following year does not
-   reset age until that round. <b>Material and R&amp;D project cost are not modelled</b> — read them
-   off the Capsim R&amp;D screen.</div></div></div></div>`;
-  return h;
-}
+ const P=S.products[sel], c=P.rounds[r], A=ages(sel)[r], f=revFrac(sel,r), pc=posChanged(sel,r);
+ const note=!c.date?'no project'
+  :!pc?'<b style="color:var(--warn)">MTBF only — no age reset</b>'
+  :f>=1?`<b style="color:var(--warn)">lands ${R(r+1)}</b>`:`year fraction ${f.toFixed(3)}`;
+ let h=`<div class="row"><div class="col narrow"><div class="card">
+  <h2>Perceptual map — ${R(r)}</h2>
+  <div class="bar"><label><input type="checkbox" id="ccor" ${O.corridor?"checked":""}> Corridor &amp; overlaps</label>
+   <label><input type="checkbox" id="ctra" ${O.trails?"checked":""}> Drift trails</label></div>
+  ${mapSVG(r)}
+  <div class="legend"><span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
+   <span><i class="sw" style="background:#fff;border:1px solid #7a7a7a"></i>rough cut 4.0</span>
+   <span><i class="sw" style="background:#111"></i>centre</span><span><b>+</b> ideal spot</span>
+   <span><i class="sw" style="background:#111;border-radius:0"></i>products (orange = selected)</span></div>
+  </div></div>
+  <div class="col"><div class="card"><h2>R&amp;D — ${R(r)}</h2>${ptabs()}
+  ${sld("p","Performance","segment ideal "+idealAt(P.seg,r).p,c.p,0,20,.1)}
+  ${sld("s","Size","segment ideal "+idealAt(P.seg,r).s,c.s,0,20,.1)}
+  ${sld("m","MTBF",SEG[P.seg].mlo.toLocaleString()+"–"+SEG[P.seg].mhi.toLocaleString()+" acceptable",
+        c.m,10000,27000,100,v=>(+v).toLocaleString())}
+  <div class="sld"><div class="lab">Revision date<small>${note}</small></div>
+   <div class="track"><input type="date" value="${c.date}" min="${YR0+r}-01-01"
+     max="${YR0+r+1}-12-31" data-f="date">
+    <button class="btn" data-clr="1">clear</button>
+    <span class="mm" style="min-width:auto">age at 31 Dec <b>${A==null?"—":A.toFixed(2)}</b></span></div></div>
+  <div class="note"><b>Age halves only on a position change.</b> An MTBF-only revision ages normally.
+   <b>Material cost and R&amp;D project cost are not modelled</b> — read them off the Capsim R&amp;D screen.</div>
+  </div>
+  <div class="card"><h2>Age profile — ${R(r)}</h2>
+   <p class="sub">Hollow dot = age entering the round, solid = at 31 Dec. Dashed lines are each
+    segment's target age.</p>${ageChart(r)}</div>
+  <div class="card"><h2>Material cost — ${R(r)}</h2>
+   <p class="sub">Top bar this round, lower bar previous. Entered on the Production tab.</p>
+   ${hbars(S.products.map((P2,i)=>({label:P2.name,newV:P2.rounds[r].mat||0,
+      oldV:r>0?(P2.rounds[r-1].mat||0):(P2.m0||0)})),{w:340})}</div>
+  </div></div>
+  <div class="card"><h2>Portfolio — ${R(r)}</h2><table>
+  <tr><th class="l">Product</th><th>Pfmn</th><th>Size</th><th>MTBF</th><th>Age</th>
+  <th>Nearest ideal</th><th>Gap</th><th>Cut</th><th>To corridor</th></tr>`;
+ S.products.forEach((P2,i)=>{
+  if(r<P2.launch){h+=`<tr><td class="name">${P2.name}</td><td colspan="8"
+   style="color:var(--mut);font-style:italic">not launched until ${R(P2.launch)}</td></tr>`;return;}
+  const c2=P2.rounds[r];let best=0,bd=1e9,nf=0,ng=0;
+  SEG.forEach((s,k)=>{const id=idealAt(k,r),cen=centreAt(k,r);
+   const d=dist(c2.p,c2.s,id.p,id.s);if(d<bd){bd=d;best=k;}
+   const dc=dist(c2.p,c2.s,cen.p,cen.s);if(dc<=2.5)nf++;else if(dc<=4)ng++;});
+  h+=`<tr class="${i===sel?'hi':''}"><td class="name">${P2.name}</td><td class="num">${c2.p.toFixed(1)}</td>
+   <td class="num">${c2.s.toFixed(1)}</td><td class="num">${c2.m.toLocaleString()}</td>
+   <td class="num">${(ages(i)[r]||0).toFixed(2)}</td>
+   <td style="color:${SEG[best].c};font-weight:700">${SEG[best].n}</td>
+   <td class="num">${bd.toFixed(2)}</td>
+   <td><span class="pill ${nf?'yes':ng?'rough':'no'}">${nf?nf+" fine":""}${nf&&ng?" + ":""}${ng?ng+" rough":""}${!nf&&!ng?"outside":""}</span></td>
+   <td class="num">${(Math.abs(c2.p+c2.s-20)/RT2).toFixed(2)}</td></tr>`;});
+ return h+`</table></div>`;}
 
 function tMkt(r){
-  let h=`<div class="card"><h2>Marketing — ${R(r)}</h2>
-   <p class="sub">Awareness and accessibility ${EST} are modelled from saturating response curves.
-   Revenue and contribution are exact arithmetic on your inputs.</p>
-   <table><tr><th class="l">Product</th><th>Segment</th><th>Price</th><th>Range</th>
-   <th>Promo $K</th><th>Sales $K</th><th>Forecast</th><th>Aware ${EST}</th><th>Access ${EST}</th>
-   <th>Survey ${EST}</th><th>Revenue</th><th>Contribution</th></tr>`;
-  let tR=0,tC=0,tP=0,tS=0,tU=0;
-  S.products.forEach((P,i)=>{
-    if(r<P.launch) return;
-    const c=P.rounds[r], u=unitsFor(i,r), rev=u*c.price, cm=rev-u*varCost(i,r);
-    tR+=rev;tC+=cm;tP+=c.promo;tS+=c.sales;tU+=u;
-    const lo=priceLo(P.seg,r),hi=priceHi(P.seg,r);
-    const bad=c.price<lo||c.price>hi;
-    h+=`<tr><td class="name">${P.name}</td>
-     <td style="color:${SEG[P.seg].c};font-weight:600;font-size:11.5px">${SEG[P.seg].n}</td>
-     <td>${inp(i,"price",c.price,.5)}</td>
-     <td class="num" style="font-size:11px;color:${bad?'var(--bad)':'var(--mut)'}">
-       $${lo.toFixed(2)}–$${hi.toFixed(2)}</td>
-     <td>${inp(i,"promo",c.promo,100,0,3000)}</td>
-     <td>${inp(i,"sales",c.sales,100,0,4500)}</td>
-     <td>${inp(i,"fc",c.fc,10,0)}</td>
-     <td class="num">${pct(awareness(i,r))}</td>
-     <td class="num">${pct(accessibility(i,r))}</td>
-     <td class="num"><b>${survey(i,r,P.seg).toFixed(1)}</b></td>
-     <td class="num">${money(rev)}</td><td class="num">${money(cm)}</td></tr>`;
-  });
-  h+=`<tr class="tot"><td class="l">Total</td><td></td><td></td><td></td>
-   <td class="num">${tP.toLocaleString()}</td><td class="num">${tS.toLocaleString()}</td>
-   <td class="num">${tU.toLocaleString()}</td><td></td><td></td><td></td>
-   <td class="num">${money(tR)}</td><td class="num">${money(tC)}</td></tr></table></div>
-   <div class="card"><h2>Segment demand &amp; your share of forecast</h2>
-   <table><tr><th class="l">Segment</th><th>Units (est)</th><th>Price range</th><th>Ideal spot</th>
-   <th>Age want</th><th>MTBF band</th><th>Your forecast units</th><th>Implied share</th></tr>`;
-  SEG.forEach((s,k)=>{
-    const d=segDemand(k,r), id=idealAt(k,r);
-    let mine=0; S.products.forEach((P,i)=>{if(P.seg===k&&r>=P.launch) mine+=unitsFor(i,r);});
-    h+=`<tr><td class="name" style="color:${s.c}">${s.n}</td><td class="num">${d.toLocaleString()}</td>
-     <td class="num">$${priceLo(k,r).toFixed(2)}–$${priceHi(k,r).toFixed(2)}</td>
-     <td class="num">${id.p.toFixed(1)} / ${id.s.toFixed(1)}</td>
-     <td class="num">${s.age}</td><td class="num">${s.mlo.toLocaleString()}–${s.mhi.toLocaleString()}</td>
-     <td class="num">${mine.toLocaleString()}</td>
-     <td class="num">${d?pct(mine/d):"—"}</td></tr>`;
-  });
-  h+=`</table><div class="note">Segment units grow from the Round 0 Courier base at each segment's
-   published growth rate, so they are an <b>estimate</b> that drifts as the industry evolves.
-   Implied share is your forecast over that estimate — a sanity check on whether your forecast is
-   plausible, not a prediction of what you will sell.</div></div>`;
-  return h;
-}
+ const P=S.products[sel],c=P.rounds[r],g=SEG[P.seg];
+ const lo=priceLo(P.seg,r),hi=priceHi(P.seg,r);
+ let h=`<div class="row"><div class="col"><div class="card"><h2>Marketing — ${R(r)}</h2>${ptabs()}
+  ${sld("price","Price","segment range "+$m(lo)+"–"+$m(hi),c.price,14,50,.5,$m)}
+  ${sld("promo","Promo budget","drives awareness "+EST,c.promo,0,3000,50,$k)}
+  ${sld("sales","Sales budget","drives accessibility "+EST,c.sales,0,4500,50,$k)}
+  ${sld("fc","Your forecast","units you expect to sell",c.fc,0,4025,10,v=>(+v).toLocaleString())}
+  <table style="margin-top:12px"><tr><th>Awareness ${EST}</th><th>Accessibility ${EST}</th>
+   <th>Survey score ${EST}</th><th>Revenue</th><th>Contribution</th></tr>
+   <tr><td class="num">${pct(awareness(sel,r))}</td><td class="num">${pct(accessibility(sel,r))}</td>
+   <td class="num"><b>${survey(sel,r,P.seg).toFixed(1)}</b></td>
+   <td class="num">${money(c.fc*c.price)}</td>
+   <td class="num">${money(c.fc*(c.price-varCost(sel,r)))}</td></tr></table>
+  ${c.price<lo||c.price>hi?'<div class="flag e">Price is outside the segment range — customers will not buy.</div>':''}
+  </div>
+  <div class="card"><h2>Customer buying criteria — ${g.n}</h2><table>
+   <tr><th class="l">Criterion</th><th>Expectation</th><th>Importance</th><th>You</th></tr>
+   <tr><td class="l">Age</td><td class="num">${g.age} yrs</td><td class="num">${pct(g.w.age)}</td>
+    <td class="num">${(ages(sel)[r]||0).toFixed(2)}</td></tr>
+   <tr><td class="l">Price</td><td class="num">${$m(lo)}–${$m(hi)}</td><td class="num">${pct(g.w.price)}</td>
+    <td class="num">${$m(c.price)}</td></tr>
+   <tr><td class="l">Ideal position</td><td class="num">${idealAt(P.seg,r).p} / ${idealAt(P.seg,r).s}</td>
+    <td class="num">${pct(g.w.pos)}</td><td class="num">${c.p} / ${c.s}</td></tr>
+   <tr><td class="l">Reliability</td><td class="num">${g.mlo.toLocaleString()}–${g.mhi.toLocaleString()}</td>
+    <td class="num">${pct(g.w.mtbf)}</td><td class="num">${c.m.toLocaleString()}</td></tr></table></div></div>
+  <div class="col"><div class="card"><h2>Awareness ${EST}</h2>
+   <p class="sub">Blue = this round, dark = last round. One third is lost each year.</p>
+   ${vbars(S.products.map((P2,i)=>({label:P2.name,newV:awareness(i,r)*100,
+     oldV:r>0?awareness(i,r-1)*100:(P2.rounds[r].aware||0)*100})),{max:100,fmt:v=>v.toFixed(0)+"%"})}</div>
+   <div class="card"><h2>Accessibility ${EST}</h2>
+   <p class="sub">By product. Accessibility is shared across products in a segment.</p>
+   ${vbars(S.products.map((P2,i)=>({label:P2.name,newV:accessibility(i,r)*100,
+     oldV:r>0?accessibility(i,r-1)*100:(P2.rounds[r].access||0)*100})),{max:100,fmt:v=>v.toFixed(0)+"%"})}</div>
+   <div class="card"><h2>Survey score by product ${EST}</h2>
+   ${vbars(S.products.map((P2,i)=>({label:P2.name,newV:survey(i,r,P2.seg),c:SEG[P2.seg].c})),
+     {max:100,fmt:v=>v.toFixed(0)})}</div>
+  </div></div>
+  <div class="card"><h2>Segment demand &amp; implied share ${EST}</h2><table>
+  <tr><th class="l">Segment</th><th>Units</th><th>Price range</th><th>Ideal spot</th><th>Age want</th>
+  <th>Your forecast</th><th>Implied share</th></tr>`;
+ SEG.forEach((s,k)=>{const d=segDemand(k,r),id=idealAt(k,r);
+  let mine=0;S.products.forEach((P2,i)=>{if(P2.seg===k&&r>=P2.launch)mine+=units(i,r);});
+  h+=`<tr><td class="name" style="color:${s.c}">${s.n}</td><td class="num">${d.toLocaleString()}</td>
+   <td class="num">${$m(priceLo(k,r))}–${$m(priceHi(k,r))}</td>
+   <td class="num">${id.p.toFixed(1)} / ${id.s.toFixed(1)}</td><td class="num">${s.age}</td>
+   <td class="num">${mine.toLocaleString()}</td><td class="num">${d?pct(mine/d):"—"}</td></tr>`;});
+ return h+`</table><div class="note">Segment units grow from the Round 0 Courier base at each
+  segment's published growth rate — an estimate, not a prediction. Implied share is a sanity check
+  on your forecast.</div></div>`;}
 
 function tProd(r){
-  let h=`<div class="card"><h2>Production — ${R(r)}</h2>
-   <p class="sub">Labour cost is fitted to your Round 2 actuals; material cost you enter from the
-   R&amp;D screen. Contribution margin and plant investment are exact.</p>
-   <table><tr><th class="l">Product</th><th>Capacity</th><th>Automation</th><th>Schedule</th>
-   <th>Inventory</th><th>Utilisation</th><th>2nd shift</th><th>Material $</th><th>Labour $</th>
-   <th>Var cost</th><th>Price</th><th>Contribution</th><th>Plant $K</th></tr>`;
-  let tI=0;
-  S.products.forEach((P,i)=>{
-    if(r<P.launch) return;
-    const c=P.rounds[r], sh=shiftPct(c.sched,c.cap), lab=laborUnit(c.auto,sh);
-    const vc=(c.mat||0)+lab, cm=c.price>0?(c.price-vc)/c.price:0;
-    const util=c.cap>0? c.sched/c.cap : 0, pinv=plantInvest(i,r); tI+=pinv;
-    h+=`<tr><td class="name">${P.name}</td>
-     <td>${inp(i,"cap",c.cap,50,0)}</td><td>${inp(i,"auto",c.auto,.5,1,10)}</td>
-     <td>${inp(i,"sched",c.sched,10,0)}</td><td>${inp(i,"inv",c.inv,10,0)}</td>
-     <td class="num" style="color:${util>2?'var(--bad)':util>1?'var(--warn)':'inherit'}">${pct(util)}</td>
-     <td class="num">${pct(sh)}</td>
-     <td>${inp(i,"mat",c.mat,.01,0)}</td>
-     <td class="num">$${lab.toFixed(2)}</td><td class="num">$${vc.toFixed(2)}</td>
-     <td class="num">$${c.price.toFixed(2)}</td>
-     <td class="num" style="font-weight:700;color:${cm<.3?'var(--warn)':'var(--good)'}">${pct(cm)}</td>
-     <td class="num">${pinv?money(pinv):"—"}</td></tr>`;
-  });
-  h+=`<tr class="tot"><td class="l">Total</td><td colspan="11"></td>
-   <td class="num">${money(tI)}</td></tr></table>`;
-  const flags=[];
-  S.products.forEach((P,i)=>{ if(r<P.launch) return; const c=P.rounds[r];
-    if(c.cap>0&&c.sched/c.cap>2) flags.push(`<div class="flag e">${P.name}: schedule ${c.sched} exceeds
-      twice capacity (${c.cap}). Maximum with a second shift is ${c.cap*2}.</div>`);
-    else if(c.cap>0&&c.sched/c.cap>1) flags.push(`<div class="flag w">${P.name}: running a second shift
-      at ${pct(shiftPct(c.sched,c.cap))} — labour costs ${pct(S.cal.shiftPremium)} more on those units.</div>`);
-    const s=SEG[P.seg];
-    if(c.m<s.mlo||c.m>s.mhi) flags.push(`<div class="flag w">${P.name}: MTBF ${c.m.toLocaleString()} is
-      outside ${s.n}'s ${s.mlo.toLocaleString()}–${s.mhi.toLocaleString()} band.</div>`);
-  });
-  h+=(flags.length?flags.join(""):'<div class="flag o">No capacity or reliability violations this round.</div>');
-  h+=`<div class="note">Labour $/unit = ${S.cal.laborBase} − ${S.cal.laborSlope} × automation, fitted to
-   your Round 2 board (Daze at automation 4.5 costs $8.07; Duck, Dot and Dune at 3.0 cost $9.94).
-   Adjust on Calibration if the sim disagrees.</div></div>`;
-  return h;
-}
+ const P=S.products[sel],c=P.rounds[r],sh=shiftPct(c.sched,c.cap),lab=laborUnit(c.auto,sh);
+ const vc=(c.mat||0)+lab,cm=c.price>0?(c.price-vc)/c.price:0,util=c.cap>0?c.sched/c.cap:0;
+ let h=`<div class="row"><div class="col"><div class="card"><h2>Production — ${R(r)}</h2>${ptabs()}
+  ${sld("sched","Production schedule","units to build this round",c.sched,0,3600,10,v=>(+v).toLocaleString())}
+  ${sld("cap","Capacity","units per shift",c.cap,0,6000,50,v=>(+v).toLocaleString())}
+  ${sld("auto","Automation","higher = cheaper labour, slower to reposition",c.auto,1,10,.5)}
+  ${sld("inv","Inventory on hand","carried in from last round",c.inv,0,2000,10,v=>(+v).toLocaleString())}
+  ${sld("mat","Material cost / unit","read this off the Capsim R&D screen",c.mat,0,25,.01,$m)}
+  <table style="margin-top:12px"><tr><th>Utilisation</th><th>2nd shift</th><th>Labour $</th>
+   <th>Material $</th><th>Var cost</th><th>Contribution</th><th>Plant $K</th></tr>
+   <tr><td class="num" style="color:${util>2?'var(--bad)':util>1?'var(--warn)':'inherit'}">${pct(util)}</td>
+   <td class="num">${pct(sh)}</td><td class="num">${$m(lab)}</td><td class="num">${$m(c.mat||0)}</td>
+   <td class="num">${$m(vc)}</td>
+   <td class="num" style="font-weight:700;color:${cm<.3?'var(--warn)':'var(--good)'}">${pct(cm)}</td>
+   <td class="num">${plantInvest(sel,r)?money(plantInvest(sel,r)):"—"}</td></tr></table></div></div>
+  <div class="col"><div class="card"><h2>Contribution margin by product</h2>
+   ${vbars(S.products.map((P2,i)=>{const c2=P2.rounds[r];
+     const v=c2.price>0?((c2.price-varCost(i,r))/c2.price)*100:0;
+     return {label:P2.name,newV:v,c:SEG[P2.seg].c};}),{max:60,fmt:v=>v.toFixed(0)+"%"})}
+   <div class="note">A cost leader should be pushing these up every round. Below 30% is a warning sign.</div></div>
+   <div class="card"><h2>Cost stack per unit</h2>
+   ${hbars(S.products.map((P2,i)=>{const c2=P2.rounds[r];
+     return {label:P2.name,newV:varCost(i,r),oldV:c2.price};}),
+     {w:340,newC:"#dc2626",oldC:"#94a3b8"})}
+   <div class="legend"><span><i class="sw" style="background:#dc2626"></i>variable cost</span>
+    <span><i class="sw" style="background:#94a3b8"></i>price</span></div></div>
+  </div></div>
+  <div class="card"><h2>Portfolio &amp; warnings — ${R(r)}</h2><table>
+  <tr><th class="l">Product</th><th>Capacity</th><th>Auto</th><th>Schedule</th><th>Util</th>
+  <th>2nd shift</th><th>Labour</th><th>Material</th><th>Var cost</th><th>CM%</th><th>Plant $K</th></tr>`;
+ let tot=0;
+ S.products.forEach((P2,i)=>{if(r<P2.launch)return;const c2=P2.rounds[r];
+  const s2=shiftPct(c2.sched,c2.cap),l2=laborUnit(c2.auto,s2),v2=(c2.mat||0)+l2;
+  const m2=c2.price>0?(c2.price-v2)/c2.price:0,pi2=plantInvest(i,r);tot+=pi2;
+  h+=`<tr class="${i===sel?'hi':''}"><td class="name">${P2.name}</td>
+   <td class="num">${c2.cap.toLocaleString()}</td><td class="num">${c2.auto}</td>
+   <td class="num">${c2.sched.toLocaleString()}</td>
+   <td class="num">${pct(c2.cap?c2.sched/c2.cap:0)}</td><td class="num">${pct(s2)}</td>
+   <td class="num">${$m(l2)}</td><td class="num">${$m(c2.mat||0)}</td><td class="num">${$m(v2)}</td>
+   <td class="num"><b>${pct(m2)}</b></td><td class="num">${pi2?money(pi2):"—"}</td></tr>`;});
+ h+=`<tr class="tot"><td class="l">Total</td><td colspan="9"></td><td class="num">${money(tot)}</td></tr></table>`;
+ const fl=[];
+ S.products.forEach((P2,i)=>{if(r<P2.launch)return;const c2=P2.rounds[r],s2=SEG[P2.seg];
+  if(c2.cap>0&&c2.sched/c2.cap>2)fl.push(`<div class="flag e">${P2.name}: schedule ${c2.sched.toLocaleString()}
+   exceeds twice capacity — the most you can build is ${(c2.cap*2).toLocaleString()}.</div>`);
+  else if(c2.cap>0&&c2.sched/c2.cap>1)fl.push(`<div class="flag w">${P2.name}: second shift at
+   ${pct(shiftPct(c2.sched,c2.cap))} — those units cost ${pct(S.cal.shiftPremium)} more in labour.</div>`);
+  if(c2.m<s2.mlo||c2.m>s2.mhi)fl.push(`<div class="flag w">${P2.name}: MTBF ${c2.m.toLocaleString()}
+   is outside ${s2.n}'s ${s2.mlo.toLocaleString()}–${s2.mhi.toLocaleString()} band.</div>`);});
+ h+=fl.length?fl.join(""):'<div class="flag o">No capacity or reliability violations this round.</div>';
+ return h+`<div class="note">Labour $/unit = ${S.cal.laborBase} − ${S.cal.laborSlope} × automation,
+  fitted to your Round 2 board and reproducing it exactly. Adjust on Calibration if the sim diverges.</div></div>`;}
 
 function tFin(r){
-  const p=pnl(r), f=S.fin[r];
-  let h=`<div class="kpi">
-   <div><b>${money(p.rev)}</b><span>Revenue</span></div>
-   <div><b>${pct(p.cmPct)}</b><span>Contribution margin</span></div>
-   <div><b>${money(p.ebit)}</b><span>EBIT</span></div>
-   <div><b>${money(p.net)}</b><span>Net profit</span></div>
-   <div><b>${pct(p.ros)}</b><span>ROS</span></div>
-   <div><b>${money(p.inv)}</b><span>Plant investment</span></div></div>
-   <div class="card"><h2>Income statement — ${R(r)} (000s)</h2><table>
-   <tr><th class="l">Line</th><th>Amount</th><th class="l">Basis</th></tr>
-   <tr><td class="l">Sales</td><td class="num">${money(p.rev)}</td><td class="l" style="color:var(--mut)">forecast units × price</td></tr>
-   <tr><td class="l">Variable costs</td><td class="num">${money(-p.vc)}</td><td class="l" style="color:var(--mut)">units × (material + labour)</td></tr>
-   <tr><td class="l"><b>Contribution margin</b></td><td class="num"><b>${money(p.cm)}</b></td><td class="l" style="color:var(--mut)">${pct(p.cmPct)} of sales</td></tr>
-   <tr><td class="l">Period costs</td><td class="num">${money(-p.fixed)}</td><td class="l" style="color:var(--mut)">promo + sales + depreciation</td></tr>
-   <tr><td class="l"><b>EBIT</b></td><td class="num"><b>${money(p.ebit)}</b></td><td></td></tr>
-   <tr><td class="l">Interest</td><td class="num">${money(-p.interest)}</td><td class="l" style="color:var(--mut)">current debt × ${pct(S.cal.interestST)}</td></tr>
-   <tr><td class="l">Taxes</td><td class="num">${money(-p.tax)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.taxRate)}</td></tr>
-   <tr class="tot"><td class="l">Net profit</td><td class="num">${money(p.net)}</td><td></td></tr>
-   </table></div>
-   <div class="card"><h2>Financing decisions — ${R(r)} (000s)</h2><table>
-   <tr><th>Stock issue</th><th>Stock retire</th><th>Bond issue</th><th>Bond retire</th>
-   <th>Dividend/share</th><th>Current debt</th></tr><tr>
-   <td>${finp(r,"stockI",f.stockI)}</td><td>${finp(r,"stockR",f.stockR)}</td>
-   <td>${finp(r,"bondI",f.bondI)}</td><td>${finp(r,"bondR",f.bondR)}</td>
-   <td>${finp(r,"div",f.div)}</td><td>${finp(r,"curDebt",f.curDebt)}</td></tr></table>
-   <div class="note"><b>Balance sheet and cash flow are not modelled here.</b> Capsim's opening
-   balances, depreciation schedule and working-capital rules need the Finance screen, which
-   would not load when this was built. Use this tab to plan the decisions and to see the profit
-   consequence; take equity, assets and cash position from the sim itself.</div></div>`;
-  return h;
-}
-const finp=(r,f,v)=>`<input type="number" step="100" value="${v}" data-fin="${f}">`;
+ const p=pnl(r),f=S.fin[r];
+ const fs=(k,l,sub,max,step)=>`<div class="sld"><div class="lab">${l}<small>${sub}</small></div>
+  <div class="track"><span class="mm">0</span>
+   <input type="range" min="0" max="${max}" step="${step}" value="${f[k]}" data-fin="${k}">
+   <input class="bub" type="number" min="0" max="${max}" step="${step}" value="${f[k]}" data-fin="${k}">
+   <span class="mm">${max.toLocaleString()}</span></div></div>`;
+ return `<div class="kpi">
+  <div><b>${money(p.rev)}</b><span>Revenue</span></div>
+  <div><b>${pct(p.cmPct)}</b><span>Contribution</span></div>
+  <div><b>${money(p.ebit)}</b><span>EBIT</span></div>
+  <div><b>${money(p.net)}</b><span>Net profit</span></div>
+  <div><b>${pct(p.ros)}</b><span>ROS</span></div>
+  <div><b>${money(p.inv)}</b><span>Plant investment</span></div></div>
+  <div class="row"><div class="col"><div class="card"><h2>Financing decisions — ${R(r)} (000s)</h2>
+  ${fs("stockI","Stock issue","raises equity, dilutes shares",20000,100)}
+  ${fs("stockR","Stock retire","buys shares back",20000,100)}
+  ${fs("bondI","Bond issue","long-term debt at "+pct(S.cal.interestLT),40000,100)}
+  ${fs("bondR","Bond retire","pays down long-term debt",40000,100)}
+  ${fs("curDebt","Current debt","short-term at "+pct(S.cal.interestST),40000,100)}
+  ${fs("div","Dividend per share","paid to shareholders",10,.1)}
+  <div class="note"><b>Balance sheet and cash flow are not modelled.</b> Opening balances,
+   depreciation schedule and working capital need the Finance screen. Plan the decisions here and
+   see the profit consequence; take assets, cash and equity from the sim.</div></div></div>
+  <div class="col"><div class="card"><h2>Income statement — ${R(r)} (000s)</h2><table>
+  <tr><th class="l">Line</th><th>Amount</th><th class="l">Basis</th></tr>
+  <tr><td class="l">Sales</td><td class="num">${money(p.rev)}</td><td class="l" style="color:var(--mut)">units × price</td></tr>
+  <tr><td class="l">Variable costs</td><td class="num">${money(-p.vc)}</td><td class="l" style="color:var(--mut)">units × (material + labour)</td></tr>
+  <tr class="tot"><td class="l">Contribution margin</td><td class="num">${money(p.cm)}</td><td class="l" style="color:var(--mut)">${pct(p.cmPct)}</td></tr>
+  <tr><td class="l">Period costs</td><td class="num">${money(-p.fx)}</td><td class="l" style="color:var(--mut)">promo + sales + depreciation</td></tr>
+  <tr><td class="l"><b>EBIT</b></td><td class="num"><b>${money(p.ebit)}</b></td><td></td></tr>
+  <tr><td class="l">Interest</td><td class="num">${money(-p.int)}</td><td class="l" style="color:var(--mut)">current debt × ${pct(S.cal.interestST)}</td></tr>
+  <tr><td class="l">Taxes</td><td class="num">${money(-p.tax)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.taxRate)}</td></tr>
+  <tr class="tot"><td class="l">Net profit</td><td class="num">${money(p.net)}</td><td></td></tr></table></div>
+  <div class="card"><h2>Profit by round</h2>
+  ${vbars(Array.from({length:NR},(_,k)=>({label:"R"+(k+1),newV:pnl(k).net/1000,
+    c:pnl(k).net<0?"#dc2626":"#5b9bd5"})),{fmt:v=>"$"+v.toFixed(1)+"M",l:52})}</div>
+  </div></div>`;}
 
 function tScore(){
-  let cum=0;
-  let h=`<div class="card"><h2>Success measures — ROE, cumulative profit, stock price</h2>
-   <p class="sub">The three metrics you selected. Profit is cumulative across rounds, which is what
-   makes the lifecycle model pay off.</p>
-   <table><tr><th class="l">Round</th><th>Revenue</th><th>Contribution</th><th>Net profit</th>
-   <th>Cumulative profit</th><th>ROS</th><th>Plant investment</th></tr>`;
+ let cum=0;
+ let h=`<div class="card"><h2>Success measures</h2>
+  <p class="sub">ROE, cumulative profit and stock price were your three. Cumulative profit is exact;
+   ROE and stock price need equity and share count from the Finance screen.</p>
+  <table><tr><th class="l">Round</th><th>Revenue</th><th>Contribution</th><th>Net profit</th>
+  <th>Cumulative</th><th>ROS</th><th>Plant</th></tr>`;
+ const cums=[];
+ for(let r=0;r<NR;r++){const p=pnl(r);cum+=p.net;cums.push(cum);
+  h+=`<tr class="${r===S.round?'hi':''}"><td class="name">${R(r)}</td>
+   <td class="num">${money(p.rev)}</td><td class="num">${money(p.cm)}</td>
+   <td class="num" style="color:${p.net<0?'var(--bad)':'inherit'}">${money(p.net)}</td>
+   <td class="num"><b>${money(cum)}</b></td><td class="num">${pct(p.ros)}</td>
+   <td class="num">${p.inv?money(p.inv):"—"}</td></tr>`;}
+ h+=`</table></div>
+  <div class="row"><div class="col"><div class="card"><h2>Cumulative profit</h2>
+  ${vbars(cums.map((v,k)=>({label:"R"+(k+1),newV:v/1000,c:v<0?"#dc2626":"#166534"})),
+    {fmt:v=>"$"+v.toFixed(0)+"M",l:52})}</div></div>
+  <div class="col"><div class="card"><h2>Corridor discipline</h2>
+  <p class="sub">Distance from Pfmn + Size = 20, where all three focus segments sit. Green means the
+   product is on the lifecycle conveyor.</p><table>
+  <tr><th class="l">Product</th>${Array.from({length:NR},(_,r)=>`<th>${r+1}</th>`).join("")}</tr>`;
+ S.products.forEach((P,i)=>{h+=`<tr><td class="name">${P.name}</td>`;
   for(let r=0;r<NR;r++){
-    const p=pnl(r); cum+=p.net;
-    h+=`<tr${r===S.round?' style="background:#eef4fc"':''}><td class="name">${R(r)}</td>
-     <td class="num">${money(p.rev)}</td><td class="num">${money(p.cm)}</td>
-     <td class="num" style="color:${p.net<0?'var(--bad)':'inherit'}">${money(p.net)}</td>
-     <td class="num"><b>${money(cum)}</b></td><td class="num">${pct(p.ros)}</td>
-     <td class="num">${p.inv?money(p.inv):"—"}</td></tr>`;
-  }
-  h+=`</table><div class="note">ROE and stock price need equity and share count from the Finance
-   screen, which are not modelled here. Cumulative profit, ROS and contribution are exact given
-   your forecast units.</div></div>
-   <div class="card"><h2>Strategy check — corridor discipline</h2><table>
-   <tr><th class="l">Product</th>${Array.from({length:NR},(_,r)=>`<th>${r+1}</th>`).join("")}</tr>`;
-  S.products.forEach((P,i)=>{
-    h+=`<tr><td class="name">${P.name}</td>`;
-    for(let r=0;r<NR;r++){
-      if(r<P.launch){h+=`<td style="color:var(--mut)">—</td>`;continue;}
-      const c=P.rounds[r], d=Math.abs(c.p+c.s-20)/RT2;
-      const cls=d<=.5?'yes':d<=1.5?'rough':'no';
-      h+=`<td><span class="pill ${cls}">${d.toFixed(1)}</span></td>`;
-    }
-    h+=`</tr>`;
-  });
-  h+=`</table><div class="note">Distance from the core corridor (Pfmn + Size = 20), where Low End,
-   Traditional and High End all sit in every round. Green means the product is on the lifecycle
-   conveyor. Dot and Dune should trend toward green as you migrate them.</div></div>`;
-  return h;
-}
+   if(r<P.launch){h+=`<td style="color:var(--mut)">—</td>`;continue;}
+   const c=P.rounds[r],d=Math.abs(c.p+c.s-20)/RT2;
+   h+=`<td><span class="pill ${d<=.5?'yes':d<=1.5?'rough':'no'}">${d.toFixed(1)}</span></td>`;}
+  h+=`</tr>`;});
+ return h+`</table></div></div></div>`;}
 
 function tCal(){
-  const C=S.cal, f=(k,l,st)=>`<tr><td class="l">${l}</td>
-   <td><input type="number" step="${st||0.01}" value="${C[k]}" data-cal="${k}"></td></tr>`;
-  return `<div class="card"><h2>Calibration</h2>
-   <p class="sub">Everything marked ${EST} in the app comes from these. As real results post,
-   adjust them until the model matches the sim.</p>
-   <div class="row"><div class="col"><table>
-   <tr><th class="l" colspan="2">Production</th></tr>
-   ${f("laborBase","Labour $/unit at automation 0")}
-   ${f("laborSlope","Labour saved per automation point")}
-   ${f("shiftPremium","Second-shift labour premium")}
-   ${f("capCost","Capacity cost $/unit",0.5)}
-   ${f("autoCost","Automation cost $/point/unit",0.5)}
-   ${f("depYears","Depreciation life (years)",1)}
-   </table></div><div class="col"><table>
-   <tr><th class="l" colspan="2">Marketing response ${EST}</th></tr>
-   ${f("awareMax","Awareness ceiling")}
-   ${f("awareHalf","Promo $K for half the ceiling",50)}
-   ${f("awarenessKeep","Awareness retained each year")}
-   ${f("accessMax","Accessibility ceiling")}
-   ${f("accessHalf","Sales $K for half the ceiling",50)}
-   ${f("accessKeep","Accessibility retained each year")}
-   </table></div><div class="col"><table>
-   <tr><th class="l" colspan="2">Finance</th></tr>
-   ${f("taxRate","Tax rate")}
-   ${f("interestST","Short-term interest")}
-   ${f("interestLT","Long-term interest")}
-   </table></div></div>
-   <div class="note"><b>How to calibrate.</b> After a round posts, open the Capsim reports, find the
-   real awareness and accessibility for a product, and adjust the ceiling and half-point until this
-   app reproduces them. The labour figures are already fitted to your Round 2 board and should be
-   close. <b>Material cost and R&amp;D project cost are deliberately absent</b> — those formulas could
-   not be reproduced reliably, and a wrong formula is worse than none.</div></div>`;
-}
+ const C=S.cal,f=(k,l,st)=>`<tr><td class="l">${l}</td><td>
+  <input class="bub" type="number" step="${st||.01}" value="${C[k]}" data-cal="${k}"></td></tr>`;
+ return `<div class="card"><h2>Calibration</h2>
+  <p class="sub">Everything marked ${EST} comes from these. As real results post, adjust until the
+   model matches the sim.</p>
+  <div class="row"><div class="col"><table><tr><th class="l" colspan="2">Production</th></tr>
+  ${f("laborBase","Labour $/unit at automation 0")}${f("laborSlope","Labour saved per automation point")}
+  ${f("shiftPremium","Second-shift premium")}${f("capCost","Capacity cost $/unit",.5)}
+  ${f("autoCost","Automation $/point/unit",.5)}${f("depYears","Depreciation life (years)",1)}</table></div>
+  <div class="col"><table><tr><th class="l" colspan="2">Marketing response ${EST}</th></tr>
+  ${f("awareMax","Awareness ceiling")}${f("awareHalf","Promo $K for half ceiling",50)}
+  ${f("awarenessKeep","Awareness kept each year")}${f("accessMax","Accessibility ceiling")}
+  ${f("accessHalf","Sales $K for half ceiling",50)}${f("accessKeep","Accessibility kept each year")}</table></div>
+  <div class="col"><table><tr><th class="l" colspan="2">Finance</th></tr>
+  ${f("taxRate","Tax rate")}${f("interestST","Short-term interest")}
+  ${f("interestLT","Long-term interest")}</table></div></div>
+  <div class="note"><b>How to calibrate.</b> After a round posts, find the real awareness and
+   accessibility in the Courier and adjust the ceiling and half-point until this app reproduces
+   them. Labour is already fitted to your Round 2 board. <b>Material cost and R&amp;D project cost are
+   deliberately absent</b> — those formulas would not reproduce, and a wrong formula is worse than none.
+   Re-share the file after calibrating so the team inherits it.</div></div>`;}
 
-/* ================= render / events ====================================== */
-const O={corridor:true,trails:false};
+/* ---------------- render / events --------------------------------------- */
+const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration"];
 function render(){
-  const rb=document.getElementById("rounds");
-  rb.innerHTML=Array.from({length:NR},(_,r)=>
-    `<button data-r="${r}" class="${r===S.round?'on':''}">${R(r)}</button>`).join("");
-  document.getElementById("tabs").innerHTML=TABS.map((t,i)=>
-    `<button data-t="${i}" class="${i===tab?'on':''}">${t}</button>`).join("");
-  const r=S.round;
-  document.getElementById("body").innerHTML=
-    tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tCal();
-  wire(); save();
-}
+ document.getElementById("rounds").innerHTML=Array.from({length:NR},(_,r)=>
+  `<button data-r="${r}" class="${r===S.round?'on':''}">${R(r)}</button>`).join("");
+ document.getElementById("tabs").innerHTML=TABS.map((t,i)=>
+  `<button data-t="${i}" class="${i===tab?'on':''}">${t}</button>`).join("");
+ if(sel>=S.products.length) sel=0;
+ const r=S.round;
+ document.getElementById("body").innerHTML=
+  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tCal();
+ wire(); save();}
+
+const CARRY=["p","s","m","cap","auto","mat"];
+function setField(f,v){
+ const r=S.round;
+ if(CARRY.includes(f)) for(let k=r;k<NR;k++) S.products[sel].rounds[k][f]=v;
+ else S.products[sel].rounds[r][f]=v;}
+
 function wire(){
-  document.querySelectorAll("#rounds button").forEach(b=>
-    b.onclick=()=>{S.round=+b.dataset.r;render();});
-  document.querySelectorAll("#tabs button").forEach(b=>
-    b.onclick=()=>{tab=+b.dataset.t;render();});
-  const cc=document.getElementById("ccor"), ct=document.getElementById("ctra");
-  if(cc) cc.onchange=()=>{O.corridor=cc.checked;render();};
-  if(ct) ct.onchange=()=>{O.trails=ct.checked;render();};
-  const ap=document.getElementById("addP");
-  if(ap) ap.onclick=()=>{
-    const q=idealAt(2,S.round);
-    S.products.push({name:"New "+(S.products.length-4),seg:2,launch:S.round,added:true,
-      sp:q.p,ss:q.s,sm:20000,sa:0,
-      rounds:Array.from({length:NR},()=>({p:q.p,s:q.s,m:20000,date:"",price:35,promo:1000,
-        sales:1000,fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,aware:0,access:0}))});
-    render();};
-  document.querySelectorAll("[data-p]").forEach(el=>el.addEventListener("change",e=>{
-    const i=+e.target.dataset.p, f=e.target.dataset.f, r=S.round;
-    if(f==="date"){ S.products[i].rounds[r].date=e.target.value; }
-    else{ let v=parseFloat(e.target.value); if(isNaN(v)) v=0;
-      const carry=["p","s","m","cap","auto","mat"];
-      if(carry.includes(f)) for(let k=r;k<NR;k++) S.products[i].rounds[k][f]=v;
-      else S.products[i].rounds[r][f]=v; }
-    render();}));
-  document.querySelectorAll("[data-fin]").forEach(el=>el.addEventListener("change",e=>{
-    let v=parseFloat(e.target.value); if(isNaN(v)) v=0;
-    S.fin[S.round][e.target.dataset.fin]=v; render();}));
-  document.querySelectorAll("[data-cal]").forEach(el=>el.addEventListener("change",e=>{
-    let v=parseFloat(e.target.value); if(isNaN(v)) v=0;
-    S.cal[e.target.dataset.cal]=v; render();}));
-}
+ document.querySelectorAll("#rounds button").forEach(b=>b.onclick=()=>{S.round=+b.dataset.r;render();});
+ document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{tab=+b.dataset.t;render();});
+ document.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{
+  if(b.dataset.sel==="add"){
+   const q=idealAt(2,S.round);
+   S.products.push({name:"New "+(S.products.length-4),seg:2,launch:S.round,added:true,
+    sp:q.p,ss:q.s,sm:20000,sa:0,m0:14,
+    rounds:Array.from({length:NR},()=>({p:q.p,s:q.s,m:20000,date:"",price:35,promo:1000,sales:1000,
+     fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,aware:0,access:0}))});
+   sel=S.products.length-1;
+  }else sel=+b.dataset.sel;
+  render();});
+ const cc=document.getElementById("ccor"),ct=document.getElementById("ctra");
+ if(cc)cc.onchange=()=>{O.corridor=cc.checked;render();};
+ if(ct)ct.onchange=()=>{O.trails=ct.checked;render();};
+ const clr=document.querySelector("[data-clr]");
+ if(clr)clr.onclick=()=>{S.products[sel].rounds[S.round].date="";render();};
+
+ // sliders: live-update the paired bubble while dragging, commit on release
+ document.querySelectorAll('input[type=range][data-f]').forEach(el=>{
+  const f=el.dataset.f;
+  const bub=[...document.querySelectorAll(`input.bub[data-f="${f}"]`)][0];
+  el.addEventListener("input",()=>{ if(bub) bub.value=el.value; setField(f,parseFloat(el.value)); });
+  el.addEventListener("change",()=>{ setField(f,parseFloat(el.value)); render(); });});
+ document.querySelectorAll('input.bub[data-f]').forEach(el=>{
+  el.addEventListener("change",()=>{let v=parseFloat(el.value);if(isNaN(v))v=0;
+   setField(el.dataset.f,v);render();});});
+ document.querySelectorAll('input[type=date][data-f]').forEach(el=>{
+  el.addEventListener("change",()=>{S.products[sel].rounds[S.round].date=el.value;render();});});
+
+ document.querySelectorAll('[data-fin]').forEach(el=>{
+  const k=el.dataset.fin;
+  if(el.type==="range"){
+   const bub=[...document.querySelectorAll(`input.bub[data-fin="${k}"]`)][0];
+   el.addEventListener("input",()=>{if(bub)bub.value=el.value;S.fin[S.round][k]=parseFloat(el.value);});
+   el.addEventListener("change",()=>{S.fin[S.round][k]=parseFloat(el.value);render();});
+  }else el.addEventListener("change",()=>{let v=parseFloat(el.value);if(isNaN(v))v=0;
+   S.fin[S.round][k]=v;render();});});
+ document.querySelectorAll('[data-cal]').forEach(el=>el.addEventListener("change",()=>{
+  let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));}
+
 document.getElementById("bSave").onclick=()=>{
-  const b=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(b);
-  a.download="digby-capsim-"+new Date().toISOString().slice(0,10)+".json"; a.click();
-  toast("Saved — put it in the shared Drive folder");};
+ const b=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(b);
+ a.download="digby-capsim-"+new Date().toISOString().slice(0,10)+".json";a.click();
+ toast("Saved — put it in the shared Drive folder");};
 document.getElementById("bLoad").onclick=()=>document.getElementById("fIn").click();
-document.getElementById("fIn").onchange=e=>{
-  const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
-  rd.onload=()=>{try{const o=JSON.parse(rd.result); if(!o.products) throw 0;
-    S=o; if(!S.cal) S.cal={...DEF_CAL}; render(); toast("Loaded");}
-    catch(x){toast("That file could not be read");}}; rd.readAsText(f);};
+document.getElementById("fIn").onchange=e=>{const f=e.target.files[0];if(!f)return;
+ const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.products)throw 0;
+  S=o;if(!S.cal)S.cal={...DEF_CAL};render();toast("Loaded");}
+  catch(x){toast("That file could not be read");}};rd.readAsText(f);};
 document.getElementById("bLink").onclick=()=>{
-  const d=btoa(unescape(encodeURIComponent(JSON.stringify(S))));
-  const u=location.origin+location.pathname+"#d="+d;
-  navigator.clipboard.writeText(u).then(()=>toast("Share link copied ("+Math.round(u.length/1024)+" KB)"),
-    ()=>{prompt("Copy this link:",u);});};
+ const d=btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+ const u=location.origin+location.pathname+"#d="+d;
+ navigator.clipboard.writeText(u).then(()=>toast("Share link copied"),()=>prompt("Copy this link:",u));};
 document.getElementById("bReset").onclick=()=>{
-  if(confirm("Reset every round back to the seeded Round 1 and 2 board?")){
-    S=seed(); localStorage.removeItem("digbyCapsim"); location.hash=""; render(); toast("Reset");}};
+ if(confirm("Reset every round back to the seeded board?")){
+  S=seed();localStorage.removeItem("digbyCapsim");location.hash="";sel=0;render();toast("Reset");}};
 render();
 </script>
 </body>
