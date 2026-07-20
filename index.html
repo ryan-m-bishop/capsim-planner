@@ -48,7 +48,15 @@ nav button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 0 0 var(-
 .sld .lab small{display:block;font-weight:400;color:var(--mut);font-size:10.5px}
 .track{display:flex;align-items:center;gap:9px}
 .track .mm{font-size:10.5px;color:var(--mut);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
-input[type=range]{flex:1;-webkit-appearance:none;height:6px;border-radius:4px;
+/* slider with target band + tick overlays */
+.tw{position:relative;flex:1;height:20px;display:flex;align-items:center}
+.tw .base{position:absolute;left:0;right:0;height:6px;border-radius:4px;background:#d6dde5}
+.tw .band{position:absolute;height:6px;border-radius:3px;pointer-events:none}
+.tw .tick{position:absolute;width:2px;height:16px;pointer-events:none;border-radius:1px}
+.tw .tlab{position:absolute;top:-1px;font-size:8.5px;font-weight:700;transform:translateX(-50%);
+ pointer-events:none;white-space:nowrap}
+.tw input[type=range]{position:relative;z-index:2;width:100%;background:transparent}
+input[type=range]{-webkit-appearance:none;height:6px;border-radius:4px;
  background:#d6dde5;outline:none;cursor:pointer}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;
  border-radius:50%;background:#fff;border:2px solid #9aa7b5;cursor:pointer}
@@ -91,6 +99,11 @@ tr.hi td{background:#eef4fc}
 .flag.e{background:var(--badbg);color:var(--bad)}
 .flag.o{background:var(--goodbg);color:var(--good)}
 .estmark{color:var(--est);font-weight:700;cursor:help}
+.chip{display:inline-block;padding:1px 6px;border-radius:99px;font-size:9.5px;font-weight:700;
+ margin-left:5px;vertical-align:middle}
+.chip.up{background:var(--goodbg);color:var(--good)}
+.chip.down{background:var(--badbg);color:var(--bad)}
+.chip.flat{background:#eef2f7;color:var(--mut)}
 .hide{display:none}
 /* keep charts compact — they scale to the column otherwise */
 .card svg{display:block;max-width:330px;margin:0 auto}
@@ -155,7 +168,13 @@ const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
 
 const DEF_CAL={laborBase:13.68,laborSlope:1.2467,shiftPremium:.5,capCost:6,autoCost:4,
  awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
- taxRate:.35,depYears:15,interestLT:.125,interestST:.1025};
+ taxRate:.35,depYears:15,interestLT:.125,interestST:.1025,stockFee:.05,bondFee:.015};
+/* Opening balances, derived from the Round 0 Courier's Selected Financial Statistics:
+   assets = sales / asset turnover = 101,073 / 1.05 = 96,260
+   equity = assets / leverage      = 96,260 / 2.01  = 47,891
+   Long-term debt, cash, shares and price are placeholders — correct them from
+   your Balance Sheet on the Finance screen. */
+const DEF_OPEN={assets:96260,equity:47891,ltDebt:30000,cash:3500,shares:2000,price:34.00};
 
 function seed(){
  const P=[
@@ -169,7 +188,7 @@ function seed(){
    m1:15.22,m2:14.41,pr:33.0,pm:1500,sl:1425,fc:420,cap:600,au:3.0,sc:420,inv:0},
   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,r1:[5.0,11.0,18000,"2027-08-02"],m0:13.62,
    m1:12.97,m2:12.00,pr:31.5,pm:1500,sl:1425,fc:400,cap:600,au:3.0,sc:400,inv:0}];
- return {round:1,cal:{...DEF_CAL},
+ return {round:1,cal:{...DEF_CAL},open:{...DEF_OPEN},
   products:P.map(o=>({name:o.n,seg:o.seg,launch:0,added:false,sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>({
     p:o.r1[0],s:o.r1[1],m:o.r1[2],date:r===0?o.r1[3]:"",
@@ -179,6 +198,8 @@ function seed(){
   fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
 }
 let S=load()||seed(), tab=0, sel=0;
+if(!S.open) S.open={...DEF_OPEN};
+S.cal={...DEF_CAL,...(S.cal||{})};
 const O={corridor:true,trails:false};
 
 function save(){try{localStorage.setItem("digbyCapsim",JSON.stringify(S));}catch(e){}}
@@ -238,15 +259,43 @@ const varCost=(pi,r)=>{const c=S.products[pi].rounds[r];
 function plantInvest(pi,r){const c=S.products[pi].rounds[r],pc=r>0?S.products[pi].rounds[r-1]:c;
  return Math.max(0,(c.cap||0)-(pc.cap||0))*(S.cal.capCost+S.cal.autoCost*(c.auto||0))
       + Math.max(0,(c.auto||0)-(pc.auto||0))*S.cal.autoCost*(pc.cap||0);}
-function pnl(r){let rev=0,vc=0,fx=0,inv=0;
+/* Balance sheet is carried forward round by round from the opening balances you
+   enter, so every financing slider moves something: bonds change interest and
+   leverage, stock changes equity and share count, dividends drain equity.
+   Assets are approximated as equity + long-term debt + current debt. */
+function balances(){
+ const o=S.open,out=[];
+ let eq=o.equity, lt=o.ltDebt, sh=o.shares;
+ for(let r=0;r<NR;r++){
+  const f=S.fin[r]||{};
+  lt = lt + (f.bondI||0) - (f.bondR||0);
+  const shNew = o.price>0 ? ((f.stockI||0)-(f.stockR||0))/o.price : 0;
+  sh = Math.max(1, sh + shNew);
+  const p = pnlRaw(r, lt, f);
+  const divTot = (f.div||0)*sh;
+  eq = eq + p.net - divTot
+       + (f.stockI||0)*(1-S.cal.stockFee) - (f.stockR||0);
+  const assets = eq + lt + (f.curDebt||0);
+  out.push({lt,eq:Math.max(1,eq),sh,assets:Math.max(1,assets),divTot,
+   roe:p.net/Math.max(1,eq), roa:p.net/Math.max(1,assets),
+   lev:assets/Math.max(1,eq), at:p.rev/Math.max(1,assets)});
+ }
+ return out;}
+function pnlRaw(r,ltDebt,f){
+ let rev=0,vc=0,fx=0,inv=0;
  S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r],u=units(i,r);
   rev+=u*c.price;vc+=u*varCost(i,r);
   fx+=(c.promo||0)+(c.sales||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
   inv+=plantInvest(i,r);});
- const cm=rev-vc,ebit=cm-fx,f=S.fin[r]||{};
- const int=(f.curDebt||0)*S.cal.interestST;
- const pre=ebit-int,tax=Math.max(0,pre)*S.cal.taxRate,net=pre-tax;
- return {rev,vc,cm,fx,ebit,int,pre,tax,net,inv,cmPct:rev>0?cm/rev:0,ros:rev>0?net/rev:0};}
+ const cm=rev-vc,ebit=cm-fx;
+ const int=(f.curDebt||0)*S.cal.interestST + (ltDebt||0)*S.cal.interestLT;
+ const fee=(f.bondR||0)*S.cal.bondFee + (f.stockI||0)*S.cal.stockFee;
+ const pre=ebit-int-fee,tax=Math.max(0,pre)*S.cal.taxRate,net=pre-tax;
+ return {rev,vc,cm,fx,ebit,int,fee,pre,tax,net,inv,cmPct:rev>0?cm/rev:0,ros:rev>0?net/rev:0};}
+function pnl(r){
+ let lt=S.open.ltDebt;
+ for(let k=0;k<=r;k++){const f=S.fin[k]||{};lt=lt+(f.bondI||0)-(f.bondR||0);}
+ return pnlRaw(r,lt,S.fin[r]||{});}
 const money=v=>v<0?"($"+Math.abs(Math.round(v)).toLocaleString()+")":"$"+Math.round(v).toLocaleString();
 const pct=v=>(100*v).toFixed(1)+"%";
 const EST='<span class="estmark" title="Estimated — calibrate on the Calibration tab">&bull;</span>';
@@ -378,12 +427,30 @@ function ptabs(){
  return `<div class="ptabs">`+S.products.map((P,i)=>
   `<button data-sel="${i}" class="${i===sel?'on':''}">${P.name}</button>`).join("")+
   `<button data-sel="add" style="flex:0 0 90px">+ Add</button></div>`;}
-function sld(f,label,sub,v,min,max,step,fmt){
+/* mk = {band:[lo,hi,colour,label], ticks:[[value,colour,label],...]}
+   Bands and ticks are drawn on the track so the acceptable range and the target
+   are visible while you drag, rather than something you have to look up. */
+function sld(f,label,sub,v,min,max,step,fmt,mk){
+ const pos=x=>Math.max(0,Math.min(100,((x-min)/(max-min))*100));
+ let ov="";
+ if(mk&&mk.band){const[a,b,col,lb]=mk.band;
+  ov+=`<div class="band" style="left:${pos(a)}%;width:${pos(b)-pos(a)}%;background:${col}"></div>`;
+  if(lb)ov+=`<div class="tlab" style="left:${(pos(a)+pos(b))/2}%;color:${col};top:-9px">${lb}</div>`;}
+ (mk&&mk.ticks||[]).forEach(([x,col,lb])=>{
+  ov+=`<div class="tick" style="left:calc(${pos(x)}% - 1px);background:${col}"></div>`;
+  if(lb)ov+=`<div class="tlab" style="left:${pos(x)}%;color:${col};top:-9px">${lb}</div>`;});
  return `<div class="sld"><div class="lab">${label}<small>${sub||""}</small></div>
   <div class="track"><span class="mm">${fmt?fmt(min):min}</span>
-   <input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-f="${f}">
+   <div class="tw"><div class="base"></div>${ov}
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-f="${f}"></div>
    <input class="bub" type="number" min="${min}" max="${max}" step="${step}" value="${v}" data-f="${f}">
    <span class="mm">${fmt?fmt(max):max}</span></div></div>`;}
+/* delta chip vs the previous round */
+function dlt(cur,prev,fmt,goodUp){
+ if(prev===undefined||prev===null||!isFinite(prev))return"";
+ const d=cur-prev; if(Math.abs(d)<1e-9)return`<span class="chip flat">no change</span>`;
+ const good=goodUp?d>0:d<0;
+ return `<span class="chip ${good?'up':'down'}">${d>0?"▲":"▼"} ${fmt(Math.abs(d))}</span>`;}
 const $m=v=>"$"+(+v).toFixed(2), $k=v=>"$"+(+v).toLocaleString();
 
 /* ---------------- tabs --------------------------------------------------- */
@@ -403,10 +470,15 @@ function tRD(r){
    <span><i class="sw" style="background:#111;border-radius:0"></i>products (orange = selected)</span></div>
   </div></div>
   <div class="col"><div class="card"><h2>R&amp;D — ${R(r)}</h2>${ptabs()}
-  ${sld("p","Performance","segment ideal "+idealAt(P.seg,r).p,c.p,0,20,.1)}
-  ${sld("s","Size","segment ideal "+idealAt(P.seg,r).s,c.s,0,20,.1)}
-  ${sld("m","MTBF",SEG[P.seg].mlo.toLocaleString()+"–"+SEG[P.seg].mhi.toLocaleString()+" acceptable",
-        c.m,10000,27000,100,v=>(+v).toLocaleString())}
+  ${sld("p","Performance","green = inside this segment's circle",c.p,0,20,.1,null,
+    {band:[centreAt(P.seg,r).p-2.5,centreAt(P.seg,r).p+2.5,"rgba(22,163,74,.35)"],
+     ticks:[[idealAt(P.seg,r).p,"#dc2626","ideal"],[centreAt(P.seg,r).p,"#111","centre"]]})}
+  ${sld("s","Size","green = inside this segment's circle",c.s,0,20,.1,null,
+    {band:[centreAt(P.seg,r).s-2.5,centreAt(P.seg,r).s+2.5,"rgba(22,163,74,.35)"],
+     ticks:[[idealAt(P.seg,r).s,"#dc2626","ideal"],[centreAt(P.seg,r).s,"#111","centre"]]})}
+  ${sld("m","MTBF","green = accepted by "+SEG[P.seg].n,c.m,10000,27000,100,v=>(+v).toLocaleString(),
+    {band:[SEG[P.seg].mlo,SEG[P.seg].mhi,"rgba(22,163,74,.35)"],
+     ticks:[[SEG[P.seg].mlo,"#166534","cheapest ok"]]})}
   <div class="sld"><div class="lab">Revision date<small>${note}</small></div>
    <div class="track"><input type="date" value="${c.date}" min="${YR0+r}-01-01"
      max="${YR0+r+1}-12-31" data-f="date">
@@ -446,10 +518,15 @@ function tMkt(r){
  const P=S.products[sel],c=P.rounds[r],g=SEG[P.seg];
  const lo=priceLo(P.seg,r),hi=priceHi(P.seg,r);
  let h=`<div class="row"><div class="col"><div class="card"><h2>Marketing — ${R(r)}</h2>${ptabs()}
-  ${sld("price","Price","segment range "+$m(lo)+"–"+$m(hi),c.price,14,50,.5,$m)}
-  ${sld("promo","Promo budget","drives awareness "+EST,c.promo,0,3000,50,$k)}
-  ${sld("sales","Sales budget","drives accessibility "+EST,c.sales,0,4500,50,$k)}
-  ${sld("fc","Your forecast","units you expect to sell",c.fc,0,4025,10,v=>(+v).toLocaleString())}
+  ${sld("price","Price","green = segment will buy; red tick = top of range",c.price,14,50,.5,$m,
+    {band:[lo,hi,"rgba(22,163,74,.35)"],ticks:[[hi,"#dc2626","max"],[lo,"#166534","min"]]})}
+  ${sld("promo","Promo budget","drives awareness "+EST,c.promo,0,3000,50,$k,
+    {ticks:[[S.cal.awareHalf,"#7c3aed","half ceiling"]]})}
+  ${sld("sales","Sales budget","drives accessibility "+EST,c.sales,0,4500,50,$k,
+    {ticks:[[S.cal.accessHalf,"#7c3aed","half ceiling"]]})}
+  ${sld("fc","Your forecast","tick = what you can actually supply this round",c.fc,0,4025,10,
+    v=>(+v).toLocaleString(),
+    {ticks:[[Math.min(4025,(c.sched||0)+(c.inv||0)),"#dc2626","supply"]]})}
   <table style="margin-top:12px"><tr><th>Awareness ${EST}</th><th>Accessibility ${EST}</th>
    <th>Survey score ${EST}</th><th>Revenue</th><th>Contribution</th></tr>
    <tr><td class="num">${pct(awareness(sel,r))}</td><td class="num">${pct(accessibility(sel,r))}</td>
@@ -497,9 +574,16 @@ function tProd(r){
  const P=S.products[sel],c=P.rounds[r],sh=shiftPct(c.sched,c.cap),lab=laborUnit(c.auto,sh);
  const vc=(c.mat||0)+lab,cm=c.price>0?(c.price-vc)/c.price:0,util=c.cap>0?c.sched/c.cap:0;
  let h=`<div class="row"><div class="col"><div class="card"><h2>Production — ${R(r)}</h2>${ptabs()}
-  ${sld("sched","Production schedule","units to build this round",c.sched,0,3600,10,v=>(+v).toLocaleString())}
-  ${sld("cap","Capacity","units per shift",c.cap,0,6000,50,v=>(+v).toLocaleString())}
-  ${sld("auto","Automation","higher = cheaper labour, slower to reposition",c.auto,1,10,.5)}
+  ${sld("sched","Production schedule","green = first shift; amber = second shift",c.sched,0,3600,10,
+    v=>(+v).toLocaleString(),
+    {band:[0,Math.min(3600,c.cap),"rgba(22,163,74,.3)"],
+     ticks:[[Math.min(3600,c.cap),"#d97706","2nd shift"],
+            [Math.min(3600,c.cap*2),"#dc2626","max"],
+            [Math.min(3600,Math.max(0,(c.fc||0)-(c.inv||0))),"#2563eb","meets forecast"]]})}
+  ${sld("cap","Capacity","units per shift; tick = what you're scheduling",c.cap,0,6000,50,
+    v=>(+v).toLocaleString(),{ticks:[[Math.min(6000,c.sched),"#2563eb","schedule"]]})}
+  ${sld("auto","Automation","higher = cheaper labour, slower to reposition",c.auto,1,10,.5,null,
+    {ticks:[[c.auto,"transparent",""]]})}
   ${sld("inv","Inventory on hand","carried in from last round",c.inv,0,2000,10,v=>(+v).toLocaleString())}
   ${sld("mat","Material cost / unit","read this off the Capsim R&D screen",c.mat,0,25,.01,$m)}
   <table style="margin-top:12px"><tr><th>Utilisation</th><th>2nd shift</th><th>Labour $</th>
@@ -548,29 +632,49 @@ function tProd(r){
   fitted to your Round 2 board and reproducing it exactly. Adjust on Calibration if the sim diverges.</div></div>`;}
 
 function tFin(r){
- const p=pnl(r),f=S.fin[r];
- const fs=(k,l,sub,max,step)=>`<div class="sld"><div class="lab">${l}<small>${sub}</small></div>
+ const p=pnl(r),f=S.fin[r],B=balances(),b=B[r],pb=r>0?B[r-1]:null,pp=r>0?pnl(r-1):null;
+ const fs=(k,l,sub,max,step,mk)=>{
+  const pos=x=>Math.max(0,Math.min(100,(x/max)*100));
+  let ov="";(mk||[]).forEach(([x,col,lb])=>{
+   ov+=`<div class="tick" style="left:calc(${pos(x)}% - 1px);background:${col}"></div>`;
+   if(lb)ov+=`<div class="tlab" style="left:${pos(x)}%;color:${col};top:-9px">${lb}</div>`;});
+  return `<div class="sld"><div class="lab">${l}<small>${sub}</small></div>
   <div class="track"><span class="mm">0</span>
-   <input type="range" min="0" max="${max}" step="${step}" value="${f[k]}" data-fin="${k}">
+   <div class="tw"><div class="base"></div>${ov}
+    <input type="range" min="0" max="${max}" step="${step}" value="${f[k]}" data-fin="${k}"></div>
    <input class="bub" type="number" min="0" max="${max}" step="${step}" value="${f[k]}" data-fin="${k}">
-   <span class="mm">${max.toLocaleString()}</span></div></div>`;
+   <span class="mm">${max.toLocaleString()}</span></div></div>`;};
+ const o=S.open;
+ const ob=(k,l)=>`<div class="sld" style="grid-template-columns:150px 1fr"><div class="lab">${l}</div>
+  <div class="track"><input class="bub" style="width:110px" type="number" step="1"
+   value="${o[k]}" data-open="${k}"></div></div>`;
  return `<div class="kpi">
   <div><b>${money(p.rev)}</b><span>Revenue</span></div>
-  <div><b>${pct(p.cmPct)}</b><span>Contribution</span></div>
-  <div><b>${money(p.ebit)}</b><span>EBIT</span></div>
-  <div><b>${money(p.net)}</b><span>Net profit</span></div>
+  <div><b>${money(p.net)}</b>${dlt(p.net,pp?pp.net:null,v=>money(v),true)}<span>Net profit</span></div>
+  <div><b>${pct(b.roe)}</b>${dlt(b.roe,pb?pb.roe:null,v=>pct(v),true)}<span>ROE</span></div>
   <div><b>${pct(p.ros)}</b><span>ROS</span></div>
-  <div><b>${money(p.inv)}</b><span>Plant investment</span></div></div>
+  <div><b>${pct(b.roa)}</b><span>ROA</span></div>
+  <div><b>${b.lev.toFixed(2)}</b><span>Leverage</span></div>
+  <div><b>${b.at.toFixed(2)}</b><span>Asset turnover</span></div>
+  <div><b>${money(p.int)}</b><span>Interest</span></div></div>
   <div class="row"><div class="col"><div class="card"><h2>Financing decisions — ${R(r)} (000s)</h2>
-  ${fs("stockI","Stock issue","raises equity, dilutes shares",20000,100)}
-  ${fs("stockR","Stock retire","buys shares back",20000,100)}
-  ${fs("bondI","Bond issue","long-term debt at "+pct(S.cal.interestLT),40000,100)}
-  ${fs("bondR","Bond retire","pays down long-term debt",40000,100)}
+  ${fs("bondI","Bond issue","long-term debt at "+pct(S.cal.interestLT),40000,100,
+    [[b.lt,"#dc2626","current LT debt"]])}
+  ${fs("bondR","Bond retire",pct(S.cal.bondFee)+" fee to retire early",40000,100,
+    [[b.lt,"#dc2626","LT debt"]])}
   ${fs("curDebt","Current debt","short-term at "+pct(S.cal.interestST),40000,100)}
-  ${fs("div","Dividend per share","paid to shareholders",10,.1)}
-  <div class="note"><b>Balance sheet and cash flow are not modelled.</b> Opening balances,
-   depreciation schedule and working capital need the Finance screen. Plan the decisions here and
-   see the profit consequence; take assets, cash and equity from the sim.</div></div></div>
+  ${fs("stockI","Stock issue",pct(S.cal.stockFee)+" brokerage fee, dilutes shares",20000,100)}
+  ${fs("stockR","Stock retire","buys shares back out of equity",20000,100)}
+  ${fs("div","Dividend per share","× "+Math.round(b.sh).toLocaleString()+"K shares = "
+    +money(b.divTot)+" out of equity",10,.1)}
+  <div class="note">Every slider now moves the statements: bonds change interest and leverage,
+   stock changes equity and share count, dividends drain equity.</div></div>
+  <div class="card"><h2>Opening balances — start of Round 1 (000s)</h2>
+   <p class="sub">Everything above carries forward from these. Assets and equity are derived from
+    the Round 0 Courier; the rest are placeholders — correct them from your Balance Sheet.</p>
+   ${ob("equity","Equity")}${ob("ltDebt","Long-term debt")}${ob("assets","Total assets")}
+   ${ob("shares","Shares outstanding (000s)")}${ob("price","Share price $")}${ob("cash","Cash")}
+  </div></div>
   <div class="col"><div class="card"><h2>Income statement — ${R(r)} (000s)</h2><table>
   <tr><th class="l">Line</th><th>Amount</th><th class="l">Basis</th></tr>
   <tr><td class="l">Sales</td><td class="num">${money(p.rev)}</td><td class="l" style="color:var(--mut)">units × price</td></tr>
@@ -578,12 +682,29 @@ function tFin(r){
   <tr class="tot"><td class="l">Contribution margin</td><td class="num">${money(p.cm)}</td><td class="l" style="color:var(--mut)">${pct(p.cmPct)}</td></tr>
   <tr><td class="l">Period costs</td><td class="num">${money(-p.fx)}</td><td class="l" style="color:var(--mut)">promo + sales + depreciation</td></tr>
   <tr><td class="l"><b>EBIT</b></td><td class="num"><b>${money(p.ebit)}</b></td><td></td></tr>
-  <tr><td class="l">Interest</td><td class="num">${money(-p.int)}</td><td class="l" style="color:var(--mut)">current debt × ${pct(S.cal.interestST)}</td></tr>
+  <tr><td class="l">Interest</td><td class="num">${money(-p.int)}</td><td class="l" style="color:var(--mut)">LT ${money(b.lt)} @ ${pct(S.cal.interestLT)} + ST @ ${pct(S.cal.interestST)}</td></tr>
+  <tr><td class="l">Issue / retire fees</td><td class="num">${money(-p.fee)}</td><td class="l" style="color:var(--mut)">stock ${pct(S.cal.stockFee)}, bond ${pct(S.cal.bondFee)}</td></tr>
   <tr><td class="l">Taxes</td><td class="num">${money(-p.tax)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.taxRate)}</td></tr>
   <tr class="tot"><td class="l">Net profit</td><td class="num">${money(p.net)}</td><td></td></tr></table></div>
-  <div class="card"><h2>Profit by round</h2>
+  <div class="card"><h2>Balance carried forward</h2><table>
+  <tr><th class="l">Item</th><th>Start of round</th><th>End of round</th></tr>
+  <tr><td class="l">Equity</td><td class="num">${pb?money(pb.eq):money(S.open.equity)}</td>
+   <td class="num"><b>${money(b.eq)}</b>${dlt(b.eq,pb?pb.eq:S.open.equity,v=>money(v),true)}</td></tr>
+  <tr><td class="l">Long-term debt</td><td class="num">${pb?money(pb.lt):money(S.open.ltDebt)}</td>
+   <td class="num">${money(b.lt)}</td></tr>
+  <tr><td class="l">Total assets (approx)</td><td class="num">${pb?money(pb.assets):money(S.open.assets)}</td>
+   <td class="num">${money(b.assets)}</td></tr>
+  <tr><td class="l">Shares (000s)</td><td class="num">${pb?Math.round(pb.sh).toLocaleString():S.open.shares.toLocaleString()}</td>
+   <td class="num">${Math.round(b.sh).toLocaleString()}</td></tr></table>
+  <div class="note"><b>Assets are approximated</b> as equity + long-term debt + current debt, so
+   accounts payable and inventory are missing. ROA, leverage and asset turnover shift with that
+   approximation. <b>Stock price is still not modelled</b> — Capsim's formula needs book value,
+   EPS and dividend history together. Take it from the sim.</div></div>
+  <div class="card"><h2>ROE and profit by round</h2>
+  ${vbars(Array.from({length:NR},(_,k)=>({label:"R"+(k+1),newV:B[k].roe*100,
+    c:B[k].roe<0?"#dc2626":"#166534"})),{fmt:v=>v.toFixed(0)+"%",l:40})}
   ${vbars(Array.from({length:NR},(_,k)=>({label:"R"+(k+1),newV:pnl(k).net/1000,
-    c:pnl(k).net<0?"#dc2626":"#5b9bd5"})),{fmt:v=>"$"+v.toFixed(1)+"M",l:52})}</div>
+    c:pnl(k).net<0?"#dc2626":"#5b9bd5"})),{fmt:v=>"$"+v.toFixed(1)+"M",l:46})}</div>
   </div></div>`;}
 
 function tScore(){
@@ -698,7 +819,9 @@ function wire(){
   }else el.addEventListener("change",()=>{let v=parseFloat(el.value);if(isNaN(v))v=0;
    S.fin[S.round][k]=v;render();});});
  document.querySelectorAll('[data-cal]').forEach(el=>el.addEventListener("change",()=>{
-  let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));}
+  let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));
+ document.querySelectorAll('[data-open]').forEach(el=>el.addEventListener("change",()=>{
+  let v=parseFloat(el.value);if(isNaN(v))v=0;S.open[el.dataset.open]=v;render();}));}
 
 document.getElementById("bSave").onclick=()=>{
  const b=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});
@@ -708,7 +831,8 @@ document.getElementById("bSave").onclick=()=>{
 document.getElementById("bLoad").onclick=()=>document.getElementById("fIn").click();
 document.getElementById("fIn").onchange=e=>{const f=e.target.files[0];if(!f)return;
  const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.products)throw 0;
-  S=o;if(!S.cal)S.cal={...DEF_CAL};render();toast("Loaded");}
+  S=o;if(!S.cal)S.cal={...DEF_CAL};if(!S.open)S.open={...DEF_OPEN};
+  S.cal={...DEF_CAL,...S.cal};render();toast("Loaded");}
   catch(x){toast("That file could not be read");}};rd.readAsText(f);};
 document.getElementById("bLink").onclick=()=>{
  const d=btoa(unescape(encodeURIComponent(JSON.stringify(S))));
