@@ -42,7 +42,7 @@ nav button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 0 0 var(-
 .ptabs button.on{background:var(--card);color:var(--ink);box-shadow:inset 0 -3px 0 0 var(--acc)}
 /* slider block */
 .sld{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:center;
- padding:9px 0;border-bottom:1px solid var(--line)}
+ padding:15px 0 13px;border-bottom:1px solid var(--line)}
 .sld:last-child{border-bottom:none}
 .sld .lab{font-size:12.5px;font-weight:650}
 .sld .lab small{display:block;font-weight:400;color:var(--mut);font-size:10.5px}
@@ -53,8 +53,8 @@ nav button.on{background:var(--card);color:var(--ink);box-shadow:0 2px 0 0 var(-
 .tw .base{position:absolute;left:0;right:0;height:6px;border-radius:4px;background:#d6dde5}
 .tw .band{position:absolute;height:6px;border-radius:3px;pointer-events:none}
 .tw .tick{position:absolute;width:2px;height:16px;pointer-events:none;border-radius:1px}
-.tw .tlab{position:absolute;top:-1px;font-size:8.5px;font-weight:700;transform:translateX(-50%);
- pointer-events:none;white-space:nowrap}
+.tw .tlab{position:absolute;font-size:8.5px;font-weight:700;pointer-events:none;
+ white-space:nowrap;background:#fff;padding:0 3px;border-radius:3px;line-height:11px}
 .tw input[type=range]{position:relative;z-index:2;width:100%;background:transparent}
 input[type=range]{-webkit-appearance:none;height:6px;border-radius:4px;
  background:#d6dde5;outline:none;cursor:pointer}
@@ -430,15 +430,34 @@ function ptabs(){
 /* mk = {band:[lo,hi,colour,label], ticks:[[value,colour,label],...]}
    Bands and ticks are drawn on the track so the acceptable range and the target
    are visible while you drag, rather than something you have to look up. */
+/* Draw the tick overlays. Ticks landing on the same spot are merged into one label
+   (Traditional's ideal spot IS its centre, so those would otherwise stack), and
+   remaining labels alternate above and below the track so they can't collide. */
+function ticksHTML(ticks,pos){
+ const keep=[];
+ (ticks||[]).forEach(t=>{
+  if(!t[1]||t[1]==="transparent") return;
+  const near=keep.find(k=>Math.abs(pos(k[0])-pos(t[0]))<1.2);
+  if(near){ if(t[2]&&near[2]&&near[2]!==t[2]) near[2]=near[2]+" = "+t[2];
+            else if(t[2]&&!near[2]) near[2]=t[2]; }
+  else keep.push([...t]);});
+ keep.sort((a,b)=>pos(a[0])-pos(b[0]));
+ let out="";
+ keep.forEach((t,i)=>{
+  const p=pos(t[0]);
+  out+=`<div class="tick" style="left:calc(${p}% - 1px);background:${t[1]}"></div>`;
+  if(!t[2]) return;
+  // keep labels inside the track at the extremes
+  const tx = p<9?"translateX(-8%)" : p>91?"translateX(-92%)" : "translateX(-50%)";
+  const top = (i%2===0) ? "-13px" : "17px";
+  out+=`<div class="tlab" style="left:${p}%;top:${top};transform:${tx};color:${t[1]}">${t[2]}</div>`;});
+ return out;}
 function sld(f,label,sub,v,min,max,step,fmt,mk){
  const pos=x=>Math.max(0,Math.min(100,((x-min)/(max-min))*100));
  let ov="";
- if(mk&&mk.band){const[a,b,col,lb]=mk.band;
-  ov+=`<div class="band" style="left:${pos(a)}%;width:${pos(b)-pos(a)}%;background:${col}"></div>`;
-  if(lb)ov+=`<div class="tlab" style="left:${(pos(a)+pos(b))/2}%;color:${col};top:-9px">${lb}</div>`;}
- (mk&&mk.ticks||[]).forEach(([x,col,lb])=>{
-  ov+=`<div class="tick" style="left:calc(${pos(x)}% - 1px);background:${col}"></div>`;
-  if(lb)ov+=`<div class="tlab" style="left:${pos(x)}%;color:${col};top:-9px">${lb}</div>`;});
+ if(mk&&mk.band){const[a,b,col]=mk.band;
+  ov+=`<div class="band" style="left:${pos(a)}%;width:${Math.max(0,pos(b)-pos(a))}%;background:${col}"></div>`;}
+ ov+=ticksHTML(mk&&mk.ticks,pos);
  return `<div class="sld"><div class="lab">${label}<small>${sub||""}</small></div>
   <div class="track"><span class="mm">${fmt?fmt(min):min}</span>
    <div class="tw"><div class="base"></div>${ov}
@@ -582,8 +601,7 @@ function tProd(r){
             [Math.min(3600,Math.max(0,(c.fc||0)-(c.inv||0))),"#2563eb","meets forecast"]]})}
   ${sld("cap","Capacity","units per shift; tick = what you're scheduling",c.cap,0,6000,50,
     v=>(+v).toLocaleString(),{ticks:[[Math.min(6000,c.sched),"#2563eb","schedule"]]})}
-  ${sld("auto","Automation","higher = cheaper labour, slower to reposition",c.auto,1,10,.5,null,
-    {ticks:[[c.auto,"transparent",""]]})}
+  ${sld("auto","Automation","higher = cheaper labour, slower to reposition",c.auto,1,10,.5)}
   ${sld("inv","Inventory on hand","carried in from last round",c.inv,0,2000,10,v=>(+v).toLocaleString())}
   ${sld("mat","Material cost / unit","read this off the Capsim R&D screen",c.mat,0,25,.01,$m)}
   <table style="margin-top:12px"><tr><th>Utilisation</th><th>2nd shift</th><th>Labour $</th>
@@ -635,9 +653,7 @@ function tFin(r){
  const p=pnl(r),f=S.fin[r],B=balances(),b=B[r],pb=r>0?B[r-1]:null,pp=r>0?pnl(r-1):null;
  const fs=(k,l,sub,max,step,mk)=>{
   const pos=x=>Math.max(0,Math.min(100,(x/max)*100));
-  let ov="";(mk||[]).forEach(([x,col,lb])=>{
-   ov+=`<div class="tick" style="left:calc(${pos(x)}% - 1px);background:${col}"></div>`;
-   if(lb)ov+=`<div class="tlab" style="left:${pos(x)}%;color:${col};top:-9px">${lb}</div>`;});
+  const ov=ticksHTML(mk,pos);
   return `<div class="sld"><div class="lab">${l}<small>${sub}</small></div>
   <div class="track"><span class="mm">0</span>
    <div class="tw"><div class="base"></div>${ov}
