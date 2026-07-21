@@ -108,6 +108,18 @@ tr.hi td{background:#eef4fc}
 /* keep charts compact — they scale to the column otherwise */
 .card svg{display:block;max-width:330px;margin:0 auto}
 .card.map svg{max-width:470px}
+/* map popout */
+.mbk{position:fixed;inset:0;background:rgba(15,23,42,.62);display:flex;align-items:center;
+ justify-content:center;z-index:200;padding:18px}
+.mbox{background:var(--card);border-radius:12px;padding:13px 18px 16px;width:100%;
+ max-width:min(96vw,1120px);max-height:96vh;display:flex;flex-direction:column;
+ box-shadow:0 22px 60px rgba(0,0,0,.38)}
+.mhd{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:9px}
+.mhd b{font-size:15px}
+.mhd .sp{flex:1}
+.mbd{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
+.mbd svg{max-width:none;width:auto;height:min(76vh,880px);max-height:100%}
+@media (max-width:820px){.mbd svg{width:100%;height:auto}}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--nav);
  color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;
  transition:opacity .25s;pointer-events:none;z-index:99}
@@ -130,6 +142,7 @@ tr.hi td{background:#eef4fc}
 <div class="rounds" id="rounds"></div>
 <nav id="tabs"></nav>
 <div class="wrap" id="body"></div>
+<div id="modal"></div>
 <div id="toast"></div>
 
 <script>
@@ -243,7 +256,7 @@ function seed(){
 let S=load()||seed(), tab=0, sel=0;
 if(!S.open) S.open={...DEF_OPEN};
 S.cal={...DEF_CAL,...(S.cal||{})};
-const O={corridor:true,trails:false,comp:false,complab:false};
+const O={corridor:true,trails:false,comp:false,complab:false,pop:false};
 
 function save(){try{localStorage.setItem("digbyCapsim",JSON.stringify(S));}catch(e){}}
 function load(){
@@ -614,7 +627,9 @@ function tRD(r){
   <div class="bar"><label><input type="checkbox" id="ccor" ${O.corridor?"checked":""}> Corridor &amp; overlaps</label>
    <label><input type="checkbox" id="ctra" ${O.trails?"checked":""}> Drift trails</label>
    <label><input type="checkbox" id="ccmp" ${O.comp?"checked":""}> Competitors</label>
-   ${O.comp?`<label><input type="checkbox" id="clab" ${O.complab?"checked":""}> Label all</label>`:""}</div>
+   ${O.comp?`<label><input type="checkbox" id="clab" ${O.complab?"checked":""}> Label all</label>`:""}
+   <span style="flex:1"></span>
+   <button class="btn" id="bpop" title="Open the map full size">&#9974; Popout</button></div>
   ${mapSVG(r)}
   <div class="legend"><span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
    <span><i class="sw" style="background:#fff;border:1px solid #7a7a7a"></i>rough cut 4.0</span>
@@ -1313,6 +1328,35 @@ function rpt3(){return `
   planner deliberately does not model, so read both off the R&amp;D screen before committing.</div>
 </div>`;}
 
+/* ---------------- map popout -------------------------------------------- */
+function mapToggles(pre){
+ return `<label><input type="checkbox" id="${pre}cor" ${O.corridor?"checked":""}> Corridor &amp; overlaps</label>
+  <label><input type="checkbox" id="${pre}tra" ${O.trails?"checked":""}> Drift trails</label>
+  <label><input type="checkbox" id="${pre}cmp" ${O.comp?"checked":""}> Competitors</label>
+  ${O.comp?`<label><input type="checkbox" id="${pre}lab" ${O.complab?"checked":""}> Label all</label>`:""}`;}
+
+function mapLegend(){
+ return `<div class="legend"><span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
+  <span><i class="sw" style="background:#fff;border:1px solid #7a7a7a"></i>rough cut 4.0</span>
+  <span><i class="sw" style="background:#111"></i>centre</span><span><b>+</b> ideal spot</span>
+  <span><i class="sw" style="background:#111;border-radius:0"></i>products (orange = selected)</span>
+  ${O.comp?CO.map(x=>`<span><i class="sw" style="background:${x.c};border-radius:50%"></i>${x.n}</span>`).join("")
+    +`<span style="color:var(--mut)">solid = same segment as ${S.products[sel].name}</span>`:""}</div>`;}
+
+function modalHTML(){
+ if(!O.pop) return "";
+ const r=S.round;
+ return `<div class="mbk" id="mbk"><div class="mbox">
+  <div class="mhd"><b>Perceptual map &mdash; ${R(r)}</b>
+   <div class="bar" style="margin:0">${mapToggles("m")}</div>
+   <span class="sp"></span>
+   <button class="btn" id="mcls">Close &#10005;</button></div>
+  <div class="mbd">${mapSVG(r)}</div>
+  ${mapLegend()}
+  <div class="note" style="margin-top:6px">Selected product is <b>${S.products[sel].name}</b>.
+   Press <b>Esc</b> or click outside to close.</div>
+  </div></div>`;}
+
 /* ---------------- render / events --------------------------------------- */
 const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration","Decision Reports"];
 function render(){
@@ -1324,6 +1368,7 @@ function render(){
  const r=S.round;
  document.getElementById("body").innerHTML=
   tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tab===5?tCal():tRpt();
+ document.getElementById("modal").innerHTML=modalHTML();
  wire(); save();}
 
 const CARRY=["p","s","m","cap","auto","mat"];
@@ -1358,6 +1403,17 @@ function wire(){
  const cm=document.getElementById("ccmp"),cl=document.getElementById("clab");
  if(cm)cm.onchange=()=>{O.comp=cm.checked;render();};
  if(cl)cl.onchange=()=>{O.complab=cl.checked;render();};
+
+ // popout: open, close, and the duplicate toggle set inside the modal
+ const bp=document.getElementById("bpop");
+ if(bp)bp.onclick=()=>{O.pop=true;render();};
+ const mc=document.getElementById("mcls");
+ if(mc)mc.onclick=()=>{O.pop=false;render();};
+ const bk=document.getElementById("mbk");
+ if(bk)bk.onclick=e=>{if(e.target===bk){O.pop=false;render();}};
+ [["mcor","corridor"],["mtra","trails"],["mcmp","comp"],["mlab","complab"]].forEach(([id,k])=>{
+  const el=document.getElementById(id);
+  if(el)el.onchange=()=>{O[k]=el.checked;render();};});
  const clr=document.querySelector("[data-clr]");
  if(clr)clr.onclick=()=>{S.products[sel].rounds[S.round].date="";render();};
 
@@ -1404,8 +1460,9 @@ document.getElementById("bLink").onclick=()=>{
 document.getElementById("bReset").onclick=()=>{
  if(confirm("Reset every round back to the seeded board?")){
   S=seed();localStorage.removeItem("digbyCapsim");location.hash="";sel=0;render();toast("Reset");}};
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"&&O.pop){O.pop=false;render();}});
 render();
 </script>
 </body>
- 
 </html>
