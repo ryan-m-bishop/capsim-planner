@@ -776,8 +776,320 @@ function tCal(){
    deliberately absent</b> — those formulas would not reproduce, and a wrong formula is worse than none.
    Re-share the file after calibrating so the team inherits it.</div></div>`;}
 
+/* ---------------- decision reports -------------------------------------- */
+/* Reports are keyed by round index (0 = R1/2027). Add future rounds here. */
+const REPORTS={2:rpt3};
+
+function tRpt(){
+ const f=REPORTS[S.round];
+ if(!f) return `<div class="card"><h2>Decision report</h2>
+  <p class="sub">No report has been written for ${R(S.round)} yet.</p>
+  <div class="note">This tab holds a written recommendation for each round: what each department
+   should do, what it costs, and why. Reports exist for the rounds listed in <code>REPORTS</code>
+   at the top of this section. Pick a round along the top of the page to read its report.</div></div>`;
+ return f();}
+
+function rpt3(){return `
+<div class="card">
+ <h2>Round 3 &middot; 2029 &mdash; Recommended decisions</h2>
+ <p class="sub">Read from the live sim on 21 July 2026, with Round 2 results posted and Round 3 open.
+  Every figure below came off the Capsim screens or the Round 2 Courier. Nothing in the sim was changed.</p>
+ <div class="flag e">Nothing has been entered for Round 3 yet. Every decision is still sitting on its
+  Round 2 value, HR has reset itself to $0, and the sim is showing an alert for missing Dino marketing decisions.</div>
+ <div class="kpi">
+  <div><b>$703</b><span>R2 net profit</span></div>
+  <div><b>30.44%</b><span>R2 contribution margin</span></div>
+  <div><b>1.99</b><span>R2 leverage</span></div>
+  <div><b>1.21x</b><span>Interest coverage</span></div>
+  <div><b>$17,512</b><span>Projected closing cash</span></div>
+  <div><b>27,240</b><span>2029 market units</span></div>
+ </div>
+ <div class="note">Round 2 was the turn. Profit of $703 against an industry average loss of $(3,616),
+  the contribution margin target cleared for the first time, leverage lowest in the industry, and a
+  second round with no emergency loan while Baldwin took another $19,181. Chester is the company to
+  beat: $5,655 profit, $9,219 cumulative, and a stock price of $34.34 against our $24.98. Round 3 is
+  where we either compound the Round 2 result or hand the lead to Chester.</div>
+</div>
+
+<div class="card">
+ <h2>Priorities, in order</h2>
+ <table>
+  <tr><th class="l">#</th><th class="l">Move</th><th class="l">Department</th><th>Cost</th><th class="l">Why it ranks here</th></tr>
+  <tr><td class="num">1</td><td class="name">Restore HR funding</td><td class="l">HR</td><td class="num">$4,500</td>
+   <td class="l">It reset to zero. Leaving it there slows R&amp;D 5%, drops the demand and accessibility bonuses to nothing, and pushes turnover to 20% in the round we most need R&amp;D speed.</td></tr>
+  <tr><td class="num">2</td><td class="name">Reposition Duck to 11.6 / 8.4</td><td class="l">R&amp;D</td><td class="num">R&amp;D</td>
+   <td class="l">1.98 off ideal in a segment where position is 43% and age is 29%, growing 16.5%. Repositioning fixes both at once.</td></tr>
+  <tr><td class="num">3</td><td class="name">Raise Dell's production order to 2,450</td><td class="l">Production</td><td class="num">$0</td>
+   <td class="l">Dell stocked out twice, but not because capacity ran out. We ordered 2,100 when the plant can run 2,800. This is free.</td></tr>
+  <tr><td class="num">4</td><td class="name">Cut Duck's price to $38.00</td><td class="l">Marketing</td><td class="num">$0</td>
+   <td class="l">The High End band moved down to $28.50&ndash;$38.50. At $39.00 Duck is now priced outside its own segment.</td></tr>
+  <tr><td class="num">5</td><td class="name">Dell automation 5.5 &rarr; 7.0</td><td class="l">Production</td><td class="num">$8,400</td>
+   <td class="l">Low End is 53% price-driven and Dell will never be repositioned, so automation carries no flexibility cost here.</td></tr>
+  <tr><td class="num">6</td><td class="name">Reposition Dune to 6.1 / 7.6, add 300 capacity</td><td class="l">R&amp;D / Production</td><td class="num">$5,400</td>
+   <td class="l">2.20 off ideal, ran at 100% utilisation, and Size grows 18.6% this year.</td></tr>
+  <tr><td class="num">7</td><td class="name">Commit Dot to Traditional</td><td class="l">R&amp;D / Marketing</td><td class="num">R&amp;D</td>
+   <td class="l">Dot sold 400 units across three segments and stocked out in all three. It needs one home and a real budget.</td></tr>
+  <tr><td class="num">8</td><td class="name">Finish Dino's launch</td><td class="l">All</td><td class="num">$2,800</td>
+   <td class="l">Two rounds of R&amp;D spend, 200 units of idle capacity, no sales, and no marketing decisions entered.</td></tr>
+ </table>
+</div>
+
+<div class="card">
+ <h2>Human Resources &mdash; the one that will get missed</h2>
+ <p class="sub">Custom module. Does not carry over between rounds.</p>
+ <div class="flag e">All three HR sliders are at $0 for Round 3. We spent $3,600 in Round 2 and it
+  produced the best impact numbers in the industry. Those yearly gains are currently set to zero.</div>
+ <div class="row">
+  <div class="col">
+   <div style="border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:#6d28d9;color:#fff;padding:6px 10px;font-size:11.5px;font-weight:700">
+     Yearly Impacts &mdash; as the sim reads right now</div>
+    <table>
+     <tr><th class="l">Name</th><th>Value</th></tr>
+     <tr><td class="l">R &amp; D Cycle Time</td><td class="num" style="color:var(--bad)">5%</td></tr>
+     <tr><td class="l">Demand</td><td class="num" style="color:var(--bad)">0%</td></tr>
+     <tr><td class="l">Accessibility</td><td class="num" style="color:var(--bad)">0%</td></tr>
+     <tr><td class="l">Productivity Index</td><td class="num" style="color:var(--bad)">0%</td></tr>
+     <tr><td class="l">Turnover Rate</td><td class="num" style="color:var(--bad)">20%</td></tr>
+     <tr><td class="l">Production After Adjustment</td><td class="num" style="color:var(--bad)">-1%</td></tr>
+     <tr class="tot"><td class="l">Total Expenditures</td><td class="num">$0</td></tr>
+    </table>
+   </div>
+   <div class="note">Reproduced from the live Human Resources screen, Round 3.</div>
+  </div>
+  <div class="col">
+   <div style="border:1px solid var(--line);border-radius:8px;overflow:hidden">
+    <div style="background:var(--good);color:#fff;padding:6px 10px;font-size:11.5px;font-weight:700">
+     What $3,600 bought us in Round 2</div>
+    <table>
+     <tr><th class="l">Name</th><th>Digby</th><th>Best rival</th></tr>
+     <tr><td class="l">R &amp; D Cycle Time</td><td class="num" style="color:var(--good)">-10%</td><td class="num">-2.5%</td></tr>
+     <tr><td class="l">Demand</td><td class="num" style="color:var(--good)">3%</td><td class="num">1.5%</td></tr>
+     <tr><td class="l">Accessibility</td><td class="num" style="color:var(--good)">2.4%</td><td class="num">3.2%</td></tr>
+     <tr><td class="l">Productivity Index</td><td class="num" style="color:var(--good)">2.5%</td><td class="num">2.5%</td></tr>
+     <tr><td class="l">Turnover Rate</td><td class="num">3%</td><td class="num">-1%</td></tr>
+     <tr class="tot"><td class="l">Total Expenditures</td><td class="num">$3,600</td><td class="num">$2,800</td></tr>
+    </table>
+   </div>
+   <div class="note">From the Round 2 Courier, Custom Modules page. Chester spent $500 and took a
+    +5% cycle-time penalty and 10% turnover, and still out-earned us. Worth remembering that HR is
+    a lever, not a virtue.</div>
+  </div>
+ </div>
+ <table style="margin-top:12px">
+  <tr><th class="l">Decision</th><th>R2</th><th>Recommend R3</th><th class="l">Reasoning</th></tr>
+  <tr><td class="name">Scientists &mdash; Recruitment &amp; Retention</td><td class="num">$2,000</td><td class="num"><b>$2,000</b></td>
+   <td class="l">Max it. Round 3 is the heaviest R&amp;D round in the plan: Duck, Dune and Dot all need repositioning and Dino needs to launch. Cycle time decides whether those revisions land inside 2029 or slip into 2030.</td></tr>
+  <tr><td class="name">Manufacturing &mdash; Training &amp; Assembly</td><td class="num">$1,000</td><td class="num"><b>$1,500</b></td>
+   <td class="l">Dell is about to run roughly 75% second shift. Productivity and production-after-adjustment apply directly to that volume.</td></tr>
+  <tr><td class="name">Sales &mdash; Compensation</td><td class="num">$600</td><td class="num"><b>$1,000</b></td>
+   <td class="l">Accessibility is our weakest customer metric. Dot sat at 32% in Performance and 64% in High End. This is the cheapest lever on it.</td></tr>
+  <tr class="tot"><td class="l">Total</td><td class="num">$3,600</td><td class="num">$4,500</td><td class="l"></td></tr>
+ </table>
+ <div class="note"><b>Add this to the round checklist.</b> HR resets to zero every round. It is the
+  one decision with no carry-over and no slider already sitting in roughly the right place, which is
+  exactly why it is the one that gets forgotten.</div>
+</div>
+
+<div class="card">
+ <h2>R&amp;D</h2>
+ <p class="sub">2029 ideal spots and buying criteria read from the R&amp;D screen. Distances are straight-line
+  on the perceptual map.</p>
+ <table>
+  <tr><th class="l">Product</th><th>Now</th><th>2029 ideal</th><th>Gap</th><th>Age 31 Dec if untouched</th><th>Ideal age</th><th class="l">Recommendation</th></tr>
+  <tr><td class="name">Daze</td><td class="num">5.7 / 14.3</td><td class="num">7.1 / 12.9</td><td class="num">1.98</td><td class="num" style="color:var(--bad)">4.4</td><td class="num">2.0</td>
+   <td class="l"><b>No R&amp;D.</b> See the Daze question below. Reprice instead.</td></tr>
+  <tr><td class="name">Dell</td><td class="num">3.0 / 17.0</td><td class="num">3.2 / 16.8</td><td class="num">0.28</td><td class="num">7.6</td><td class="num">7.0</td>
+   <td class="l"><b>No R&amp;D.</b> Near-perfect on both. Repositioning would halve age to 3.8 and wreck a criterion worth 24% to fix one worth 16%.</td></tr>
+  <tr><td class="name">Duck</td><td class="num">10.3 / 9.9</td><td class="num">11.6 / 8.4</td><td class="num" style="color:var(--bad)">1.98</td><td class="num">2.3</td><td class="num">0.0</td>
+   <td class="l"><b>Reposition to 11.6 / 8.4.</b> Hold MTBF at 25,000. Top priority.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">9.4 / 13.0</td><td class="num">7.1 / 12.9</td><td class="num" style="color:var(--bad)">2.30</td><td class="num">2.7</td><td class="num">2.0</td>
+   <td class="l"><b>Move toward Traditional</b>, MTBF down to 19,000. Split over two rounds if the cost or completion date is bad.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">5.0 / 9.5</td><td class="num">6.1 / 7.6</td><td class="num" style="color:var(--bad)">2.20</td><td class="num">2.6</td><td class="num">1.5</td>
+   <td class="l"><b>Reposition to 6.1 / 7.6.</b> Age halves to about 1.3, close to the 1.5 ideal.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">not set</td><td class="num">12.4 / 13.9</td><td class="num">&mdash;</td><td class="num">0.0</td><td class="num">1.0</td>
+   <td class="l"><b>Launch into Performance</b> at 12.4 / 13.9, MTBF 27,000.</td></tr>
+ </table>
+
+ <div class="row" style="margin-top:12px">
+  <div class="col">
+   <div class="flag o">Duck is the highest-value R&amp;D move on the board.</div>
+   <div class="note">High End weights position at 43% and age at 29%, and it is growing 16.5% to 3,339
+    units. Duck is 1.98 off the ideal spot and will be 2.3 years old against an ideal of zero.
+    Repositioning fixes the position gap and halves the age in the one segment where a young product
+    is worth the most. Duck already sold out its inventory in Round 2 with a satisfaction score of 50,
+    so the demand is there. Hold MTBF at 25,000: it is the top of the 20,000&ndash;25,000 band and
+    reliability carries 19% here.</div>
+  </div>
+  <div class="col">
+   <div class="flag w">Dot has been three products at once.</div>
+   <div class="note">In Round 2 Dot sold 100 units in Traditional, 174 in High End and 125 in
+    Performance, and stocked out in all three. It has the worst contribution margin we own at 25.2%.
+    Our strategy document already assigns Dot to Traditional, and the map agrees: Dot is 2.30 from
+    Traditional, 3.13 from Performance and 5.10 from High End. Traditional is also the cheapest move.
+    Dropping MTBF from 24,100 to 19,000 saves material cost and still sits at the top of Traditional's
+    14,000&ndash;19,000 band, where reliability is only 9% of the decision.</div>
+  </div>
+ </div>
+ <div class="note" style="margin-top:10px"><b>Sequencing risk.</b> Three repositions plus a launch is a
+  lot of concurrent R&amp;D. Check each project's completion date on the R&amp;D screen before committing.
+  Anything landing after roughly October will not earn a full year of sales, and anything slipping into
+  2030 spends the money without the benefit. If something has to give, do Duck and Dune fully and move
+  Dot halfway.</div>
+</div>
+
+<div class="card">
+ <h2>The Daze question</h2>
+ <p class="sub">This one needs a team decision, not a slider.</p>
+ <div class="row">
+  <div class="col">
+   <div class="note" style="font-size:12.5px">Our strategy document has Daze migrating from Traditional
+    into Low End, with Dell sunsetting. Round 2 argues against that plan. Dell was our highest-revenue
+    product at $39,000, held a 31.4% contribution margin, and at 7.6 years sits almost exactly on Low
+    End's 7.0-year ideal. It is our best-performing asset, not a product to retire.
+    <br><br>
+    Meanwhile Daze is stuck between two segments. At 4.4 years it is too old for Traditional's 2.0 ideal,
+    where age is 47% of the decision, and too young for Low End's 7.0. Its Round 2 satisfaction score of
+    19 was the worst of any major Traditional product: Baker scored 64, Able 61, Cake 56.</div>
+  </div>
+  <div class="col">
+   <table>
+    <tr><th class="l">Option</th><th class="l">What it means</th><th class="l">Cost of being wrong</th></tr>
+    <tr><td class="name">A. Let Daze age into Low End</td><td class="l">No R&amp;D. Drop price toward the Low End band. It runs alongside Dell rather than replacing it. Follows the strategy document.</td>
+     <td class="l">Two weak Traditional rounds while Dot takes over that segment.</td></tr>
+    <tr><td class="name">B. Reposition Daze to Traditional</td><td class="l">Move to 7.1 / 12.9. Age halves from 4.4 to about 2.2, right on the 2.0 ideal in a segment where age is 47%.</td>
+     <td class="l">Abandons the migration plan, and puts Daze and Dot in the same segment.</td></tr>
+   </table>
+   <div class="flag w">Recommendation: A, and drop the Dell sunset from the strategy.</div>
+   <div class="note">Repositioning Daze toward Low End would be the trap our own Round 1 briefing
+    identified with Acre: halving age to close a 16%-weight position gap while damaging a 24%-weight
+    age criterion. Option A avoids spending R&amp;D to move in the wrong direction. But it only works if
+    Dot genuinely takes over Traditional, so A and the Dot decision have to be made together.</div>
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>Marketing</h2>
+ <p class="sub">2029 segment demand from the sim: Traditional 8,016, Low End 10,406, High End 3,339,
+  Performance 2,743, Size 2,736. Total 27,240 units, up 13.3% on 2028.</p>
+ <div class="flag e">Duck is priced outside its own segment. The High End band fell to $28.50&ndash;$38.50
+  and Duck is still sitting at $39.00 from last round.</div>
+ <table>
+  <tr><th class="l">Product</th><th>Price now</th><th>Rec price</th><th>2029 band</th><th>Promo</th><th>Sales</th><th>Forecast</th><th class="l">Reasoning</th></tr>
+  <tr><td class="name">Daze</td><td class="num">$24.50</td><td class="num">$23.00</td><td class="num">18.50&ndash;28.50</td><td class="num">$1,400</td><td class="num">$1,600</td><td class="num">1,150</td>
+   <td class="l">Under the Low End ceiling of $23.50 so it starts picking up overlap volume as it ages. Trim promo: we are not defending Traditional with this product any more.</td></tr>
+  <tr><td class="name">Dell</td><td class="num">$19.50</td><td class="num">$19.50</td><td class="num">13.50&ndash;23.50</td><td class="num">$1,900</td><td class="num">$2,000</td><td class="num">2,400</td>
+   <td class="l">Hold price, it is working. Sales budget up: Dell's accessibility was 54%, the weakest of the Low End leaders, and Low End grows 11.7%.</td></tr>
+  <tr><td class="name">Duck</td><td class="num" style="color:var(--bad)">$39.00</td><td class="num">$38.00</td><td class="num">28.50&ndash;38.50</td><td class="num">$1,800</td><td class="num">$1,800</td><td class="num">700</td>
+   <td class="l">Must come inside the band. Duck stocked out at 543 against 591 potential, and High End grows 16.5%, so forecast well above last year.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">$31.75</td><td class="num">$28.00</td><td class="num">18.50&ndash;28.50</td><td class="num">$1,500</td><td class="num">$1,500</td><td class="num">550</td>
+   <td class="l">Priced above the entire Traditional band, which is why it sold 100 units there. Budgets back to a real level: $800 bought 60% awareness and 32% accessibility.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">$31.00</td><td class="num">$30.50</td><td class="num">23.50&ndash;33.50</td><td class="num">$1,700</td><td class="num">$1,700</td><td class="num">700</td>
+   <td class="l">Size grows 18.6% and Dune ran out of plant at 100% utilisation. Small price cut tracks the band, which slid down $0.50.</td></tr>
+  <tr><td class="name">Dino</td><td class="num" style="color:var(--bad)">not set</td><td class="num">$32.00</td><td class="num">23.50&ndash;33.50</td><td class="num">$1,400</td><td class="num">$1,400</td><td class="num">400</td>
+   <td class="l">The sim is flagging these as missing. Performance weights price at 19%, so mid-band is fine for a first year.</td></tr>
+  <tr class="tot"><td class="l">Total</td><td></td><td></td><td></td><td class="num">$9,700</td><td class="num">$10,000</td><td class="num">5,900</td><td class="l"></td></tr>
+ </table>
+ <div class="note"><b>On the forecast.</b> We forecast 4,660 units for Round 2 and the market handed us
+  more than that. Actual unit share came in at 20.2% against a potential share of 19.2%, which is the
+  sim's way of saying we sold everything we built and turned the rest away. 5,900 units is about 21.7%
+  of the 2029 market. That is not an aggressive number for a company that stocked out three products
+  last round.
+  <br><br>
+  <b>On the budgets.</b> Awareness and accessibility decay by roughly a third each year, so a flat
+  budget is a shrinking one. Total SG&amp;A here rises about $4,200, which takes our SG&amp;A-to-sales
+  ratio from 16.03% to somewhere near 17%. Still under the 18.15% industry average.</div>
+</div>
+
+<div class="card">
+ <h2>Production</h2>
+ <div class="flag o">Dell's stockouts were never a capacity problem. We under-ordered.</div>
+ <div class="note" style="margin-bottom:12px">Dell's plant is 1,400 units. With second shift it can
+  run to 2,800. In Round 2 we ordered 2,100, which is exactly 50% second shift, and stocked out at
+  2,073 units sold. There were 700 units of production available that we never asked for. Raising the
+  order costs nothing but the second-shift labour premium on the extra units, and it is the single
+  cheapest fix in this report.</div>
+ <table>
+  <tr><th class="l">Product</th><th>Capacity</th><th>Rec capacity</th><th>Automation</th><th>Rec auto</th><th>Rec order</th><th>Utilisation</th><th class="l">Reasoning</th></tr>
+  <tr><td class="name">Daze</td><td class="num">1,700</td><td class="num">1,700</td><td class="num">4.5</td><td class="num">4.5</td><td class="num">900</td><td class="num">53%</td>
+   <td class="l">Inventory of 338 already on hand against a 1,150 forecast. Do not add plant to a product we are transitioning.</td></tr>
+  <tr><td class="name">Dell</td><td class="num">1,400</td><td class="num">1,400</td><td class="num">5.5</td><td class="num"><b>7.0</b></td><td class="num"><b>2,450</b></td><td class="num">175%</td>
+   <td class="l">Order up to roughly 75% second shift. Automation up 1.5 points at $8,400: Low End is 53% price, and Dell will never be repositioned, so there is no flexibility to lose.</td></tr>
+  <tr><td class="name">Duck</td><td class="num">800</td><td class="num">800</td><td class="num">3.0</td><td class="num">3.0</td><td class="num">720</td><td class="num">90%</td>
+   <td class="l">Plant is adequate. Hold automation low: Duck is our most actively redesigned product.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">600</td><td class="num">600</td><td class="num">3.0</td><td class="num">3.0</td><td class="num">570</td><td class="num">95%</td>
+   <td class="l">Enough plant for the Traditional relaunch. Revisit once we see whether the reposition takes.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">600</td><td class="num"><b>900</b></td><td class="num">3.0</td><td class="num">3.0</td><td class="num">720</td><td class="num">80%</td>
+   <td class="l">Ran at 100% utilisation into a segment growing 18.6%. 300 units at $18 each is $5,400.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">200</td><td class="num"><b>400</b></td><td class="num">2.0</td><td class="num">2.0</td><td class="num">400</td><td class="num">100%</td>
+   <td class="l">200 units cannot support a Performance entry against a 2,743-unit segment. 200 more at $14 is $2,800. Keep automation at 2.0 while the product is new.</td></tr>
+ </table>
+ <div class="note"><b>Automation policy check.</b> Our strategy says automate only where R&amp;D is done.
+  That points at Dell and eventually Daze, and away from Duck, Dot, Dune and Dino. This round follows it
+  exactly: one automation move, on the one product we have committed never to redesign.</div>
+</div>
+
+<div class="card">
+ <h2>Finance</h2>
+ <p class="sub">Opening cash 1 January 2029: $13,745. Cash from operations: $10,718. Current debt due:
+  $6,950. Projected closing cash with zero investment: $17,512.</p>
+ <table>
+  <tr><th class="l">Item</th><th>Amount</th><th class="l">Note</th></tr>
+  <tr><td class="l">Projected closing cash, no investment</td><td class="num">$17,512</td><td class="l">Already net of the $6,950 current-debt repayment.</td></tr>
+  <tr><td class="l">Dell automation 5.5 &rarr; 7.0</td><td class="num">($8,400)</td><td class="l">1.5 points &times; 1,400 units &times; $4.</td></tr>
+  <tr><td class="l">Dune capacity +300</td><td class="num">($5,400)</td><td class="l">$6 + $4 &times; automation 3.0 = $18/unit.</td></tr>
+  <tr><td class="l">Dino capacity +200</td><td class="num">($2,800)</td><td class="l">$6 + $4 &times; automation 2.0 = $14/unit.</td></tr>
+  <tr><td class="l">R&amp;D projects, after tax</td><td class="num">($3,000)</td><td class="l">Estimate. Read the real number off the R&amp;D screen once the revisions are entered.</td></tr>
+  <tr><td class="l">Added marketing spend, after tax</td><td class="num">($2,800)</td><td class="l">About $4,200 pre-tax across promo and sales.</td></tr>
+  <tr class="tot"><td class="l">Cash before financing</td><td class="num" style="color:var(--bad)">($4,888)</td><td class="l">Below the $2,000&ndash;$3,000 reserve floor. Needs funding.</td></tr>
+  <tr><td class="l"><b>Issue long-term bonds</b></td><td class="num"><b>$9,000</b></td><td class="l">At 12.2%. Max available is $18,600.</td></tr>
+  <tr class="tot"><td class="l">Closing cash</td><td class="num" style="color:var(--good)">$4,112</td><td class="l">Above the reserve floor with room to spare.</td></tr>
+ </table>
+ <div class="row" style="margin-top:12px">
+  <div class="col">
+   <div class="note"><b>Why borrow rather than trim.</b> Leverage finished Round 2 at 1.99, which is
+    below the 2.0&ndash;2.8 band we set ourselves. We are the least levered company in the industry and
+    the only one besides Chester holding a B rating. A $9,000 bond takes leverage to roughly 2.1, which
+    is inside our own policy rather than outside it. The alternative is deferring the Dell automation,
+    and that is the highest-return item in the report.</div>
+  </div>
+  <div class="col">
+   <div class="note"><b>The cost of borrowing.</b> $9,000 at 12.2% adds about $1,100 of annual interest.
+    Coverage improved from 0.92x to 1.21x this round and our target is 1.5x, so this works only if EBIT
+    rises. EBIT was $6,482 in Round 2. The moves in this report should push it higher through Dell volume,
+    Duck pricing inside its band, and Dot earning a real margin. If the team does not believe EBIT will
+    clear roughly $8,500, borrow less and defer Dino's capacity.
+    <br><br>
+    <b>No dividend, no buyback.</b> Profit is $703. Our policy says wait for consistent profit, and one
+    positive round is not that. Stock at $24.98 against book value of $24.19 makes a buyback poor value anyway.</div>
+  </div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>Before you submit</h2>
+ <table>
+  <tr><th class="l">Check</th><th class="l">Why</th></tr>
+  <tr><td class="name">HR sliders are not $0</td><td class="l">They reset every round and nothing on screen reminds you.</td></tr>
+  <tr><td class="name">The Dino alert is cleared</td><td class="l">Price, promo, sales budget and forecast all need values.</td></tr>
+  <tr><td class="name">Every price sits inside its 2029 band</td><td class="l">All five bands slid down $0.50 this year. Duck is already outside.</td></tr>
+  <tr><td class="name">Each R&amp;D completion date lands before roughly October</td><td class="l">A revision that finishes in December earns almost no sales in 2029.</td></tr>
+  <tr><td class="name">Proforma read aloud, then compared to this page</td><td class="l">Round 2's proforma projected a $(1,830) loss and we booked $703. Treat the gap as information, not noise.</td></tr>
+  <tr><td class="name">Closing cash is above $3,000</td><td class="l">Two rounds without an emergency loan is a real competitive advantage. Baldwin has taken $38,811 across two.</td></tr>
+ </table>
+ <div class="note"><b>How this was built.</b> Read from the Capsim platform on 21 July 2026: R&amp;D,
+  Marketing, Production, Finance and Human Resources screens for Round 3, plus the full Round 2 Courier.
+  Strategy anchors come from <i>Outline Your Strategy: World 1 &mdash; Team Digby</i>, the Board Packet,
+  and the Round 1 Position Briefing. <b>No values were changed in the sim.</b> Capsim 2.0 saves slider
+  changes automatically, with no confirmation step, so any what-if entered on the live screens would have
+  overwritten the team's Round 3 decisions. Position gaps, capacity, second-shift headroom, plant and
+  automation costs are arithmetic. R&amp;D project cost and completion date are the two things this
+  planner deliberately does not model, so read both off the R&amp;D screen before committing.</div>
+</div>`;}
+
 /* ---------------- render / events --------------------------------------- */
-const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration"];
+const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration","Decision Reports"];
 function render(){
  document.getElementById("rounds").innerHTML=Array.from({length:NR},(_,r)=>
   `<button data-r="${r}" class="${r===S.round?'on':''}">${R(r)}</button>`).join("");
@@ -786,7 +1098,7 @@ function render(){
  if(sel>=S.products.length) sel=0;
  const r=S.round;
  document.getElementById("body").innerHTML=
-  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tCal();
+  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tab===5?tCal():tRpt();
  wire(); save();}
 
 const CARRY=["p","s","m","cap","auto","mat"];
@@ -797,7 +1109,14 @@ function setField(f,v){
 
 function wire(){
  document.querySelectorAll("#rounds button").forEach(b=>b.onclick=()=>{S.round=+b.dataset.r;render();});
- document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{tab=+b.dataset.t;render();});
+ document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  tab=+b.dataset.t;
+  // Decision Reports: if this round has no report, open the most recent one that does
+  if(TABS[tab]==="Decision Reports"&&!REPORTS[S.round]){
+   const ks=Object.keys(REPORTS).map(Number).filter(k=>k<=S.round);
+   const k=ks.length?Math.max(...ks):Math.max(...Object.keys(REPORTS).map(Number));
+   if(k!==undefined&&isFinite(k)) S.round=k;}
+  render();});
  document.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{
   if(b.dataset.sel==="add"){
    const q=idealAt(2,S.round);
