@@ -202,7 +202,7 @@ const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
    wage each automation point removes, which has held at 0.125 all three rounds.
    `prodAdj` is how far actual production falls short of the order; it only
    affects the second-shift blend. */
-const DEF_CAL={wage:[8.97,9.19,9.93],wageInfl:.05,autoSave:.125,prodAdj:.025,
+const DEF_CAL={wage:[8.97,9.19,9.50],wageInfl:.05,autoSave:.125,prodAdj:.025,
  shiftPremium:.5,capCost:6,autoCost:4,
  awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
  taxRate:.35,depYears:15,interestLT:.125,interestST:.1025,stockFee:.05,bondFee:.015};
@@ -276,12 +276,18 @@ function seed(){
      The $6,950 of current debt due in 2029 is a scheduled repayment, not a decision. */
   fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
  /* the sim's committed decisions are the baseline everything is measured against */
- st.base=JSON.parse(JSON.stringify({products:st.products,fin:st.fin}));
+ /* Human Resources is a company-level spend, not per product. R1 the module was
+    inactive; R2 the team put in $3,600; R3 defaults to the recommended $4,500. */
+ st.hr=[{mfg:0,sci:0,sales:0},{mfg:1000,sci:2000,sales:600},{mfg:1500,sci:2000,sales:1000}];
+ while(st.hr.length<NR) st.hr.push({mfg:0,sci:0,sales:0});
+ st.base=JSON.parse(JSON.stringify({products:st.products,fin:st.fin,hr:st.hr}));
  return st;}
 
 let S=load()||seed(), tab=0, sel=0;
 if(!S.open) S.open={...DEF_OPEN};
-if(!S.base) S.base=JSON.parse(JSON.stringify({products:S.products,fin:S.fin}));
+if(!S.base) S.base=JSON.parse(JSON.stringify({products:S.products,fin:S.fin,hr:S.hr}));
+if(!S.hr) S.hr=Array.from({length:NR},()=>({mfg:0,sci:0,sales:0}));
+while(S.hr.length<NR) S.hr.push({mfg:0,sci:0,sales:0});
 S.cal={...DEF_CAL,...(S.cal||{})};
 const O={corridor:true,trails:false,comp:false,complab:false,pop:false};
 
@@ -472,12 +478,14 @@ function balances(){
    lev:assets/Math.max(1,eq), at:p.rev/Math.max(1,assets)});
  }
  return out;}
+const hrSpend=r=>{const h=(S.hr&&S.hr[r])||{};return (h.mfg||0)+(h.sci||0)+(h.sales||0);};
 function pnlRaw(r,ltDebt,f){
  let rev=0,vc=0,fx=0,inv=0;
  S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r],u=units(i,r);
   rev+=u*c.price;vc+=u*varCost(i,r);
   fx+=(c.promo||0)+(c.sales||0)+(c.rdc||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
   inv+=plantInvest(i,r);});
+ fx+=hrSpend(r);
  const cm=rev-vc,ebit=cm-fx;
  const int=(f.curDebt||0)*S.cal.interestST + (ltDebt||0)*S.cal.interestLT;
  const fee=(f.bondR||0)*S.cal.bondFee + (f.stockI||0)*S.cal.stockFee;
@@ -1003,6 +1011,26 @@ function tFin(r){
     +money(b.divTot)+" out of equity",10,.1)}
   <div class="note">Every slider now moves the statements: bonds change interest and leverage,
    stock changes equity and share count, dividends drain equity.</div></div>
+
+  <div class="card"><h2>Human Resources — ${R(r)} (000s)</h2>
+   <p class="sub">A company-level spend, capped at $2,000 each on the sim. It is a real period cost,
+    so it belongs in the statements and the cost/benefit tab.</p>
+   ${["mfg","Manufacturing — training & teams","sci","Scientists — recruitment & retention","sales","Sales — compensation"]
+     .reduce((a,x,i,arr)=>{if(i%2)return a;const k=x,l=arr[i+1];const v=(S.hr[r]||{})[k]||0;
+      return a+`<div class="sld"><div class="lab">${l}</div>
+      <div class="track"><span class="mm">0</span>
+       <div class="tw"><div class="base"></div>
+        <input type="range" min="0" max="2000" step="100" value="${v}" data-hr="${k}"></div>
+       <input class="bub" type="number" min="0" max="2000" step="100" value="${v}" data-hr="${k}">
+       <span class="mm">2,000</span></div></div>`;},"")}
+   <table style="margin-top:6px"><tr><td class="l">Total HR this round</td>
+    <td class="num"><b>${money(hrSpend(r))}</b></td></tr></table>
+   <div class="note"><b>HR does two things the planner sees.</b> The cash total above is a period cost,
+    already in EBIT. And its productivity gain shows up as a lower labour wage: R3 came in at
+    ${$m(9.50)} per unit at automation 3.0 against ${$m(9.93)} without the investment, about 4.5% off
+    every labour dollar. That saving is captured whenever you read the current wage off the sim into
+    <b>Calibration</b>. HR also lifts R&amp;D speed, demand, accessibility and retention, none of which
+    this planner models.</div></div>
   <div class="card"><h2>Opening balances — start of Round 1 (000s)</h2>
    <p class="sub">Everything above carries forward from these. Assets and equity are derived from
     the Round 0 Courier; the rest are placeholders — correct them from your Balance Sheet.</p>
@@ -1014,7 +1042,7 @@ function tFin(r){
   <tr><td class="l">Sales</td><td class="num">${money(p.rev)}</td><td class="l" style="color:var(--mut)">units × price</td></tr>
   <tr><td class="l">Variable costs</td><td class="num">${money(-p.vc)}</td><td class="l" style="color:var(--mut)">units × (material + labour)</td></tr>
   <tr class="tot"><td class="l">Contribution margin</td><td class="num">${money(p.cm)}</td><td class="l" style="color:var(--mut)">${pct(p.cmPct)}</td></tr>
-  <tr><td class="l">Period costs</td><td class="num">${money(-p.fx)}</td><td class="l" style="color:var(--mut)">promo + sales + depreciation</td></tr>
+  <tr><td class="l">Period costs</td><td class="num">${money(-p.fx)}</td><td class="l" style="color:var(--mut)">promo + sales + R&amp;D + depreciation + HR</td></tr>
   <tr><td class="l"><b>EBIT</b></td><td class="num"><b>${money(p.ebit)}</b></td><td></td></tr>
   <tr><td class="l">Interest</td><td class="num">${money(-p.int)}</td><td class="l" style="color:var(--mut)">LT ${money(b.lt)} @ ${pct(S.cal.interestLT)} + ST @ ${pct(S.cal.interestST)}</td></tr>
   <tr><td class="l">Issue / retire fees</td><td class="num">${money(-p.fee)}</td><td class="l" style="color:var(--mut)">stock ${pct(S.cal.stockFee)}, bond ${pct(S.cal.bondFee)}</td></tr>
@@ -1592,20 +1620,20 @@ const clone=o=>JSON.parse(JSON.stringify(o));
    view. Creating it lazily meant any edit made before opening this tab was
    quietly absorbed into the baseline and priced at zero. */
 function baseState(){
- if(!S.base) S.base=clone({products:S.products,fin:S.fin});
+ if(!S.base) S.base=clone({products:S.products,fin:S.fin,hr:S.hr});
  return S.base;}
 
 /* Run cb() against a swapped-in board, then put the real one back. */
 function withBoard(prods,fin,cb){
- const sp=S.products, sf=S.fin;
- S.products=prods; S.fin=fin||sf;
- try{ return cb(); } finally { S.products=sp; S.fin=sf; }}
+ const sp=S.products, sf=S.fin, sh=S.hr;
+ S.products=prods; S.fin=fin||sf; if(arguments.length>3) S.hr=arguments[3];
+ try{ return cb(); } finally { S.products=sp; S.fin=sf; S.hr=sh; }}
 
 /* Totals for one round: contribution, period cost, EBIT, net, plant cash. */
 function mx(r){
  const p=pnl(r);
  let plant=0; S.products.forEach((P,i)=>{if(r>=P.launch) plant+=plantInvest(i,r);});
- let cash=0; S.products.forEach((P,i)=>{if(r>=P.launch){const c=P.rounds[r];
+ let cash=hrSpend(r); S.products.forEach((P,i)=>{if(r>=P.launch){const c=P.rounds[r];
   cash+=(c.promo||0)+(c.sales||0)+(c.rdc||0);}});
  return {rev:p.rev,cm:p.cm,fx:p.fx,ebit:p.ebit,net:p.net,plant,spend:cash,
          units:S.products.reduce((t,P,i)=>t+(r>=P.launch?units(i,r):0),0)};}
@@ -1623,6 +1651,15 @@ function sumMx(fn,rs){return rs.reduce((a,r)=>{const m=fn(r);
 /* Every field that differs from baseline, with its isolated effect. */
 function cbaChanges(){
  const b=baseState(), out=[], rs=cbaSpan(), r0=S.round;
+ const hrNow=hrSpend(r0), hrWas=(()=>{const sh=S.hr;S.hr=b.hr;const v=hrSpend(r0);S.hr=sh;return v;})();
+ if(Math.abs(hrNow-hrWas)>1e-9){
+  const altHR=clone(S.hr); for(let r=r0;r<NR;r++) altHR[r]=b.hr[r]?clone(b.hr[r]):altHR[r];
+  const cn=mx(r0), cbv=withBoard(S.products,S.fin,()=>mx(r0),altHR);
+  const sn=sumMx(mx,rs), sbv=withBoard(S.products,S.fin,()=>sumMx(mx,rs),altHR);
+  const dNow={},dAll={};
+  ["cm","fx","ebit","net","plant","spend","units"].forEach(k=>{dNow[k]=cn[k]-cbv[k];dAll[k]=sn[k]-sbv[k];});
+  out.push({pi:-1,name:"Company",f:{k:"hr",lab:"HR spend",fmt:v=>$k(v||0),hard:true},
+   now:hrNow,was:hrWas,dNow,dAll,hr:true});}
  S.products.forEach((P,i)=>{
   const B=b.products[i]; if(!B) return;          // product added since locking
   if(r0<P.launch) return;
@@ -1700,15 +1737,16 @@ function tCBA(){
   hard.forEach(c=>{
    const cash=c.dNow.plant+c.dNow.spend;
    const pay=cash>0&&c.dAll.net>0?(cash/(c.dAll.net/rs.length)):null;
-   const cc=S.products[c.pi].rounds[r];
-   const over=(cc.sched||0)-(cc.fc||0)+(cc.inv||0);
-   const glut=c.f.k==="sched"&&over>Math.max(60,(cc.fc||0)*0.12);
+   const cc=c.hr?null:S.products[c.pi].rounds[r];
+   const over=cc?((cc.sched||0)-(cc.fc||0)+(cc.inv||0)):0;
+   const glut=cc&&c.f.k==="sched"&&over>Math.max(60,(cc.fc||0)*0.12);
    h+=`<tr><td class="name">${c.name}</td><td class="l">${c.f.lab}</td>
     <td class="num">${c.f.fmt(c.was)}</td><td class="num">${c.f.fmt(c.now)}</td>
     <td class="num" style="color:${sign(-cash)}">${cash?dm(cash):"—"}</td>
     <td class="num" style="color:${sign(c.dNow.net)}">${dm(c.dNow.net)}</td>
     <td class="num" style="color:${sign(c.dAll.net)}"><b>${dm(c.dAll.net)}</b></td>
-    <td class="l">${glut?`<b style="color:var(--warn)">${over.toLocaleString()} units above forecast — raise the forecast or trim the order</b>`
+    <td class="l">${c.hr?`<b style="color:var(--warn)">cash cost only — its labour saving lives in the wage, not this row</b>`
+      :glut?`<b style="color:var(--warn)">${over.toLocaleString()} units above forecast — raise the forecast or trim the order</b>`
       :cash>0&&c.dAll.net>0?`pays back in ${pay.toFixed(1)} yr`
       :cash>0&&c.dAll.net<=0?`<b style="color:var(--bad)">does not pay back by ${R(NR-1)}</b>`
       :c.dAll.net>0?"free gain":"—"}</td></tr>`;});
@@ -1893,6 +1931,9 @@ function wire(){
    S.fin[S.round][k]=v;render();});});
  document.querySelectorAll('[data-cal]').forEach(el=>el.addEventListener("change",()=>{
   let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));
+ document.querySelectorAll('[data-hr]').forEach(el=>el.addEventListener("change",()=>{
+  const k=el.dataset.hr; let v=parseFloat(el.value); if(isNaN(v)||v<0)v=0;
+  S.hr[S.round]=S.hr[S.round]||{mfg:0,sci:0,sales:0}; S.hr[S.round][k]=v; render();}));
  document.querySelectorAll('[data-wage]').forEach(el=>el.addEventListener("change",()=>{
   const r=+el.dataset.wage; let v=parseFloat(el.value);
   if(isNaN(v)||v<=0) return render();
