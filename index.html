@@ -108,6 +108,16 @@ tr.hi td{background:#eef4fc}
 /* keep charts compact — they scale to the column otherwise */
 .card svg{display:block;max-width:330px;margin:0 auto}
 .card.map svg{max-width:470px}
+/* map zoom */
+.zbar{display:flex;align-items:center;gap:4px}
+.zbar button{border:1px solid var(--line);background:var(--card);width:26px;height:24px;
+ border-radius:5px;cursor:pointer;font-size:14px;font-weight:700;color:var(--mut);line-height:1;
+ padding:0;display:flex;align-items:center;justify-content:center}
+.zbar button:hover{background:#f2f6fa;color:var(--ink)}
+.zbar button.wide{width:auto;padding:0 8px;font-size:11px;font-weight:600}
+.zbar .lvl{font-size:11px;color:var(--mut);min-width:34px;text-align:center;
+ font-variant-numeric:tabular-nums}
+svg[data-map]{touch-action:none}
 /* map popout */
 .mbk{position:fixed;inset:0;background:rgba(15,23,42,.62);display:flex;align-items:center;
  justify-content:center;z-index:200;padding:18px}
@@ -510,7 +520,57 @@ function zones(r){const P=i=>SEG[i].cp+SEG[i].dp*r;
   const rl=hi-RGH,rh=lo+RGH,fl=hi-RFI,fh=lo+RFI,mid=(lo+hi)/2;
   return{a:SEG[a].n,b:SEG[b].n,gap,rough:rh>rl?[rl,rh]:null,fine:fh>fl?[fl,fh]:null,mid,midS:20-mid,md:gap/2};};
  return [pair(1,0),pair(0,2)];}
-function mapSVG(r){
+/* ---------------- map zoom ----------------------------------------------
+   viewBox arithmetic only: the drawing never changes, we just look at less of
+   it. Scale 1 shows the whole 0-20 board. Panning is clamped so you cannot
+   drag the board off screen. */
+const Z={s:1,cx:280,cy:280};
+function clampZ(){
+ Z.s=Math.min(8,Math.max(1,Z.s));
+ const h=280/Z.s;
+ Z.cx=Math.min(560-h,Math.max(h,Z.cx));
+ Z.cy=Math.min(560-h,Math.max(h,Z.cy));}
+function vb(){const w=560/Z.s;return `${(Z.cx-w/2).toFixed(2)} ${(Z.cy-w/2).toFixed(2)} ${w.toFixed(2)} ${w.toFixed(2)}`;}
+function applyZ(){clampZ();
+ document.querySelectorAll("svg[data-map]").forEach(el=>el.setAttribute("viewBox",vb()));
+ document.querySelectorAll("[data-zlvl]").forEach(el=>el.textContent=Z.s.toFixed(1)+"x");}
+function zoomBy(k){
+ Z.s*=k; applyZ();}
+function zoomReset(){Z.s=1;Z.cx=280;Z.cy=280;applyZ();}
+function zoomBar(pre){
+ return `<span class="zbar"><button data-zo="${pre}" title="Zoom out">&minus;</button>
+  <span class="lvl" data-zlvl>${Z.s.toFixed(1)}x</span>
+  <button data-zi="${pre}" title="Zoom in">+</button>
+  <button class="wide" data-zr="${pre}" title="Fit the whole board">Fit</button></span>`;}
+/* Wheel zoom keeps the point under the cursor still. Drag pans. */
+function wireZoom(el,wheel){
+ if(!el||el.dataset.zw) return; el.dataset.zw="1";
+ el.style.cursor="grab";
+ if(wheel) el.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const r=el.getBoundingClientRect();
+  const fx=(e.clientX-r.left)/r.width, fy=(e.clientY-r.top)/r.height;
+  const w0=560/Z.s, ux=Z.cx-w0/2+fx*w0, uy=Z.cy-w0/2+fy*w0;
+  Z.s*= e.deltaY<0?1.18:1/1.18; clampZ();
+  const w1=560/Z.s;
+  Z.cx=ux+w1*(.5-fx); Z.cy=uy+w1*(.5-fy);
+  applyZ();},{passive:false});
+ let dg=null;
+ el.addEventListener("pointerdown",e=>{
+  dg={x:e.clientX,y:e.clientY,cx:Z.cx,cy:Z.cy};
+  try{el.setPointerCapture(e.pointerId);}catch(x){}
+  el.style.cursor="grabbing";});
+ el.addEventListener("pointermove",e=>{
+  if(!dg)return;
+  const r=el.getBoundingClientRect(), w=560/Z.s;
+  Z.cx=dg.cx-(e.clientX-dg.x)/r.width*w;
+  Z.cy=dg.cy-(e.clientY-dg.y)/r.height*w;
+  applyZ();});
+ const end=()=>{dg=null;el.style.cursor="grab";};
+ el.addEventListener("pointerup",end); el.addEventListener("pointercancel",end);
+ el.addEventListener("dblclick",()=>zoomReset());}
+
+function mapSVG(r,where){
  let g=`<defs><radialGradient id="sg" cx="50%" cy="50%" r="50%">
   <stop offset="0%" stop-color="#9fc5e8" stop-opacity=".92"/>
   <stop offset="62%" stop-color="#7fb1de" stop-opacity=".8"/>
@@ -564,7 +624,7 @@ function mapSVG(r){
        stroke-width="${on?2.6:1.6}"/>
       <text x="${X(c.p)+9}" y="${Y(c.s)+4}" font-size="11" font-weight="700" fill="#111"
        paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round">${P.name}</text>`;});
- return `<svg viewBox="0 0 560 560" width="100%">${g}</svg>`;}
+ return `<svg viewBox="${vb()}" width="100%" data-map="${where||"card"}">${g}</svg>`;}
 
 /* ---------------- UI helpers -------------------------------------------- */
 function ptabs(){
@@ -629,6 +689,7 @@ function tRD(r){
    <label><input type="checkbox" id="ccmp" ${O.comp?"checked":""}> Competitors</label>
    ${O.comp?`<label><input type="checkbox" id="clab" ${O.complab?"checked":""}> Label all</label>`:""}
    <span style="flex:1"></span>
+   ${zoomBar("c")}
    <button class="btn" id="bpop" title="Open the map full size">&#9974; Popout</button></div>
   ${mapSVG(r)}
   <div class="legend"><span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
@@ -1349,12 +1410,13 @@ function modalHTML(){
  return `<div class="mbk" id="mbk"><div class="mbox">
   <div class="mhd"><b>Perceptual map &mdash; ${R(r)}</b>
    <div class="bar" style="margin:0">${mapToggles("m")}</div>
+   ${zoomBar("m")}
    <span class="sp"></span>
    <button class="btn" id="mcls">Close &#10005;</button></div>
-  <div class="mbd">${mapSVG(r)}</div>
+  <div class="mbd">${mapSVG(r,"modal")}</div>
   ${mapLegend()}
   <div class="note" style="margin-top:6px">Selected product is <b>${S.products[sel].name}</b>.
-   Press <b>Esc</b> or click outside to close.</div>
+   Scroll to zoom, drag to pan, double-click to fit. <b>Esc</b> or a click outside closes.</div>
   </div></div>`;}
 
 /* ---------------- render / events --------------------------------------- */
@@ -1405,6 +1467,12 @@ function wire(){
  if(cl)cl.onchange=()=>{O.complab=cl.checked;render();};
 
  // popout: open, close, and the duplicate toggle set inside the modal
+ document.querySelectorAll("[data-zi]").forEach(b=>b.onclick=()=>zoomBy(1.35));
+ document.querySelectorAll("[data-zo]").forEach(b=>b.onclick=()=>zoomBy(1/1.35));
+ document.querySelectorAll("[data-zr]").forEach(b=>b.onclick=()=>zoomReset());
+ document.querySelectorAll('svg[data-map]').forEach(el=>
+  wireZoom(el, el.dataset.map==="modal"));
+
  const bp=document.getElementById("bpop");
  if(bp)bp.onclick=()=>{O.pop=true;render();};
  const mc=document.getElementById("mcls");
