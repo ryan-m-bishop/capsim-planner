@@ -1899,8 +1899,154 @@ function tCBA(){
   ever add plant, which is why it usually pays back and capacity often does not.</div></div>`;
  return h;}
 
+/* ---------------- competitor intelligence -------------------------------
+   Built from the Round 0-2 Courier exports in /reports, parsed once and
+   embedded so the deployed page needs no file access. To extend: re-run the
+   extract, paste the new COMPHIST, and add the round's snapshot. */
+const COMPHIST={"fin":{"share":{"A":[0.2,0.165,0.23],"B":[0.2,0.238,0.206],"C":[0.2,0.237,0.198],"D":[0.2,0.207,0.192],"E":[0.2,0.153,0.175]},"profit":{"A":[4185.0,-6327.0,-8258.0],"B":[4185.0,-6508.0,-6911.0],"C":[4185.0,-621.0,5655.0],"D":[4185.0,-265.0,703.0],"E":[4185.0,-9502.0,-9267.0]},"cumul":{"A":[4185.0,-2142.0,-10400.0],"B":[4185.0,-2323.0,-9234.0],"C":[4185.0,3564.0,9219.0],"D":[4185.0,3921.0,4623.0],"E":[4185.0,-5316.0,-14583.0]},"cm":{"A":[0.2825,0.3129,0.343],"B":[0.2825,0.2846,0.2894],"C":[0.2825,0.2592,0.2704],"D":[0.2825,0.2869,0.3044],"E":[0.2825,0.239,0.2858]},"lev":{"A":[2.01,2.36,2.39],"B":[2.01,3.13,4.19],"C":[2.01,2.15,2.02],"D":[2.01,2.01,1.99],"E":[2.01,3.08,3.46]},"emg":{"A":[0.0,7631.0,0.0],"B":[0.0,19630.0,19181.0],"C":[0.0,0.0,0.0],"D":[0.0,0.0,0.0],"E":[0.0,16816.0,0.0]},"sga":{"A":[0.0888,0.2171,0.2569],"B":[0.0888,0.2045,0.1724],"C":[0.0888,0.1545,0.1034],"D":[0.0888,0.1691,0.1603],"E":[0.0888,0.1742,0.2144]},"sales":{"A":[101073.0,107524.0,123006.0],"B":[101073.0,139155.0,149400.0],"C":[101073.0,131851.0,147690.0],"D":[101073.0,109849.0,123279.0],"E":[101073.0,85359.0,93559.0]},"ros":{"A":[0.041,-0.059,-0.067],"B":[0.041,-0.047,-0.046],"C":[0.041,-0.005,0.038],"D":[0.041,-0.002,0.006],"E":[0.041,-0.111,-0.099]}},"agg":{"auto":{"A":[3.6,4.8,6.4],"B":[3.6,3.82,4.12],"C":[3.6,3.7,3.7],"D":[3.6,3.8,3.5],"E":[3.6,4.2,4.2]},"cap":{"A":[5300,5300,5300],"B":[5300,6200,6500],"C":[5300,5500,6050],"D":[5300,5200,5300],"E":[5300,5300,5300]},"sold":{"A":[3800,3585,4463],"B":[3800,5205,5503],"C":[3800,5191,5551],"D":[3800,4227,4859],"E":[3800,3348,3657]}},"snap":{"0":[{"n":"Able","co":"A","sg":"Trad","pf":5.5,"sz":14.5,"pr":28.0,"mt":17500,"au":4.0,"cp":1800,"cm":0.289,"so":999},{"n":"Acre","co":"A","sg":"Low ","pf":3.0,"sz":17.0,"pr":21.0,"mt":14000,"au":5.0,"cp":1400,"cm":0.271,"so":1763},{"n":"Adam","co":"A","sg":"High","pf":8.0,"sz":12.0,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.334,"so":366},{"n":"Aft","co":"A","sg":"Perf","pf":9.4,"sz":15.5,"pr":33.0,"mt":25000,"au":3.0,"cp":600,"cm":0.228,"so":358},{"n":"Agape","co":"A","sg":"Size","pf":4.0,"sz":11.0,"pr":33.0,"mt":19000,"au":3.0,"cp":600,"cm":0.299,"so":314},{"n":"Baker","co":"B","sg":"Trad","pf":5.5,"sz":14.5,"pr":28.0,"mt":17500,"au":4.0,"cp":1800,"cm":0.289,"so":999},{"n":"Bead","co":"B","sg":"Low ","pf":3.0,"sz":17.0,"pr":21.0,"mt":14000,"au":5.0,"cp":1400,"cm":0.271,"so":1763},{"n":"Bid","co":"B","sg":"High","pf":8.0,"sz":12.0,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.334,"so":366},{"n":"Bold","co":"B","sg":"Perf","pf":9.4,"sz":15.5,"pr":33.0,"mt":25000,"au":3.0,"cp":600,"cm":0.228,"so":358},{"n":"Buddy","co":"B","sg":"Size","pf":4.0,"sz":11.0,"pr":33.0,"mt":19000,"au":3.0,"cp":600,"cm":0.299,"so":314},{"n":"Cake","co":"C","sg":"Trad","pf":5.5,"sz":14.5,"pr":28.0,"mt":17500,"au":4.0,"cp":1800,"cm":0.289,"so":999},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":21.0,"mt":14000,"au":5.0,"cp":1400,"cm":0.271,"so":1763},{"n":"Cid","co":"C","sg":"High","pf":8.0,"sz":12.0,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.334,"so":366},{"n":"Coat","co":"C","sg":"Perf","pf":9.4,"sz":15.5,"pr":33.0,"mt":25000,"au":3.0,"cp":600,"cm":0.228,"so":358},{"n":"Cure","co":"C","sg":"Size","pf":4.0,"sz":11.0,"pr":33.0,"mt":19000,"au":3.0,"cp":600,"cm":0.299,"so":314},{"n":"Daze","co":"D","sg":"Trad","pf":5.5,"sz":14.5,"pr":28.0,"mt":17500,"au":4.0,"cp":1800,"cm":0.289,"so":999},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":21.0,"mt":14000,"au":5.0,"cp":1400,"cm":0.271,"so":1763},{"n":"Dot","co":"D","sg":"Perf","pf":9.4,"sz":15.5,"pr":33.0,"mt":25000,"au":3.0,"cp":600,"cm":0.228,"so":358},{"n":"Duck","co":"D","sg":"High","pf":8.0,"sz":12.0,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.334,"so":366},{"n":"Dune","co":"D","sg":"Size","pf":4.0,"sz":11.0,"pr":33.0,"mt":19000,"au":3.0,"cp":600,"cm":0.299,"so":314},{"n":"Eat","co":"E","sg":"Trad","pf":5.5,"sz":14.5,"pr":28.0,"mt":17500,"au":4.0,"cp":1800,"cm":0.289,"so":999},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":21.0,"mt":14000,"au":5.0,"cp":1400,"cm":0.271,"so":1763},{"n":"Echo","co":"E","sg":"High","pf":8.0,"sz":12.0,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.334,"so":366},{"n":"Edge","co":"E","sg":"Perf","pf":9.4,"sz":15.5,"pr":33.0,"mt":25000,"au":3.0,"cp":600,"cm":0.228,"so":358},{"n":"Egg","co":"E","sg":"Size","pf":4.0,"sz":11.0,"pr":33.0,"mt":19000,"au":3.0,"cp":600,"cm":0.299,"so":314}],"1":[{"n":"Able","co":"A","sg":"Trad","pf":5.7,"sz":13.8,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.316,"so":1288},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":24.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.294,"so":1024},{"n":"Adam","co":"A","sg":"High","pf":9.3,"sz":11.0,"pr":39.0,"mt":23000,"au":3.5,"cp":900,"cm":0.364,"so":465},{"n":"Aft","co":"A","sg":"Perf","pf":10.4,"sz":15.0,"pr":34.0,"mt":27000,"au":3.5,"cp":600,"cm":0.263,"so":449},{"n":"Agape","co":"A","sg":"Size","pf":4.8,"sz":9.6,"pr":34.0,"mt":19000,"au":3.5,"cp":600,"cm":0.328,"so":359},{"n":"Baker","co":"B","sg":"Trad","pf":5.7,"sz":14.3,"pr":27.5,"mt":17500,"au":4.2,"cp":1800,"cm":0.298,"so":1660},{"n":"Bead","co":"B","sg":"Low ","pf":2.2,"sz":17.8,"pr":21.0,"mt":14000,"au":5.5,"cp":2400,"cm":0.254,"so":2227},{"n":"Bid","co":"B","sg":"High","pf":9.3,"sz":11.0,"pr":38.5,"mt":23000,"au":3.0,"cp":800,"cm":0.345,"so":517},{"n":"Bold","co":"B","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.23,"so":432},{"n":"Buddy","co":"B","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.2,"cp":600,"cm":0.315,"so":369},{"n":"Cake","co":"C","sg":"Trad","pf":5.7,"sz":14.3,"pr":25.75,"mt":17500,"au":4.2,"cp":1800,"cm":0.252,"so":1706},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":1600,"cm":0.248,"so":2399},{"n":"Cid","co":"C","sg":"High","pf":9.4,"sz":11.0,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.32,"so":398},{"n":"Coat","co":"C","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.5,"mt":27000,"au":3.0,"cp":600,"cm":0.215,"so":374},{"n":"Cure","co":"C","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.0,"cp":600,"cm":0.304,"so":314},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":26.5,"mt":14000,"au":4.5,"cp":1800,"cm":0.276,"so":1151},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.274,"so":1791},{"n":"Dot","co":"D","sg":"Perf","pf":9.4,"sz":14.0,"pr":33.0,"mt":24100,"au":3.0,"cp":600,"cm":0.241,"so":400},{"n":"Duck","co":"D","sg":"High","pf":8.9,"sz":10.8,"pr":39.5,"mt":25000,"au":3.0,"cp":800,"cm":0.36,"so":417},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":11.0,"pr":31.5,"mt":18000,"au":3.0,"cp":600,"cm":0.301,"so":468},{"n":"Eat","co":"E","sg":"Trad","pf":5.5,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.11,"so":648},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":10000,"au":6.0,"cp":1400,"cm":0.245,"so":1484},{"n":"Echo","co":"E","sg":"High","pf":9.0,"sz":11.0,"pr":37.5,"mt":21000,"au":3.0,"cp":900,"cm":0.345,"so":417},{"n":"Edge","co":"E","sg":"Perf","pf":9.7,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.214,"so":452},{"n":"Egg","co":"E","sg":"Size","pf":4.6,"sz":9.9,"pr":32.25,"mt":18000,"au":3.0,"cp":600,"cm":0.291,"so":347}],"2":[{"n":"Able","co":"A","sg":"Trad","pf":6.4,"sz":13.6,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.364,"so":1283},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":19.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.32,"so":1704},{"n":"Adam","co":"A","sg":"High","pf":10.2,"sz":9.8,"pr":39.0,"mt":24000,"au":6.0,"cp":900,"cm":0.378,"so":563},{"n":"Aft","co":"A","sg":"Perf","pf":11.4,"sz":14.6,"pr":34.0,"mt":27000,"au":8.0,"cp":600,"cm":0.276,"so":498},{"n":"Agape","co":"A","sg":"Size","pf":5.4,"sz":8.6,"pr":35.0,"mt":21000,"au":4.5,"cp":600,"cm":0.365,"so":415},{"n":"Baker","co":"B","sg":"Trad","pf":6.4,"sz":13.6,"pr":27.0,"mt":19000,"au":4.7,"cp":2050,"cm":0.257,"so":1782},{"n":"Bead","co":"B","sg":"Low ","pf":2.7,"sz":17.3,"pr":20.0,"mt":15000,"au":6.0,"cp":2450,"cm":0.303,"so":1913},{"n":"Bid","co":"B","sg":"High","pf":10.4,"sz":9.9,"pr":38.0,"mt":23850,"au":3.5,"cp":800,"cm":0.335,"so":641},{"n":"Bold","co":"B","sg":"Perf","pf":11.4,"sz":14.6,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.248,"so":584},{"n":"Buddy","co":"B","sg":"Size","pf":5.4,"sz":8.6,"pr":33.25,"mt":21000,"au":3.2,"cp":600,"cm":0.327,"so":583},{"n":"Cake","co":"C","sg":"Trad","pf":6.1,"sz":13.9,"pr":25.75,"mt":18000,"au":4.2,"cp":1800,"cm":0.244,"so":1824},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":2150,"cm":0.233,"so":2129},{"n":"Cid","co":"C","sg":"High","pf":9.7,"sz":10.7,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.365,"so":550},{"n":"Coat","co":"C","sg":"Perf","pf":11.0,"sz":15.1,"pr":34.0,"mt":27000,"au":3.0,"cp":600,"cm":0.26,"so":551},{"n":"Cure","co":"C","sg":"Size","pf":4.9,"sz":9.2,"pr":34.0,"mt":19500,"au":3.0,"cp":600,"cm":0.331,"so":497},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":24.5,"mt":14000,"au":4.5,"cp":1700,"cm":0.277,"so":1252},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.314,"so":2074},{"n":"Dino","co":"D","sg":"","pf":null,"sz":null,"pr":0.0,"mt":0,"au":2.0,"cp":200,"cm":0.0,"so":0},{"n":"Dot","co":"D","sg":"High","pf":9.4,"sz":13.0,"pr":31.75,"mt":24100,"au":3.0,"cp":600,"cm":0.245,"so":400},{"n":"Duck","co":"D","sg":"High","pf":10.3,"sz":9.9,"pr":39.0,"mt":25000,"au":3.0,"cp":800,"cm":0.359,"so":543},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":9.5,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.308,"so":590},{"n":"Eat","co":"E","sg":"Trad","pf":5.9,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.261,"so":1080},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":12050,"au":6.0,"cp":1400,"cm":0.328,"so":1322},{"n":"Echo","co":"E","sg":"High","pf":9.1,"sz":11.0,"pr":38.0,"mt":21000,"au":3.0,"cp":900,"cm":0.34,"so":374},{"n":"Edge","co":"E","sg":"Perf","pf":9.8,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.222,"so":476},{"n":"Egg","co":"E","sg":"Size","pf":5.4,"sz":9.2,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.27,"so":405}]}};
+const RIVAL=[{k:"A",n:"Andrews",c:"#b45309"},{k:"B",n:"Baldwin",c:"#7c3aed"},
+ {k:"C",n:"Chester",c:"#0891b2"},{k:"D",n:"Digby",c:"#111"},{k:"E",n:"Erie",c:"#be123c"}];
+const rvOf=k=>RIVAL.find(x=>x.k===k);
+const CH_R=[0,1,2];        // rounds we have data for
+const chLast=()=>Math.min(S.round,2);
+
+/* multi-line trend chart: series={K:[v0,v1,v2]}, one coloured line per company */
+function lineChart(series,opt){
+ const w=opt.w||330,h=opt.h||150,pad={l:opt.l||40,r:10,t:10,b:20};
+ const xs=CH_R, n=xs.length;
+ const all=Object.values(series).flat().filter(v=>v!=null);
+ let lo=opt.min!=null?opt.min:Math.min(...all), hi=opt.max!=null?opt.max:Math.max(...all);
+ if(hi===lo){hi+=1;lo-=1;} const pv=(hi-lo)*.08; hi+=pv; lo-=pv;
+ const X=i=>pad.l+(w-pad.l-pad.r)*i/(n-1);
+ const Y=v=>h-pad.b-(h-pad.b-pad.t)*(v-lo)/(hi-lo);
+ let g="";
+ // gridlines + y labels
+ for(let t=0;t<=4;t++){const v=lo+(hi-lo)*t/4,y=Y(v);
+  g+=`<line x1="${pad.l}" y1="${y}" x2="${w-pad.r}" y2="${y}" stroke="#eef2f7"/>
+   <text x="${pad.l-5}" y="${y+3}" font-size="9" fill="#94a3b8" text-anchor="end">${(opt.fmt||(v=>v.toFixed(0)))(v)}</text>`;}
+ // optional shaded band (e.g. healthy leverage)
+ if(opt.band){const y1=Y(opt.band[1]),y2=Y(opt.band[0]);
+  g+=`<rect x="${pad.l}" y="${y1}" width="${w-pad.l-pad.r}" height="${Math.max(0,y2-y1)}" fill="#16a34a" opacity=".08"/>`;}
+ xs.forEach(i=>g+=`<text x="${X(i)}" y="${h-pad.b+13}" font-size="9" fill="#64748b" text-anchor="middle">R${i+1}</text>`);
+ Object.entries(series).forEach(([k,vs])=>{
+  const co=rvOf(k), me=k==="D";
+  const pts=vs.map((v,i)=>v==null?null:`${X(i)},${Y(v)}`).filter(Boolean).join(" ");
+  g+=`<polyline points="${pts}" fill="none" stroke="${co.c}" stroke-width="${me?3:1.6}"
+    opacity="${me?1:.85}" stroke-linejoin="round"/>`;
+  vs.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${me?3.4:2.4}" fill="${co.c}"/>`;});
+ });
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%">${g}</svg>`;}
+
+function chLegend(){return `<div class="legend">${RIVAL.map(x=>
+  `<span><i class="sw" style="background:${x.c};border-radius:50%"></i>${x.n}${x.k==="D"?" (us)":""}</span>`).join("")}</div>`;}
+
+/* Strategy reads — grounded in the trends above, written from the actual data. */
+const RIVAL_READ={
+ C:{tag:"The disciplined leader — the one to beat",
+  doing:"Chester runs the same conservative playbook we do: leverage held at 2.0-2.15, no emergency loan in either round, steady capacity growth (5,300 → 6,050). But they out-earn us — profit $5,655 and cumulative $9,219, both first in the industry — on the lowest contribution margin of anyone (27.0%).",
+  why:"Their edge is operating cost, not price or margin. SG&A ran 10.3% of sales in R2, the leanest on the board against our 16.0%. They keep automation low (3.7, barely moved) and reposition products only modestly, spending the savings on nothing — it drops to the bottom line. This is a lean-operations strategy: win on efficiency, not on any single lever.",
+  counter:"We beat them on margin (30.4% vs 27.0%) and match them on discipline, so the gap is pure volume and overhead. Two moves: (1) close the SG&A gap — our promo and sales budgets are heavier than theirs per unit sold, so trim where awareness is already saturated; (2) press the margin edge into share — automate Dell and undercut Chester's Low End price while still clearing 30%. They can't follow a price cut without giving up the profit that is their whole identity."},
+ B:{tag:"Overextended — a slow-motion cash crisis",
+  doing:"Baldwin is buying the board: biggest producer (5,503 units), most capacity (6,500), lowest Low End price (Bead $20). But it is funded on borrowed time — leverage 3.13 → 4.19 and an emergency loan every round ($19,630 then $19,181).",
+  why:"They chose volume and share over solvency, expanding capacity faster than cash could support and pricing to fill it. The emergency loans mean operations don't cover the bills; the sim is lending to them at a penalty. That is not a plan, it is a spiral — each round's loan raises next round's interest.",
+  counter:"Do not chase Baldwin to the bottom on Low End price; that is the fight they need us to join. Let the leverage do the work — a company at 4.19 gets a credit downgrade (they fell to DDD) and will be forced to raise price or dump capacity within a round or two. Hold Dell's margin, keep our cash buffer, and be ready to take Low End share when they retrench. Their oversized capacity means fire-sale inventory is coming; don't overproduce into it."},
+ A:{tag:"Margin-rich, discipline-poor — outspending its income",
+  doing:"Andrews has the best contribution margin in the industry (34.3%) and repositioned all five products onto their ideal spots, then bought share back from 16.5% to 23.0%. Automation raced from 3.6 to 6.4, the steepest on the board.",
+  why:"They are running a full differentiator-plus-automation play: perfect positioning, heavy R&D, high automation for low unit cost. The problem is the top of the funnel — SG&A hit 25.7% of sales, so despite the best margins they posted the second-worst profit (−$8,258) and lean on stock issues to stay afloat. They are spending their margin advantage on marketing instead of banking it.",
+  counter:"Andrews is strongest where Duck lives (High End) — Adam sits at 10.2/9.8, near-perfect. We already matched position (Duck 10.3/9.9); the fight there is price and awareness, and we win it on discipline since they can't sustain the spend. Their rising automation gives them room to cut price later, so watch Low/Traditional for an Andrews price drop and don't get caught overpricing. Long game: their unprofitable share-buying can't continue through equity forever."},
+ E:{tag:"Falling behind — share to be taken",
+  doing:"Erie is the laggard: worst profit (−$9,267) and worst cumulative (−$14,583), leverage climbing to 3.46, share stuck at 15-17%. They repositioned only two products while everyone else moved four or five.",
+  why:"Under-investment. Letting products drift from their ideal spots while rivals chase them means Erie loses the position race by default, and a 23.9% R1 contribution margin shows they're neither a cost leader nor a differentiator — stuck in the middle. The rising leverage says they're funding losses with debt rather than fixing the product.",
+  counter:"Erie is an opportunity, not a threat. Wherever we compete head to head, their products are aging and mispositioned — press position and age advantages to take their units. They can't afford a marketing war, so modest awareness/accessibility investment converts directly into their lost share. Target the segments where Erie is our nearest rival first; it's the cheapest share on the board."}
+};
+
+function tRivals(){
+ const r=chLast(), F=COMPHIST.fin, A=COMPHIST.agg;
+ const pctf=v=>(v*100).toFixed(1)+"%", m1=v=>money(v);
+ // scoreboard sorted by cumulative profit at the latest round
+ const board=RIVAL.map(x=>({...x,cumul:F.cumul[x.k][r],share:F.share[x.k][r],profit:F.profit[x.k][r],
+   cm:F.cm[x.k][r],lev:F.lev[x.k][r],emg:F.emg[x.k][r]})).sort((a,b)=>b.cumul-a.cumul);
+
+ let h=`<div class="card"><h2>Competitor intelligence &mdash; through ${R(r)}</h2>
+  <p class="sub">Read from the Round 0-2 Courier exports in <code>/reports</code>. Trends are the last
+   three closed rounds; strategy reads and counters are below the charts. ${r<2?`Showing data through R${r+1}; later rounds update when their exports are added.`:``}</p>
+  <div class="flag ${board[0].k==="D"?"o":"w"}">${board[0].k==="D"
+   ? "We lead cumulative profit — hold the discipline that got us here."
+   : `<b>${board[0].n}</b> leads on cumulative profit (${m1(board[0].cumul)}). We sit ${board.findIndex(x=>x.k==="D")+1}${["st","nd","rd","th","th"][board.findIndex(x=>x.k==="D")]} at ${m1(F.cumul.D[r])}.`}</div>
+  <table><tr><th class="l">Rank</th><th class="l">Company</th><th>Cumulative</th><th>Profit ${R(r)}</th>
+   <th>Share</th><th>Contribution</th><th>Leverage</th><th>Emergency loan</th></tr>`;
+ board.forEach((x,i)=>{h+=`<tr class="${x.k==="D"?"hi":""}">
+   <td class="num">${i+1}</td><td class="l" style="color:${x.c};font-weight:700">${x.n}${x.k==="D"?" (us)":""}</td>
+   <td class="num" style="color:${x.cumul<0?'var(--bad)':'var(--good)'}"><b>${m1(x.cumul)}</b></td>
+   <td class="num" style="color:${x.profit<0?'var(--bad)':'inherit'}">${m1(x.profit)}</td>
+   <td class="num">${pctf(x.share)}</td><td class="num">${pctf(x.cm)}</td>
+   <td class="num" style="color:${x.lev>2.8?'var(--bad)':x.lev<2?'var(--warn)':'inherit'}">${x.lev.toFixed(2)}</td>
+   <td class="num">${x.emg?m1(x.emg):'<span class="pill yes">none</span>'}</td></tr>`;});
+ h+=`</table></div>`;
+
+ // trend grid
+ const chart=(title,sub,series,opt)=>`<div class="card"><h2>${title}</h2>
+   <p class="sub">${sub}</p>${lineChart(series,opt)}</div>`;
+ h+=`<div class="row">
+  <div class="col">${chart("Cumulative profit","The scoreboard. Chester pulled ahead; we hold second; Baldwin and Erie are deep in the red.",
+    F.cumul,{fmt:v=>"$"+(v/1000).toFixed(0)+"M",min:-16000,max:10000})}</div>
+  <div class="col">${chart("Market share","Andrews clawed back to the top; we have drifted down as others expand.",
+    F.share,{fmt:v=>(v*100).toFixed(0)+"%"})}</div></div>
+  <div class="row">
+  <div class="col">${chart("Contribution margin","Andrews buys margin with automation; Chester runs lean and low; we sit second and rising.",
+    F.cm,{fmt:v=>(v*100).toFixed(0)+"%"})}</div>
+  <div class="col">${chart("Leverage","Green band is the healthy 2.0-2.8. Baldwin and Erie are above it and borrowing to survive; we and Chester stay inside.",
+    F.lev,{fmt:v=>v.toFixed(1),band:[2.0,2.8],min:1.5,max:4.4})}</div></div>
+  <div class="row">
+  <div class="col">${chart("Average automation","Andrews is racing automation up for unit cost; Chester barely moves; we are deliberately flat to keep R&D flexible.",
+    A.auto,{fmt:v=>v.toFixed(1)})}</div>
+  <div class="col">${chart("Total capacity","Baldwin and Chester are adding plant every round; we and Andrews hold steady.",
+    A.cap,{fmt:v=>(v/1000).toFixed(1)+"k"})}</div></div>
+  ${chLegend()}`;
+
+ // strategy cards
+ h+=`<div class="card"><h2>What each rival is doing, why, and how to counter</h2>
+  <p class="sub">Grounded in the trends above. The <b>why</b> is inference from the pattern of decisions,
+   not a claim about their intent.</p></div>`;
+ ["C","B","A","E"].forEach(k=>{const rd=RIVAL_READ[k],co=rvOf(k);
+  h+=`<div class="card" style="border-left:4px solid ${co.c}">
+   <h2 style="color:${co.c}">${co.n} — ${rd.tag}</h2>
+   <div class="row">
+    <div class="col"><div class="flag" style="background:#f2f6fa;color:var(--ink)"><b>What they're doing</b></div>
+     <p style="font-size:12.5px;margin:6px 0 0">${rd.doing}</p></div>
+    <div class="col"><div class="flag" style="background:#f2f6fa;color:var(--ink)"><b>Why (inferred)</b></div>
+     <p style="font-size:12.5px;margin:6px 0 0">${rd.why}</p></div>
+   </div>
+   <div class="flag o" style="margin-top:10px"><b>How we counter</b></div>
+   <p style="font-size:12.5px;margin:6px 0 0">${rd.counter}</p></div>`;});
+
+ // head-to-head by segment (who threatens which Digby product)
+ const snap=COMPHIST.snap[r]||[];
+ h+=`<div class="card"><h2>Head-to-head: who is nearest each of our products — ${R(r)}</h2>
+  <p class="sub">The closest rival by position in each product's segment, with their price and how they
+   compare to ours. This is where a counter actually lands.</p>
+  <table><tr><th class="l">Our product</th><th>Our price</th><th class="l">Nearest rival</th>
+   <th>Their price</th><th>Their position</th><th class="l">Read</th></tr>`;
+ S.products.forEach((P,i)=>{
+  if(r<P.launch) return;
+  const c=P.rounds[r], id=idealAt(P.seg,r);
+  const rivals=snap.filter(q=>q.co!=="D"&&q.sg===SEG[P.seg].n.slice(0,4));
+  if(!rivals.length){h+=`<tr><td class="name">${P.name}</td><td class="num">${$m(c.price)}</td>
+    <td class="l" colspan="4" style="color:var(--mut)">no rival in ${SEG[P.seg].n} this round</td></tr>`;return;}
+  const near=rivals.map(q=>({...q,d:dist(q.pf,q.sz,c.p,c.s)})).sort((a,b)=>a.d-b.d)[0];
+  const rc=rvOf(near.co), cheaper=near.pr<c.price;
+  h+=`<tr><td class="name">${P.name}</td><td class="num">${$m(c.price)}</td>
+   <td class="l" style="color:${rc.c};font-weight:700">${near.n}</td>
+   <td class="num" style="color:${cheaper?'var(--bad)':'inherit'}">${$m(near.pr)}</td>
+   <td class="num">${near.pf}/${near.sz}</td>
+   <td class="l">${cheaper?`undercuts us by ${$m(c.price-near.pr)}`:`we are ${$m(near.pr-c.price)} cheaper`}, ${near.d<0.5?"nearly on top of us":near.d<1.5?"close":"further out"}</td></tr>`;});
+ h+=`</table><div class="note">Distance is straight-line on the perceptual map. A rival sitting on top
+   of one of our products and pricing under it is the clearest counter target — match position, then
+   decide whether to hold margin or contest on price.</div></div>`;
+ return h;}
+
 /* ---------------- render / events --------------------------------------- */
-const TABS=["R&D","Marketing","Production","Finance","Cost / benefit","Scorecard","Calibration","Decision Reports"];
+const TABS=["R&D","Marketing","Production","Finance","Cost / benefit","Rivals","Scorecard","Calibration","Decision Reports"];
 function render(){
  document.getElementById("rounds").innerHTML=Array.from({length:NR},(_,r)=>
   `<button data-r="${r}" class="${r===S.round?'on':''}">${R(r)}</button>`).join("");
@@ -1909,7 +2055,7 @@ function render(){
  if(sel>=S.products.length) sel=0;
  const r=S.round;
  document.getElementById("body").innerHTML=
-  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tCBA():tab===5?tScore():tab===6?tCal():tRpt();
+  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tCBA():tab===5?tRivals():tab===6?tScore():tab===7?tCal():tRpt();
  document.getElementById("modal").innerHTML=modalHTML();
  wire(); save();}
 
