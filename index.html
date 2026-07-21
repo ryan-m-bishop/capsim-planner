@@ -200,7 +200,7 @@ function seed(){
 let S=load()||seed(), tab=0, sel=0;
 if(!S.open) S.open={...DEF_OPEN};
 S.cal={...DEF_CAL,...(S.cal||{})};
-const O={corridor:true,trails:false};
+const O={corridor:true,trails:false,comp:false,complab:false};
 
 function save(){try{localStorage.setItem("digbyCapsim",JSON.stringify(S));}catch(e){}}
 function load(){
@@ -210,6 +210,44 @@ function load(){
  return null;}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");
  setTimeout(()=>t.classList.remove("on"),1900);}
+
+/* ---------------- competitors ------------------------------------------- */
+/* Read off the Capsim Courier, Plant Information and Perceptual Map pages.
+   Key = round index (0 = R1/2027). Positions are as at 31 December of that round,
+   which is where each rival starts the following round.
+   To add a round: copy the Plant Information table out of the new Courier and
+   append an entry here. Nothing else needs to change. */
+const CO=[{k:"A",n:"Andrews",c:"#b45309"},{k:"B",n:"Baldwin",c:"#7c3aed"},
+          {k:"C",n:"Chester",c:"#0891b2"},{k:"E",n:"Erie",c:"#be123c"}];
+const COMP={
+ 1:[ /* 31 Dec 2028 — Round 2 Courier */
+  {co:"A",n:"Able", seg:0,p:6.4, s:13.6,m:19000,age:1.9,pr:29.00,u:1283,cap:1800,au:5.0},
+  {co:"A",n:"Acre", seg:1,p:3.2, s:17.0,m:17000,age:4.1,pr:19.00,u:1704,cap:1400,au:8.5},
+  {co:"A",n:"Adam", seg:2,p:10.2,s:9.8, m:24000,age:1.2,pr:39.00,u:563, cap:900, au:6.0},
+  {co:"A",n:"Aft",  seg:3,p:11.4,s:14.6,m:27000,age:1.7,pr:34.00,u:498, cap:600, au:8.0},
+  {co:"A",n:"Agape",seg:4,p:5.4, s:8.6, m:21000,age:1.6,pr:35.00,u:415, cap:600, au:4.5},
+  {co:"B",n:"Baker",seg:0,p:6.4, s:13.6,m:19000,age:1.9,pr:27.00,u:1782,cap:2050,au:4.7},
+  {co:"B",n:"Bead", seg:1,p:2.7, s:17.3,m:15000,age:2.2,pr:20.00,u:1913,cap:2450,au:6.0},
+  {co:"B",n:"Bid",  seg:2,p:10.4,s:9.9, m:23850,age:1.2,pr:38.00,u:641, cap:800, au:3.5},
+  {co:"B",n:"Bold", seg:3,p:11.4,s:14.6,m:27000,age:1.6,pr:33.00,u:584, cap:600, au:3.2},
+  {co:"B",n:"Buddy",seg:4,p:5.4, s:8.6, m:21000,age:1.5,pr:33.25,u:583, cap:600, au:3.2},
+  {co:"C",n:"Cake", seg:0,p:6.1, s:13.9,m:18000,age:2.0,pr:25.75,u:1824,cap:1800,au:4.2},
+  {co:"C",n:"Cedar",seg:1,p:3.0, s:17.0,m:14000,age:6.6,pr:20.50,u:2129,cap:2150,au:5.3},
+  {co:"C",n:"Cid",  seg:2,p:9.7, s:10.7,m:23000,age:1.6,pr:39.00,u:550, cap:900, au:3.0},
+  {co:"C",n:"Coat", seg:3,p:11.0,s:15.1,m:27000,age:1.8,pr:34.00,u:551, cap:600, au:3.0},
+  {co:"C",n:"Cure", seg:4,p:4.9, s:9.2, m:19500,age:1.8,pr:34.00,u:497, cap:600, au:3.0},
+  {co:"E",n:"Eat",  seg:0,p:5.9, s:14.5,m:14000,age:2.9,pr:24.50,u:1080,cap:1800,au:6.0},
+  {co:"E",n:"Ebb",  seg:1,p:3.0, s:17.0,m:12050,age:6.6,pr:19.00,u:1322,cap:1400,au:6.0},
+  {co:"E",n:"Echo", seg:2,p:9.1, s:11.0,m:21000,age:1.6,pr:38.00,u:374, cap:900, au:3.0},
+  {co:"E",n:"Edge", seg:3,p:9.8, s:15.5,m:27000,age:2.0,pr:32.00,u:476, cap:600, au:3.0},
+  {co:"E",n:"Egg",  seg:4,p:5.4, s:9.2, m:18000,age:1.7,pr:31.00,u:405, cap:600, au:3.0}]
+};
+/* Most recent observed snapshot at or before round r. */
+function compAt(r){
+ const ks=Object.keys(COMP).map(Number).filter(k=>k<=r).sort((a,b)=>b-a);
+ if(!ks.length) return null;
+ return {from:ks[0],stale:ks[0]!==r,list:COMP[ks[0]]};}
+const coOf=k=>CO.find(x=>x.k===k);
 
 /* ---------------- model (validated against the live board) --------------- */
 const DAYMS=864e5;
@@ -413,6 +451,15 @@ function mapSVG(r){
       <text x="${X(q.p)}" y="${Y(q.s)-RAD(2.5)-6}" font-size="10.5" font-weight="700" fill="${s.c}"
        text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3"
        stroke-linejoin="round">${s.n}</text>`;});
+ if(O.comp){const cs=compAt(r);
+  if(cs) cs.list.forEach(q=>{
+   const co=coOf(q.co), hot=S.products[sel]&&q.seg===S.products[sel].seg;
+   g+=`<circle cx="${X(q.p)}" cy="${Y(q.s)}" r="${hot?4.8:3.2}" fill="${co.c}"
+        fill-opacity="${hot?.95:.4}" stroke="#fff" stroke-width="${hot?1.4:1}"/>`;
+   if(hot||O.complab)
+    g+=`<text x="${X(q.p)}" y="${Y(q.s)-7.5}" font-size="9" font-weight="700" fill="${co.c}"
+         text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="2.6"
+         stroke-linejoin="round">${q.n}</text>`;});}
  S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r];
   const on=i===sel;
   g+=`<rect x="${X(c.p)-(on?5.5:4.2)}" y="${Y(c.s)-(on?5.5:4.2)}" width="${on?11:8.4}"
@@ -481,12 +528,16 @@ function tRD(r){
  let h=`<div class="row"><div class="col narrow"><div class="card map">
   <h2>Perceptual map — ${R(r)}</h2>
   <div class="bar"><label><input type="checkbox" id="ccor" ${O.corridor?"checked":""}> Corridor &amp; overlaps</label>
-   <label><input type="checkbox" id="ctra" ${O.trails?"checked":""}> Drift trails</label></div>
+   <label><input type="checkbox" id="ctra" ${O.trails?"checked":""}> Drift trails</label>
+   <label><input type="checkbox" id="ccmp" ${O.comp?"checked":""}> Competitors</label>
+   ${O.comp?`<label><input type="checkbox" id="clab" ${O.complab?"checked":""}> Label all</label>`:""}</div>
   ${mapSVG(r)}
   <div class="legend"><span><i class="sw" style="background:#8fbce6;border:1px solid #5b9bd5"></i>fine cut 2.5</span>
    <span><i class="sw" style="background:#fff;border:1px solid #7a7a7a"></i>rough cut 4.0</span>
    <span><i class="sw" style="background:#111"></i>centre</span><span><b>+</b> ideal spot</span>
-   <span><i class="sw" style="background:#111;border-radius:0"></i>products (orange = selected)</span></div>
+   <span><i class="sw" style="background:#111;border-radius:0"></i>products (orange = selected)</span>
+   ${O.comp?CO.map(x=>`<span><i class="sw" style="background:${x.c};border-radius:50%"></i>${x.n}</span>`).join("")
+     +`<span style="color:var(--mut)">solid = same segment as ${S.products[sel].name}</span>`:""}</div>
   </div></div>
   <div class="col"><div class="card"><h2>R&amp;D — ${R(r)}</h2>${ptabs()}
   ${sld("p","Performance","green = inside this segment's circle",c.p,0,20,.1,null,
@@ -531,7 +582,42 @@ function tRD(r){
    <td class="num">${bd.toFixed(2)}</td>
    <td><span class="pill ${nf?'yes':ng?'rough':'no'}">${nf?nf+" fine":""}${nf&&ng?" + ":""}${ng?ng+" rough":""}${!nf&&!ng?"outside":""}</span></td>
    <td class="num">${(Math.abs(c2.p+c2.s-20)/RT2).toFixed(2)}</td></tr>`;});
- return h+`</table></div>`;}
+ h+=`</table></div>`;
+
+ /* rivals in the selected product's segment */
+ const cs=compAt(r), Psel=S.products[sel], gseg=SEG[Psel.seg], id=idealAt(Psel.seg,r);
+ h+=`<div class="card"><h2>Rivals in ${gseg.n} — ${R(r)}</h2>`;
+ if(!cs){h+=`<p class="sub">No competitor snapshot has been entered yet.</p>`;}
+ else{
+  const rows=cs.list.filter(q=>q.seg===Psel.seg)
+   .map(q=>({...q,co2:coOf(q.co),gap:dist(q.p,q.s,id.p,id.s)}));
+  const cSel=Psel.rounds[r];
+  rows.push({co:"D",n:Psel.name,co2:{n:"Digby",c:"#111"},p:cSel.p,s:cSel.s,m:cSel.m,
+   age:ages(sel)[r]||0,pr:cSel.price,u:null,cap:cSel.cap,au:cSel.auto,
+   gap:dist(cSel.p,cSel.s,id.p,id.s),me:true});
+  rows.sort((a,b)=>a.gap-b.gap);
+  h+=`<p class="sub">Ideal spot ${id.p.toFixed(1)} / ${id.s.toFixed(1)}, target age
+   ${gseg.age.toFixed(1)}, price ${$m(priceLo(Psel.seg,r))}–${$m(priceHi(Psel.seg,r))},
+   MTBF ${gseg.mlo.toLocaleString()}–${gseg.mhi.toLocaleString()}. Sorted by distance from ideal.</p>
+   <table><tr><th class="l">Product</th><th class="l">Company</th><th>Pfmn</th><th>Size</th>
+   <th>Gap</th><th>MTBF</th><th>Age</th><th>Price</th><th>Units sold</th><th>Capacity</th><th>Auto</th></tr>`;
+  rows.forEach(q=>{
+   const inPr=q.pr>=priceLo(Psel.seg,r)&&q.pr<=priceHi(Psel.seg,r);
+   const inMt=q.m>=gseg.mlo&&q.m<=gseg.mhi;
+   h+=`<tr class="${q.me?'hi':''}"><td class="name">${q.n}</td>
+    <td class="l" style="color:${q.co2.c};font-weight:700">${q.co2.n}</td>
+    <td class="num">${q.p.toFixed(1)}</td><td class="num">${q.s.toFixed(1)}</td>
+    <td class="num"><b>${q.gap.toFixed(2)}</b></td>
+    <td class="num" style="color:${inMt?'inherit':'var(--bad)'}">${q.m.toLocaleString()}</td>
+    <td class="num">${q.age.toFixed(1)}</td>
+    <td class="num" style="color:${inPr?'inherit':'var(--bad)'}">${$m(q.pr)}</td>
+    <td class="num">${q.u==null?'—':q.u.toLocaleString()}</td>
+    <td class="num">${q.cap.toLocaleString()}</td><td class="num">${q.au.toFixed(1)}</td></tr>`;});
+  h+=`</table><div class="note">Competitor figures are the observed snapshot from
+   <b>${R(cs.from)}</b>${cs.stale?` and have not been updated for ${R(r)} — rivals will have moved`:``}.
+   Red means the value sits outside the segment's accepted band. Our own row is highlighted and uses
+   this planner's live values, so it moves as you drag sliders.</div>`;}
+ return h+`</div>`;}
 
 function tMkt(r){
  const P=S.products[sel],c=P.rounds[r],g=SEG[P.seg];
@@ -1130,6 +1216,9 @@ function wire(){
  const cc=document.getElementById("ccor"),ct=document.getElementById("ctra");
  if(cc)cc.onchange=()=>{O.corridor=cc.checked;render();};
  if(ct)ct.onchange=()=>{O.trails=ct.checked;render();};
+ const cm=document.getElementById("ccmp"),cl=document.getElementById("clab");
+ if(cm)cm.onchange=()=>{O.comp=cm.checked;render();};
+ if(cl)cl.onchange=()=>{O.complab=cl.checked;render();};
  const clr=document.querySelector("[data-clr]");
  if(clr)clr.onclick=()=>{S.products[sel].rounds[S.round].date="";render();};
 
