@@ -221,40 +221,40 @@ function seed(){
    rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
    mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[24.50,1700,2000,1250]],
    pd:[[1380,1800,4.5],[1200,1700,4.5],[1200,1700,4.5]],
-   mat:[9.80,8.95,8.46], inv:[0,404,338], aw:[.728,.890,.890], ac:[.61,.72,.72]},
+   rdc:[0,0,0], mat:[9.80,8.95,8.46], inv:[0,404,338], aw:[.728,.890,.890], ac:[.61,.72,.72]},
 
   {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,m0:7.81,
    rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
    mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[19.50,1900,1700,2000]],
    pd:[[1770,1400,5.5],[2100,1400,5.5],[2100,1400,5.5]],
-   mat:[6.45,5.78,5.43], inv:[0,0,0], aw:[.706,.909,.909], ac:[.40,.54,.54]},
+   rdc:[0,0,0], mat:[6.45,5.78,5.43], inv:[0,0,0], aw:[.706,.909,.909], ac:[.40,.54,.54]},
 
   {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,m0:15.98,
    rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[10.3,9.9,25000,""]],
    mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[39.00,1700,1700,480]],
    pd:[[510,800,3.0],[420,800,3.0],[420,800,3.0]],
-   mat:[16.52,16.52,15.81], inv:[0,128,0], aw:[.707,.876,.876], ac:[.54,.64,.64]},
+   rdc:[0,860,0], mat:[16.52,16.52,15.81], inv:[0,128,0], aw:[.707,.876,.876], ac:[.54,.64,.64]},
 
   {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,m0:15.87,
    rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,13.0,24100,""]],
    mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.75,800,800,400]],
    pd:[[430,600,3.0],[300,600,3.0],[300,600,3.0]],
-   mat:[15.06,14.44,13.83], inv:[0,103,0], aw:[.664,.596,.596], ac:[.39,.64,.64]},
+   rdc:[0,476,0], mat:[15.06,14.44,13.83], inv:[0,103,0], aw:[.664,.596,.596], ac:[.39,.64,.64]},
 
   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,m0:13.62,
    rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.0,9.5,18000,""]],
    mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.00,1600,1600,530]],
    pd:[[410,600,3.0],[600,600,3.0],[600,600,3.0]],
-   mat:[12.62,12.58,11.99], inv:[0,1,3], aw:[.639,.810,.810], ac:[.46,.49,.49]},
+   rdc:[0,765,0], mat:[12.62,12.58,11.99], inv:[0,1,3], aw:[.639,.810,.810], ac:[.46,.49,.49]},
 
   {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,m0:16.82,
    rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"]],
    mk:[[18.50,0,0,0],[18.50,0,0,0],[18.50,0,0,0]],
    pd:[[0,0,2.0],[0,200,2.0],[0,200,2.0]],
-   mat:[16.82,16.82,16.82], inv:[0,0,0], aw:[0,0,0], ac:[0,0,0]}];
+   rdc:[0,1000,729], mat:[16.82,16.82,16.82], inv:[0,0,0], aw:[0,0,0], ac:[0,0,0]}];
 
  const at=(a,r)=>a[Math.min(r,a.length-1)];
- return {round:2,cal:{...DEF_CAL},open:{...DEF_OPEN},
+ const st={round:2,cal:{...DEF_CAL},open:{...DEF_OPEN},
   products:P.map(o=>({name:o.n,key:o.n,seg:o.seg,launch:o.launch||0,added:false,
    sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>{
@@ -262,14 +262,17 @@ function seed(){
     return {p:d[0],s:d[1],m:d[2],date:r<o.rd.length?d[3]:"",
      price:m[0],promo:m[1],sales:m[2],fc:m[3],
      sched:p[0],cap:p[1],auto:p[2],
-     inv:at(o.inv,r), mat:at(o.mat,r), aware:at(o.aw,r), access:at(o.ac,r)};})})),
+     inv:at(o.inv,r), mat:at(o.mat,r), rdc:at(o.rdc,r), aware:at(o.aw,r), access:at(o.ac,r)};})})),
   /* Digby took no financing action in R1 or R2 and none is entered for R3.
      The $6,950 of current debt due in 2029 is a scheduled repayment, not a decision. */
   fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
-}
+ /* the sim's committed decisions are the baseline everything is measured against */
+ st.base=JSON.parse(JSON.stringify({products:st.products,fin:st.fin}));
+ return st;}
 
 let S=load()||seed(), tab=0, sel=0;
 if(!S.open) S.open={...DEF_OPEN};
+if(!S.base) S.base=JSON.parse(JSON.stringify({products:S.products,fin:S.fin}));
 S.cal={...DEF_CAL,...(S.cal||{})};
 const O={corridor:true,trails:false,comp:false,complab:false,pop:false};
 
@@ -279,6 +282,11 @@ function load(){
  if(h){try{const o=JSON.parse(decodeURIComponent(escape(atob(h[1]))));if(o&&o.products)return o;}catch(e){}}
  try{const t=localStorage.getItem("digbyCapsim");if(t)return JSON.parse(t);}catch(e){}
  return null;}
+/* Local date and time, sortable, safe in a filename. Several saves a day is
+   normal, so the date alone was overwriting. */
+function stamp(){
+ const d=new Date(),p=n=>String(n).padStart(2,"0");
+ return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");
  setTimeout(()=>t.classList.remove("on"),1900);}
 
@@ -437,7 +445,7 @@ function pnlRaw(r,ltDebt,f){
  let rev=0,vc=0,fx=0,inv=0;
  S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r],u=units(i,r);
   rev+=u*c.price;vc+=u*varCost(i,r);
-  fx+=(c.promo||0)+(c.sales||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
+  fx+=(c.promo||0)+(c.sales||0)+(c.rdc||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
   inv+=plantInvest(i,r);});
  const cm=rev-vc,ebit=cm-fx;
  const int=(f.curDebt||0)*S.cal.interestST + (ltDebt||0)*S.cal.interestLT;
@@ -727,8 +735,13 @@ function tRD(r){
      max="${YR0+r+1}-12-31" data-f="date">
     <button class="btn" data-clr="1">clear</button>
     <span class="mm" style="min-width:auto">age at 31 Dec <b>${A==null?"—":A.toFixed(2)}</b></span></div></div>
+  <div class="sld"><div class="lab">R&amp;D cost<small>read off the sim</small></div>
+   <div class="track"><input class="bub" data-f="rdc" value="${c.rdc||0}" style="width:92px">
+    <span class="mm" style="min-width:auto">this round's project cost for ${P.name}, entered by hand
+    so the cost/benefit totals are complete</span></div></div>
   <div class="note"><b>Age halves only on a position change.</b> An MTBF-only revision ages normally.
-   <b>Material cost and R&amp;D project cost are not modelled</b> — read them off the Capsim R&amp;D screen.</div>
+   <b>Material cost and R&amp;D project cost are not derived</b> — read both off the Capsim R&amp;D
+   screen and type them in. R&amp;D cost feeds period costs and the Cost / benefit tab.</div>
   </div>
   <div class="card"><h2>Age profile — ${R(r)}</h2>
    <p class="sub">Hollow dot = age entering the round, solid = at 31 Dec. Dashed lines are each
@@ -1480,8 +1493,227 @@ function modalHTML(){
    Scroll to zoom, drag to pan, double-click to fit. <b>Esc</b> or a click outside closes.</div>
   </div></div>`;}
 
+/* ---------------- cost / benefit ----------------------------------------
+   Everything here works by isolation: to price one decision, we rebuild the
+   board with that single field put back to its baseline value and recompute.
+   The difference is that decision's effect, with every knock-on included
+   (a bigger order raises second-shift labour, which changes contribution,
+   which changes EBIT, and so on). No hand-derived formulas to drift.
+
+   What the model knows exactly: plant and automation cash, labour including
+   the second-shift premium, material, inventory carry, promo and sales cash,
+   R&D cash, contribution on the units you forecast.
+   What it cannot know: how much extra volume a price cut, a promotion or a
+   reposition actually buys. Capsim's demand response is not reproducible from
+   three rounds of data, and a wrong curve here would quietly corrupt every
+   number downstream. So for those levers we report the cost exactly and give
+   the breakeven volume instead of inventing a benefit.                      */
+
+const CBAF=[
+ {k:"p",    lab:"Performance",   fmt:v=>(+v).toFixed(1),  hard:false},
+ {k:"s",    lab:"Size",          fmt:v=>(+v).toFixed(1),  hard:false},
+ {k:"m",    lab:"MTBF",          fmt:v=>(+v).toLocaleString(), hard:false},
+ {k:"rdc",  lab:"R&D cost",      fmt:v=>$k(v||0),         hard:true},
+ {k:"price",lab:"Price",         fmt:v=>$m(v),            hard:false},
+ {k:"promo",lab:"Promo budget",  fmt:v=>$k(v),            hard:false},
+ {k:"sales",lab:"Sales budget",  fmt:v=>$k(v),            hard:false},
+ {k:"fc",   lab:"Forecast",      fmt:v=>(+v).toLocaleString(), hard:false},
+ {k:"sched",lab:"Production order",fmt:v=>(+v).toLocaleString(),hard:true},
+ {k:"cap",  lab:"Capacity",      fmt:v=>(+v).toLocaleString(), hard:true},
+ {k:"auto", lab:"Automation",    fmt:v=>(+v).toFixed(1),  hard:true},
+ {k:"mat",  lab:"Material cost", fmt:v=>$m(v),            hard:true}];
+
+const clone=o=>JSON.parse(JSON.stringify(o));
+/* The baseline is fixed when the board is seeded or loaded, never on first
+   view. Creating it lazily meant any edit made before opening this tab was
+   quietly absorbed into the baseline and priced at zero. */
+function baseState(){
+ if(!S.base) S.base=clone({products:S.products,fin:S.fin});
+ return S.base;}
+
+/* Run cb() against a swapped-in board, then put the real one back. */
+function withBoard(prods,fin,cb){
+ const sp=S.products, sf=S.fin;
+ S.products=prods; S.fin=fin||sf;
+ try{ return cb(); } finally { S.products=sp; S.fin=sf; }}
+
+/* Totals for one round: contribution, period cost, EBIT, net, plant cash. */
+function mx(r){
+ const p=pnl(r);
+ let plant=0; S.products.forEach((P,i)=>{if(r>=P.launch) plant+=plantInvest(i,r);});
+ let cash=0; S.products.forEach((P,i)=>{if(r>=P.launch){const c=P.rounds[r];
+  cash+=(c.promo||0)+(c.sales||0)+(c.rdc||0);}});
+ return {rev:p.rev,cm:p.cm,fx:p.fx,ebit:p.ebit,net:p.net,plant,spend:cash,
+         units:S.products.reduce((t,P,i)=>t+(r>=P.launch?units(i,r):0),0)};}
+
+/* Same totals from the locked baseline. */
+function mxBase(r){const b=baseState();return withBoard(b.products,b.fin,()=>mx(r));}
+
+/* Horizon: the selected round, and everything from it to the end. */
+function cbaSpan(){const out=[];for(let r=S.round;r<NR;r++)out.push(r);return out;}
+function sumMx(fn,rs){return rs.reduce((a,r)=>{const m=fn(r);
+ return {rev:a.rev+m.rev,cm:a.cm+m.cm,fx:a.fx+m.fx,ebit:a.ebit+m.ebit,net:a.net+m.net,
+         plant:a.plant+m.plant,spend:a.spend+m.spend,units:a.units+m.units};},
+ {rev:0,cm:0,fx:0,ebit:0,net:0,plant:0,spend:0,units:0});}
+
+/* Every field that differs from baseline, with its isolated effect. */
+function cbaChanges(){
+ const b=baseState(), out=[], rs=cbaSpan(), r0=S.round;
+ S.products.forEach((P,i)=>{
+  const B=b.products[i]; if(!B) return;          // product added since locking
+  if(r0<P.launch) return;
+  CBAF.forEach(f=>{
+   const now=P.rounds[r0][f.k]||0, was=B.rounds[r0]?(B.rounds[r0][f.k]||0):0;
+   if(Math.abs(now-was)<1e-9) return;
+   // revert this one field, in this round and every later one, then recompute
+   const alt=clone(S.products);
+   for(let r=r0;r<NR;r++) alt[i].rounds[r][f.k]=B.rounds[r]?B.rounds[r][f.k]:now;
+   const dNow ={}, dAll={};
+   const cn=mx(r0), cb=withBoard(alt,null,()=>mx(r0));
+   ["cm","fx","ebit","net","plant","spend","units"].forEach(k=>dNow[k]=cn[k]-cb[k]);
+   const sn=sumMx(mx,rs), sb=withBoard(alt,null,()=>sumMx(mx,rs));
+   ["cm","fx","ebit","net","plant","spend","units"].forEach(k=>dAll[k]=sn[k]-sb[k]);
+   out.push({pi:i,name:P.name,f,now,was,dNow,dAll});});});
+ return out;}
+
+/* Unit contribution for the selected product, used for breakeven volumes. */
+function unitCM(i,r){
+ const c=S.products[i].rounds[r];
+ return (c.price||0)-varCost(i,r);}
+
+function tCBA(){
+ const r=S.round, rs=cbaSpan(), b=baseState();
+ const cur=mx(r), bas=mxBase(r);
+ const curAll=sumMx(mx,rs), basAll=withBoard(b.products,b.fin,()=>sumMx(mx,rs));
+ const ch=cbaChanges();
+ const d=(a,z)=>a-z;
+ const sign=v=>v>0?"var(--good)":v<0?"var(--bad)":"inherit";
+ const dm=v=>(v>0?"+":"")+money(v);
+
+ let h=`<div class="card">
+  <h2>Cost / benefit &mdash; ${R(r)}</h2>
+  <p class="sub">Everything below compares the board as it stands against the locked baseline.
+   It recomputes as you move any slider on any tab.</p>
+  <div class="bar">
+   <button class="btn" id="bLock">Lock current board as baseline</button>
+   <button class="btn" id="bRevert">Discard changes, back to baseline</button>
+   <span style="flex:1"></span>
+   <span class="note" style="margin:0">Horizon: <b>${R(r)}</b> and cumulative to <b>${R(NR-1)}</b></span>
+  </div>
+  <div class="kpi">
+   <div><b style="color:${sign(d(cur.cm,bas.cm))}">${dm(d(cur.cm,bas.cm))}</b><span>Contribution, ${R(r)}</span></div>
+   <div><b style="color:${sign(d(cur.ebit,bas.ebit))}">${dm(d(cur.ebit,bas.ebit))}</b><span>EBIT, ${R(r)}</span></div>
+   <div><b style="color:${sign(d(cur.net,bas.net))}">${dm(d(cur.net,bas.net))}</b><span>Net profit, ${R(r)}</span></div>
+   <div><b style="color:${sign(-d(cur.plant,bas.plant))}">${dm(d(cur.plant,bas.plant))}</b><span>Plant cash out</span></div>
+   <div><b style="color:${sign(d(curAll.net,basAll.net))}">${dm(d(curAll.net,basAll.net))}</b><span>Net profit to ${R(NR-1)}</span></div>
+   <div><b>${(d(cur.units,bas.units)>0?"+":"")+d(cur.units,bas.units).toLocaleString()}</b><span>Forecast units</span></div>
+  </div>
+  <table>
+   <tr><th class="l">Line</th><th>Baseline ${R(r)}</th><th>Now</th><th>Change</th>
+    <th>Baseline to ${R(NR-1)}</th><th>Now</th><th>Change</th></tr>`;
+ [["Revenue","rev"],["Contribution","cm"],["Period costs","fx"],["EBIT","ebit"],
+  ["Net profit","net"],["Plant investment","plant"]].forEach(([lab,k])=>{
+  const good=k==="fx"||k==="plant"?-1:1;
+  h+=`<tr><td class="name">${lab}</td>
+   <td class="num">${money(bas[k])}</td><td class="num">${money(cur[k])}</td>
+   <td class="num" style="color:${sign(good*d(cur[k],bas[k]))}"><b>${dm(d(cur[k],bas[k]))}</b></td>
+   <td class="num">${money(basAll[k])}</td><td class="num">${money(curAll[k])}</td>
+   <td class="num" style="color:${sign(good*d(curAll[k],basAll[k]))}"><b>${dm(d(curAll[k],basAll[k]))}</b></td></tr>`;});
+ h+=`</table></div>`;
+
+ /* ---- what changed, priced one lever at a time ---- */
+ h+=`<div class="card"><h2>Every change, priced separately</h2>`;
+ if(!ch.length){
+  h+=`<p class="sub">Nothing differs from the baseline in ${R(r)} yet. Move a slider on any tab and
+   it will appear here with its cost and its effect.</p>`;
+ }else{
+  const hard=ch.filter(c=>c.f.hard), soft=ch.filter(c=>!c.f.hard);
+  h+=`<p class="sub">Each row rebuilds the board with that one field put back, so the figure is that
+   decision's own effect with all knock-ons included. Rows can interact, so they will not always add
+   exactly to the totals above.</p>
+   <table><tr><th class="l">Product</th><th class="l">Lever</th><th>Baseline</th><th>Now</th>
+   <th>Cash out</th><th>Net profit ${R(r)}</th><th>Net profit to ${R(NR-1)}</th><th class="l">Read</th></tr>`;
+  hard.forEach(c=>{
+   const cash=c.dNow.plant+c.dNow.spend;
+   const pay=cash>0&&c.dAll.net>0?(cash/(c.dAll.net/rs.length)):null;
+   const cc=S.products[c.pi].rounds[r];
+   const over=(cc.sched||0)-(cc.fc||0)+(cc.inv||0);
+   const glut=c.f.k==="sched"&&over>Math.max(60,(cc.fc||0)*0.12);
+   h+=`<tr><td class="name">${c.name}</td><td class="l">${c.f.lab}</td>
+    <td class="num">${c.f.fmt(c.was)}</td><td class="num">${c.f.fmt(c.now)}</td>
+    <td class="num" style="color:${sign(-cash)}">${cash?dm(cash):"—"}</td>
+    <td class="num" style="color:${sign(c.dNow.net)}">${dm(c.dNow.net)}</td>
+    <td class="num" style="color:${sign(c.dAll.net)}"><b>${dm(c.dAll.net)}</b></td>
+    <td class="l">${glut?`<b style="color:var(--warn)">${over.toLocaleString()} units above forecast — raise the forecast or trim the order</b>`
+      :cash>0&&c.dAll.net>0?`pays back in ${pay.toFixed(1)} yr`
+      :cash>0&&c.dAll.net<=0?`<b style="color:var(--bad)">does not pay back by ${R(NR-1)}</b>`
+      :c.dAll.net>0?"free gain":"—"}</td></tr>`;});
+  if(soft.length){
+   h+=`<tr class="tot"><td class="l" colspan="8">Demand-driven levers &mdash; cost is exact, benefit is your call</td></tr>`;
+   soft.forEach(c=>{
+    const cash=c.dNow.plant+c.dNow.spend;
+    const ucm=unitCM(c.pi,r);
+    const outlay=(c.f.k==="price")?-c.dNow.cm:cash;
+    const be=ucm>0&&outlay>0?outlay/ucm:null;
+    const isFc=c.f.k==="fc";
+    h+=`<tr><td class="name">${c.name}</td><td class="l">${c.f.lab}</td>
+     <td class="num">${c.f.fmt(c.was)}</td><td class="num">${c.f.fmt(c.now)}</td>
+     <td class="num" style="color:${sign(-outlay)}">${outlay?dm(outlay):"—"}</td>
+     <td class="num" style="color:${sign(c.dNow.net)}">${dm(c.dNow.net)}</td>
+     <td class="num" style="color:${sign(c.dAll.net)}"><b>${dm(c.dAll.net)}</b></td>
+     <td class="l">${isFc?`<b style="color:var(--warn)">assumption, not a gain</b> — this profit only
+        arrives if the ${(c.now-c.was)>0?"extra "+(c.now-c.was).toLocaleString()+" units":"volume"} actually sell`
+       :be?`breaks even at <b>+${Math.ceil(be).toLocaleString()}</b> units`
+       :outlay<0?"releases cash":"—"}</td></tr>`;});}
+  h+=`</table>`;}
+ h+=`<div class="note"><b>Why some rows show no benefit.</b> This planner sets volume from the
+  forecast you type, exactly as the sim's own Marketing screen does. It has no demand curve, so a
+  price cut, a bigger promotion or a reposition costs money here and returns nothing until you raise
+  the forecast to match what you think it will buy. That is the honest position: the breakeven column
+  tells you how many extra units the move has to deliver to wash its face, and you decide whether the
+  segment will give you them.</div></div>`;
+
+ /* ---- payback on the things that are pure arithmetic ---- */
+ h+=`<div class="card"><h2>Investment paybacks</h2>
+  <p class="sub">Plant and automation, where cost and saving are both exact. Automation cuts labour
+   per unit for as long as you own the plant, so one round always looks worse than six.
+   <b>These columns are cash</b>: labour saved, against cash paid. The net-profit column in the table
+   above is the accounting view of the same move, lower because it also carries the extra depreciation
+   and tax. Neither is wrong; they answer different questions.</p>
+  <table><tr><th class="l">Product</th><th>Capacity</th><th>Automation</th><th>Cash out ${R(r)}</th>
+  <th>Labour saved ${R(r)}</th><th>Saved to ${R(NR-1)}</th><th class="l">Cash payback</th></tr>`;
+ let any=false;
+ S.products.forEach((P,i)=>{
+  if(r<P.launch) return;
+  const B=b.products[i]; if(!B) return;
+  const c=P.rounds[r], bc=B.rounds[r];
+  if(Math.abs((c.cap||0)-(bc.cap||0))<1e-9 && Math.abs((c.auto||0)-(bc.auto||0))<1e-9) return;
+  any=true;
+  const alt=clone(S.products);
+  for(let k=r;k<NR;k++){alt[i].rounds[k].cap=B.rounds[k].cap;alt[i].rounds[k].auto=B.rounds[k].auto;}
+  const cash=mx(r).plant-withBoard(alt,null,()=>mx(r)).plant;
+  const sNow=mx(r).cm-withBoard(alt,null,()=>mx(r)).cm;
+  const sAll=sumMx(mx,rs).cm-withBoard(alt,null,()=>sumMx(mx,rs)).cm;
+  const yrs=cash>0&&sNow>0?cash/sNow:null;
+  h+=`<tr><td class="name">${P.name}</td>
+   <td class="num">${(bc.cap||0).toLocaleString()} &rarr; ${(c.cap||0).toLocaleString()}</td>
+   <td class="num">${(bc.auto||0).toFixed(1)} &rarr; ${(c.auto||0).toFixed(1)}</td>
+   <td class="num" style="color:var(--bad)">${money(cash)}</td>
+   <td class="num" style="color:${sign(sNow)}">${dm(sNow)}</td>
+   <td class="num" style="color:${sign(sAll)}"><b>${dm(sAll)}</b></td>
+   <td class="l">${yrs?(sAll>cash?`<b style="color:var(--good)">returns its cash in ${yrs.toFixed(1)} yr</b>`
+     :`${yrs.toFixed(1)} yr on cash, still short by ${R(NR-1)}`):"no labour saving"}</td></tr>`;});
+ if(!any) h+=`<tr><td class="l" colspan="7" style="color:var(--mut);font-style:italic">
+  No capacity or automation change in ${R(r)}.</td></tr>`;
+ h+=`</table><div class="note"><b>Second shift is the alternative you are choosing against.</b>
+  Any plant runs to double its capacity at a ${(S.cal.shiftPremium*100).toFixed(0)}% labour premium on
+  the units above the first shift. Buying capacity only beats that once a product reliably sells past
+  the second-shift ceiling. Automation is different: it lowers labour on every unit whether or not you
+  ever add plant, which is why it usually pays back and capacity often does not.</div></div>`;
+ return h;}
+
 /* ---------------- render / events --------------------------------------- */
-const TABS=["R&D","Marketing","Production","Finance","Scorecard","Calibration","Decision Reports"];
+const TABS=["R&D","Marketing","Production","Finance","Cost / benefit","Scorecard","Calibration","Decision Reports"];
 function render(){
  document.getElementById("rounds").innerHTML=Array.from({length:NR},(_,r)=>
   `<button data-r="${r}" class="${r===S.round?'on':''}">${R(r)}</button>`).join("");
@@ -1490,11 +1722,12 @@ function render(){
  if(sel>=S.products.length) sel=0;
  const r=S.round;
  document.getElementById("body").innerHTML=
-  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tScore():tab===5?tCal():tRpt();
+  tab===0?tRD(r):tab===1?tMkt(r):tab===2?tProd(r):tab===3?tFin(r):tab===4?tCBA():tab===5?tScore():tab===6?tCal():tRpt();
  document.getElementById("modal").innerHTML=modalHTML();
  wire(); save();}
 
 const CARRY=["p","s","m","cap","auto","mat"];
+/* rdc is deliberately not carried: an R&D project is paid for in its own round. */
 function setField(f,v){
  const r=S.round;
  if(CARRY.includes(f)) for(let k=r;k<NR;k++) S.products[sel].rounds[k][f]=v;
@@ -1517,7 +1750,7 @@ function wire(){
    S.products.push({name:nm,key:nm,seg:2,launch:S.round,added:true,
     sp:q.p,ss:q.s,sm:20000,sa:0,m0:14,
     rounds:Array.from({length:NR},()=>({p:q.p,s:q.s,m:20000,date:"",price:35,promo:1000,sales:1000,
-     fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,aware:0,access:0}))});
+     fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,rdc:0,aware:0,access:0}))});
    sel=S.products.length-1;
   }else{const n=+b.dataset.sel; if(n!==sel) ren=false; sel=n;}
   render();});
@@ -1551,6 +1784,13 @@ function wire(){
  document.querySelectorAll("[data-zr]").forEach(b=>b.onclick=()=>zoomReset());
  document.querySelectorAll('svg[data-map]').forEach(el=>
   wireZoom(el, el.dataset.map==="modal"));
+
+ const bl=document.getElementById("bLock");
+ if(bl)bl.onclick=()=>{S.base={products:clone(S.products),fin:clone(S.fin)};render();
+  toast("Baseline locked to the current board");};
+ const br=document.getElementById("bRevert");
+ if(br)br.onclick=()=>{if(confirm("Discard every change since the baseline was locked?")){
+  const b=baseState();S.products=clone(b.products);S.fin=clone(b.fin);render();toast("Back to baseline");}};
 
  const bp=document.getElementById("bpop");
  if(bp)bp.onclick=()=>{O.pop=true;render();};
@@ -1592,8 +1832,9 @@ function wire(){
 document.getElementById("bSave").onclick=()=>{
  const b=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});
  const a=document.createElement("a");a.href=URL.createObjectURL(b);
- a.download="digby-capsim-"+new Date().toISOString().slice(0,10)+".json";a.click();
- toast("Saved — put it in the shared Drive folder");};
+ const fn="digby-capsim-"+stamp()+".json";
+ a.download=fn;a.click();
+ toast("Saved "+fn);};
 document.getElementById("bLoad").onclick=()=>document.getElementById("fIn").click();
 document.getElementById("fIn").onchange=e=>{const f=e.target.files[0];if(!f)return;
  const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.products)throw 0;
