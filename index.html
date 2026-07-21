@@ -108,6 +108,11 @@ tr.hi td{background:#eef4fc}
 /* keep charts compact — they scale to the column otherwise */
 .card svg{display:block;max-width:330px;margin:0 auto}
 .card.map svg{max-width:470px}
+/* product rename */
+.ptabs input.pname{flex:1;border:none;border-right:1px solid var(--line);background:#fffbe6;
+ padding:9px 6px;font:inherit;font-size:13px;font-weight:650;color:var(--ink);text-align:center;
+ outline:2px solid var(--acc);outline-offset:-2px;min-width:0}
+.ptabs button.ren{flex:0 0 34px;font-size:12px}
 /* map zoom */
 .zbar{display:flex;align-items:center;gap:4px}
 .zbar button{border:1px solid var(--line);background:var(--card);width:26px;height:24px;
@@ -250,7 +255,7 @@ function seed(){
 
  const at=(a,r)=>a[Math.min(r,a.length-1)];
  return {round:2,cal:{...DEF_CAL},open:{...DEF_OPEN},
-  products:P.map(o=>({name:o.n,seg:o.seg,launch:o.launch||0,added:false,
+  products:P.map(o=>({name:o.n,key:o.n,seg:o.seg,launch:o.launch||0,added:false,
    sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>{
     const d=at(o.rd,r), m=at(o.mk,r), p=at(o.pd,r);
@@ -295,7 +300,7 @@ const ACT={
     ind:{net:-3616,cmPct:.2986,ros:-.034,roe:-.106,emg:3836}}
 };
 function actUnits(r){const a=ACT[r];if(!a)return null;
- return S.products.reduce((t,P)=>t+(a.u[P.name]||0),0);}
+ return S.products.reduce((t,P)=>t+(a.u[P.key||P.name]||0),0);}
 
 /* ---------------- competitors ------------------------------------------- */
 /* Read off the Capsim Courier, Plant Information and Perceptual Map pages.
@@ -627,10 +632,16 @@ function mapSVG(r,where){
  return `<svg viewBox="${vb()}" width="100%" data-map="${where||"card"}">${g}</svg>`;}
 
 /* ---------------- UI helpers -------------------------------------------- */
+let ren=false;   /* true while the selected product's name is being edited */
 function ptabs(){
  return `<div class="ptabs">`+S.products.map((P,i)=>
-  `<button data-sel="${i}" class="${i===sel?'on':''}">${P.name}</button>`).join("")+
-  `<button data-sel="add" style="flex:0 0 90px">+ Add</button></div>`;}
+  (ren&&i===sel
+   ? `<input class="pname" data-ren value="${P.name.replace(/"/g,"&quot;")}"
+       maxlength="14" title="Enter to save, Esc to cancel">`
+   : `<button data-sel="${i}" class="${i===sel?'on':''}"
+       title="${i===sel?'Double-click to rename':P.name}">${P.name}</button>`)).join("")+
+  `<button class="ren" data-ren-go title="Rename ${S.products[sel].name}">&#9998;</button>
+   <button data-sel="add" style="flex:0 0 90px">+ Add</button></div>`;}
 /* mk = {band:[lo,hi,colour,label], ticks:[[value,colour,label],...]}
    Bands and ticks are drawn on the track so the acceptable range and the target
    are visible while you drag, rather than something you have to look up. */
@@ -1026,10 +1037,10 @@ function tScore(){
  h+=`</tr>`;
  S.products.forEach(P=>{h+=`<tr><td class="name">${P.name}</td>`;
   Object.keys(ACT).map(Number).sort((a,b)=>a-b).forEach(r=>{
-   const a=ACT[r], sold=a.u[P.name], fc=P.rounds[r]?P.rounds[r].fc:0;
+   const a=ACT[r], k=P.key||P.name, sold=a.u[k], fc=P.rounds[r]?P.rounds[r].fc:0;
    if(sold===undefined){h+=`<td class="num" style="color:var(--mut)">—</td>
      <td class="num" style="color:var(--mut)">—</td><td class="num" style="color:var(--mut)">—</td>`;return;}
-   const gap=sold-fc, so=a.so[P.name];
+   const gap=sold-fc, so=a.so[k];
    h+=`<td class="num">${fc.toLocaleString()}</td>
     <td class="num">${sold.toLocaleString()}${so?' <span class="pill no">out</span>':''}</td>
     <td class="num" style="color:${gap<0?'var(--bad)':'var(--good)'}">${gap>0?'+':''}${gap.toLocaleString()}</td>`;});
@@ -1452,13 +1463,31 @@ function wire(){
  document.querySelectorAll("[data-sel]").forEach(b=>b.onclick=()=>{
   if(b.dataset.sel==="add"){
    const q=idealAt(2,S.round);
-   S.products.push({name:"New "+(S.products.length-4),seg:2,launch:S.round,added:true,
+   let n=0,nm;do{nm="Product "+(++n);}while(S.products.some(p=>p.name===nm));
+   S.products.push({name:nm,key:nm,seg:2,launch:S.round,added:true,
     sp:q.p,ss:q.s,sm:20000,sa:0,m0:14,
     rounds:Array.from({length:NR},()=>({p:q.p,s:q.s,m:20000,date:"",price:35,promo:1000,sales:1000,
      fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,aware:0,access:0}))});
    sel=S.products.length-1;
-  }else sel=+b.dataset.sel;
+  }else{const n=+b.dataset.sel; if(n!==sel) ren=false; sel=n;}
   render();});
+ // double-click the selected tab, or the pencil, to rename
+ document.querySelectorAll("#body [data-sel]").forEach(b=>{
+  if(b.dataset.sel==="add")return;
+  b.ondblclick=()=>{sel=+b.dataset.sel;ren=true;render();};});
+ const rg=document.querySelector("[data-ren-go]");
+ if(rg)rg.onclick=()=>{ren=true;render();};
+ const ri=document.querySelector("[data-ren]");
+ if(ri){
+  ri.focus(); ri.select();
+  const commit=()=>{
+   const v=ri.value.trim();
+   if(v) S.products[sel].name=v;
+   ren=false; render();};
+  ri.onkeydown=e=>{
+   if(e.key==="Enter"){e.preventDefault();commit();}
+   else if(e.key==="Escape"){e.preventDefault();ren=false;render();}};
+  ri.onblur=commit;}
  const cc=document.getElementById("ccor"),ct=document.getElementById("ctra");
  if(cc)cc.onchange=()=>{O.corridor=cc.checked;render();};
  if(ct)ct.onchange=()=>{O.trails=ct.checked;render();};
