@@ -205,13 +205,13 @@ const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
 const DEF_CAL={wage:[8.97,9.19,9.50],wageInfl:.05,autoSave:.125,prodAdj:.025,
  shiftPremium:.5,capCost:6,autoCost:4,
  awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
- taxRate:.35,depYears:15,interestLT:.125,interestST:.1025,stockFee:.05,bondFee:.015};
+ taxRate:.35,depYears:15,adminRate:.00889,profitShareRate:.02,interestLT:.134,interestST:.1025,stockFee:.05,bondFee:.015};
 /* Opening balances, derived from the Round 0 Courier's Selected Financial Statistics:
    assets = sales / asset turnover = 101,073 / 1.05 = 96,260
    equity = assets / leverage      = 96,260 / 2.01  = 47,891
    Long-term debt, cash, shares and price are placeholders — correct them from
    your Balance Sheet on the Finance screen. */
-const DEF_OPEN={assets:96260,equity:47891,ltDebt:30000,cash:3500,shares:2000,price:34.00};
+const DEF_OPEN={assets:96260,equity:47891,ltDebt:34750,cash:3431,shares:2000,price:34.00};
 
 /* ---------------- seed: actual Digby history ----------------------------
    Every value below was read off the Capsim platform, not estimated:
@@ -272,13 +272,22 @@ function seed(){
      price:m[0],promo:m[1],sales:m[2],fc:m[3],
      sched:p[0],cap:p[1],auto:p[2],
      inv:at(o.inv,r), mat:at(o.mat,r), rdc:at(o.rdc,r), aware:at(o.aw,r), access:at(o.ac,r)};})})),
-  /* Digby took no financing action in R1 or R2 and none is entered for R3.
-     The $6,950 of current debt due in 2029 is a scheduled repayment, not a decision. */
-  fin:Array.from({length:NR},()=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0}))};
+  /* Financing was untouched in R1-R3. The extra fields anchor each round to the
+     Courier so the cash flow and income statement reconcile with the sim:
+       cashStart  actual opening cash (R1 3,431 / R2 752 / R3 13,745)
+       curDebtDue scheduled current-debt maturity that round (R3 6,950)
+       wcChange   working-capital swing = op cash - net - depreciation
+       invCarry   inventory carrying cost from the proforma
+       otherFees  the non-HR part of Capsim's "Other" line */
+  fin:Array.from({length:NR},(_,r)=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0,
+    cashStart:[3431,752,13745][r], curDebtDue:[0,0,6950][r]!=null?[0,0,6950][r]:0,
+    wcChange:[-5076,5796,-5352][r]!=null?[-5076,5796,-5352][r]:0,
+    invCarry:[0,1190,1449][r]!=null?[0,1190,1449][r]:0,
+    otherFees:[30,0,0][r]!=null?[30,0,0][r]:0}))};
  /* the sim's committed decisions are the baseline everything is measured against */
  /* Human Resources is a company-level spend, not per product. R1 the module was
     inactive; R2 the team put in $3,600; R3 defaults to the recommended $4,500. */
- st.hr=[{mfg:0,sci:0,sales:0},{mfg:1000,sci:2000,sales:600},{mfg:1500,sci:2000,sales:1000}];
+ st.hr=[{mfg:0,sci:0,sales:0},{mfg:1000,sci:2000,sales:600},{mfg:1400,sci:1500,sales:800}];
  while(st.hr.length<NR) st.hr.push({mfg:0,sci:0,sales:0});
  st.base=JSON.parse(JSON.stringify({products:st.products,fin:st.fin,hr:st.hr}));
  return st;}
@@ -479,23 +488,55 @@ function balances(){
  }
  return out;}
 const hrSpend=r=>{const h=(S.hr&&S.hr[r])||{};return (h.mfg||0)+(h.sci||0)+(h.sales||0);};
+/* Laid out to match Capsim's own income statement line for line, so the two
+   reconcile. Three items cannot be derived and are read off the proforma into
+   per-round inputs: inventory carry, any non-HR "other" fees, and the working-
+   capital swing used for operating cash. HR spend is the "Other" line — in this
+   sim the two are the same number. */
 function pnlRaw(r,ltDebt,f){
- let rev=0,vc=0,fx=0,inv=0;
+ let rev=0,labmat=0,dep=0,promo=0,sales=0,rd=0,inv=0;
  S.products.forEach((P,i)=>{if(r<P.launch)return;const c=P.rounds[r],u=units(i,r);
-  rev+=u*c.price;vc+=u*varCost(i,r);
-  fx+=(c.promo||0)+(c.sales||0)+(c.rdc||0)+((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
+  rev+=u*c.price; labmat+=u*varCost(i,r);
+  dep+=((c.cap||0)*(S.cal.capCost+S.cal.autoCost*(c.auto||0)))/S.cal.depYears;
+  promo+=(c.promo||0); sales+=(c.sales||0); rd+=(c.rdc||0);
   inv+=plantInvest(i,r);});
- fx+=hrSpend(r);
- const cm=rev-vc,ebit=cm-fx;
+ const carry=(f.invCarry||0);
+ const admin=rev*(S.cal.adminRate||0);
+ const other=hrSpend(r)+(f.otherFees||0);       // Capsim's "Other" = HR + fees
+ const cm=rev-labmat-carry;
+ const sga=promo+sales+rd+admin;
+ const netMargin=cm-dep-sga;
+ const ebit=netMargin-other;
+ const fx=dep+sga+other;                          // keeps cm - fx = ebit for the CBA
  const int=(f.curDebt||0)*S.cal.interestST + (ltDebt||0)*S.cal.interestLT;
  const fee=(f.bondR||0)*S.cal.bondFee + (f.stockI||0)*S.cal.stockFee;
- const pre=ebit-int-fee,tax=Math.max(0,pre)*S.cal.taxRate,net=pre-tax;
- return {rev,vc,cm,fx,ebit,int,fee,pre,tax,net,inv,cmPct:rev>0?cm/rev:0,ros:rev>0?net/rev:0};}
+ const pre=ebit-int-fee, tax=Math.max(0,pre)*S.cal.taxRate;
+ const psh=Math.max(0,pre-tax)*(S.cal.profitShareRate||0);
+ const net=pre-tax-psh;
+ return {rev,vc:labmat+carry,labmat,carry,dep,promo,sales,rd,admin,sga,other,
+  cm,fx,netMargin,ebit,int,fee,pre,tax,psh,net,inv,
+  cmPct:rev>0?cm/rev:0,ros:rev>0?net/rev:0};}
+
+/* Cash flow, mirroring the sim: start + operating + investing + financing.
+   Operating = net + depreciation + the working-capital swing (an input, because
+   inventory/AR/AP dollar balances are not tracked here). Starting cash is
+   anchored to the actual close of the prior round where we have it, otherwise it
+   chains from the computed close. */
+function cashRow(r){
+ const p=pnl(r), f=S.fin[r]||{}, b=balances()[r];
+ const start = (f.cashStart!=null) ? f.cashStart
+   : (r>0 ? cashRow(r-1).close : (S.open.cash||0));
+ const op = p.net + p.dep + (f.wcChange||0);
+ const investCash = -p.inv;
+ const finCash = (f.bondI||0)-(f.bondR||0)+(f.stockI||0)-(f.stockR||0)
+   - (b.divTot||0) - (f.curDebtDue||0);
+ const close = start + op + investCash + finCash;
+ return {start,op,invest:investCash,fin:finCash,close};}
 function pnl(r){
  let lt=S.open.ltDebt;
  for(let k=0;k<=r;k++){const f=S.fin[k]||{};lt=lt+(f.bondI||0)-(f.bondR||0);}
  return pnlRaw(r,lt,S.fin[r]||{});}
-const money=v=>v<0?"($"+Math.abs(Math.round(v)).toLocaleString()+")":"$"+Math.round(v).toLocaleString();
+const money=v=>{v=Math.round(v)||0;return v<0?"($"+Math.abs(v).toLocaleString()+")":"$"+v.toLocaleString();};
 const pct=v=>(100*v).toFixed(1)+"%";
 const EST='<span class="estmark" title="Estimated — calibrate on the Calibration tab">&bull;</span>';
 
@@ -1037,17 +1078,58 @@ function tFin(r){
    ${ob("equity","Equity")}${ob("ltDebt","Long-term debt")}${ob("assets","Total assets")}
    ${ob("shares","Shares outstanding (000s)")}${ob("price","Share price $")}${ob("cash","Cash")}
   </div></div>
-  <div class="col"><div class="card"><h2>Income statement — ${R(r)} (000s)</h2><table>
+  <div class="col"><div class="card"><h2>Proforma inputs — ${R(r)} (000s)</h2>
+   <p class="sub">Four figures Capsim computes from things the planner does not track. Read them off
+    the sim's proforma (Reports ▸ Proforma) so the statements below tie out.</p>
+   ${["invCarry","Inventory carry","curDebtDue","Current debt due this year","wcChange","Working-capital change (for op cash)","cashStart","Starting cash (actual)"]
+     .reduce((a,x,i,arr)=>{if(i%2)return a;const k=x,l=arr[i+1];const v=(S.fin[r]||{})[k];
+      return a+`<div class="sld" style="grid-template-columns:230px 1fr"><div class="lab">${l}</div>
+       <div class="track"><input class="bub" style="width:120px" type="number" step="1"
+        value="${v==null?'':v}" data-fin2="${k}"></div></div>`;},"")}
+   <div class="note">Leave <b>starting cash</b> blank on future rounds and it chains from the prior
+    round's close. Inventory carry sits in variable costs; the other three drive the cash flow.</div>
+  </div>
+  <div class="card"><h2>Income statement — ${R(r)} (000s)</h2>
+  <p class="sub">Laid out like the sim's proforma so you can read them side by side. The three grey
+   rows are inputs from the proforma — the planner can't derive them.</p><table>
   <tr><th class="l">Line</th><th>Amount</th><th class="l">Basis</th></tr>
   <tr><td class="l">Sales</td><td class="num">${money(p.rev)}</td><td class="l" style="color:var(--mut)">units × price</td></tr>
-  <tr><td class="l">Variable costs</td><td class="num">${money(-p.vc)}</td><td class="l" style="color:var(--mut)">units × (material + labour)</td></tr>
+  <tr><td class="l">Labour + material</td><td class="num">${money(-p.labmat)}</td><td class="l" style="color:var(--mut)">units × var cost</td></tr>
+  <tr><td class="l">Inventory carry</td><td class="num">${money(-p.carry)}</td><td class="l" style="color:var(--est)">from proforma ▸</td></tr>
   <tr class="tot"><td class="l">Contribution margin</td><td class="num">${money(p.cm)}</td><td class="l" style="color:var(--mut)">${pct(p.cmPct)}</td></tr>
-  <tr><td class="l">Period costs</td><td class="num">${money(-p.fx)}</td><td class="l" style="color:var(--mut)">promo + sales + R&amp;D + depreciation + HR</td></tr>
+  <tr><td class="l">Depreciation</td><td class="num">${money(-p.dep)}</td><td class="l" style="color:var(--mut)">plant ÷ ${S.cal.depYears} yr</td></tr>
+  <tr><td class="l">R&amp;D</td><td class="num">${money(-p.rd)}</td><td class="l" style="color:var(--mut)">per-product entry</td></tr>
+  <tr><td class="l">Promotion</td><td class="num">${money(-p.promo)}</td><td class="l" style="color:var(--mut)">marketing</td></tr>
+  <tr><td class="l">Sales budget</td><td class="num">${money(-p.sales)}</td><td class="l" style="color:var(--mut)">marketing</td></tr>
+  <tr><td class="l">Admin</td><td class="num">${money(-p.admin)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.adminRate)} of sales</td></tr>
+  <tr class="tot"><td class="l">Net margin</td><td class="num">${money(p.netMargin)}</td><td></td></tr>
+  <tr><td class="l">Other (HR + fees)</td><td class="num">${money(-p.other)}</td><td class="l" style="color:var(--mut)">HR ${money(hrSpend(r))}${(S.fin[r]&&S.fin[r].otherFees)?" + fees "+money(S.fin[r].otherFees):""}</td></tr>
   <tr><td class="l"><b>EBIT</b></td><td class="num"><b>${money(p.ebit)}</b></td><td></td></tr>
   <tr><td class="l">Interest</td><td class="num">${money(-p.int)}</td><td class="l" style="color:var(--mut)">LT ${money(b.lt)} @ ${pct(S.cal.interestLT)} + ST @ ${pct(S.cal.interestST)}</td></tr>
   <tr><td class="l">Issue / retire fees</td><td class="num">${money(-p.fee)}</td><td class="l" style="color:var(--mut)">stock ${pct(S.cal.stockFee)}, bond ${pct(S.cal.bondFee)}</td></tr>
   <tr><td class="l">Taxes</td><td class="num">${money(-p.tax)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.taxRate)}</td></tr>
+  <tr><td class="l">Profit sharing</td><td class="num">${money(-p.psh)}</td><td class="l" style="color:var(--mut)">${pct(S.cal.profitShareRate)} of after-tax</td></tr>
   <tr class="tot"><td class="l">Net profit</td><td class="num">${money(p.net)}</td><td></td></tr></table></div>
+
+  <div class="card"><h2>Cash flow — ${R(r)} (000s)</h2>
+  <p class="sub">The number that was missing. Mirrors the sim: start + operating + investing +
+   financing = close.</p>
+  ${(()=>{const cf=cashRow(r),f=S.fin[r]||{};return `<table>
+   <tr><th class="l">Line</th><th>Amount</th><th class="l">Basis</th></tr>
+   <tr><td class="l">Starting cash</td><td class="num">${money(cf.start)}</td>
+    <td class="l" style="color:${f.cashStart!=null?'var(--est)':'var(--mut)'}">${f.cashStart!=null?'anchored to actual ▸':'prior round close'}</td></tr>
+   <tr><td class="l">Net profit</td><td class="num">${money(p.net)}</td><td class="l" style="color:var(--mut)">from above</td></tr>
+   <tr><td class="l">+ Depreciation</td><td class="num">${money(p.dep)}</td><td class="l" style="color:var(--mut)">non-cash, added back</td></tr>
+   <tr><td class="l">+ Working-capital change</td><td class="num">${money(f.wcChange||0)}</td><td class="l" style="color:var(--est)">from proforma ▸</td></tr>
+   <tr class="tot"><td class="l">Cash from operating</td><td class="num">${money(cf.op)}</td><td></td></tr>
+   <tr><td class="l">Cash from investing</td><td class="num">${money(cf.invest)}</td><td class="l" style="color:var(--mut)">− plant investment</td></tr>
+   <tr><td class="l">Cash from financing</td><td class="num">${money(cf.fin)}</td><td class="l" style="color:var(--mut)">issues − retires − div − debt due</td></tr>
+   <tr class="tot" style="background:#fef9e7"><td class="l"><b>Closing cash</b></td>
+    <td class="num"><b style="color:${cf.close<0?'var(--bad)':cf.close<2000?'var(--warn)':'var(--good)'}">${money(cf.close)}</b></td>
+    <td class="l" style="color:var(--mut)">31 Dec ${YR0+r}</td></tr></table>`;})()}
+   <div class="note">${cashRow(r).close<0?'<b style="color:var(--bad)">Negative — the sim would force an emergency loan.</b> ':''}Reconciles to the sim's Finance screen when the three grey inputs and your decisions match it.
+    Read <b>working-capital change</b> and <b>inventory carry</b> off the proforma; the rest is computed.</div>
+  </div>
   <div class="card"><h2>Balance carried forward</h2><table>
   <tr><th class="l">Item</th><th>Start of round</th><th>End of round</th></tr>
   <tr><td class="l">Equity</td><td class="num">${pb?money(pb.eq):money(S.open.equity)}</td>
@@ -1931,6 +2013,11 @@ function wire(){
    S.fin[S.round][k]=v;render();});});
  document.querySelectorAll('[data-cal]').forEach(el=>el.addEventListener("change",()=>{
   let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));
+ document.querySelectorAll('[data-fin2]').forEach(el=>el.addEventListener("change",()=>{
+  const k=el.dataset.fin2, raw=el.value.trim();
+  S.fin[S.round]=S.fin[S.round]||{};
+  if(raw===""){ delete S.fin[S.round][k]; } else { const v=parseFloat(raw); if(!isNaN(v)) S.fin[S.round][k]=v; }
+  render();}));
  document.querySelectorAll('[data-hr]').forEach(el=>el.addEventListener("change",()=>{
   const k=el.dataset.hr; let v=parseFloat(el.value); if(isNaN(v)||v<0)v=0;
   S.hr[S.round]=S.hr[S.round]||{mfg:0,sci:0,sales:0}; S.hr[S.round][k]=v; render();}));
