@@ -194,7 +194,16 @@ const idealAt=(i,r)=>{const c=centreAt(i,r);return{p:+(c.p+SEG[i].ox).toFixed(2)
 const priceLo=(i,r)=>SEG[i].plo+PD*r, priceHi=(i,r)=>SEG[i].phi+PD*r;
 const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
 
-const DEF_CAL={laborBase:13.68,laborSlope:1.2467,shiftPremium:.5,capCost:6,autoCost:4,
+/* Labour is not one number. Capsim raises the wage every year, so the same
+   automation costs more each round: $8.97 at automation 3.0 in R1, $9.19 in R2,
+   $9.93 in R3. `wage` holds the observed figure per round — read it straight off
+   the Production screen from any product sitting at automation 3.0 — and future
+   rounds are projected forward at `wageInfl`. `autoSave` is the share of the
+   wage each automation point removes, which has held at 0.125 all three rounds.
+   `prodAdj` is how far actual production falls short of the order; it only
+   affects the second-shift blend. */
+const DEF_CAL={wage:[8.97,9.19,9.93],wageInfl:.05,autoSave:.125,prodAdj:.025,
+ shiftPremium:.5,capCost:6,autoCost:4,
  awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
  taxRate:.35,depYears:15,interestLT:.125,interestST:.1025,stockFee:.05,bondFee:.015};
 /* Opening balances, derived from the Round 0 Courier's Selected Financial Statistics:
@@ -217,37 +226,37 @@ const DEF_OPEN={assets:96260,equity:47891,ltDebt:30000,cash:3500,shares:2000,pri
    Round index 0 = R1/2027.                                                 */
 function seed(){
  const P=[
-  {n:"Daze",seg:0,sp:5.5,ss:14.5,sm:17500,sa:3.1,m0:11.59,
+  {n:"Daze",seg:0,sp:5.5,ss:14.5,sm:17500,sa:3.1,sau:4.0,m0:11.59,
    rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
    mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[24.50,1700,2000,1250]],
    pd:[[1380,1800,4.5],[1200,1700,4.5],[1200,1700,4.5]],
    rdc:[0,0,0], mat:[9.80,8.95,8.46], inv:[0,404,338], aw:[.728,.890,.890], ac:[.61,.72,.72]},
 
-  {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,m0:7.81,
+  {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,sau:5.0,m0:7.81,
    rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
    mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[19.50,1900,1700,2000]],
    pd:[[1770,1400,5.5],[2100,1400,5.5],[2100,1400,5.5]],
    rdc:[0,0,0], mat:[6.45,5.78,5.43], inv:[0,0,0], aw:[.706,.909,.909], ac:[.40,.54,.54]},
 
-  {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,m0:15.98,
+  {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,sau:3.0,m0:15.98,
    rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[10.3,9.9,25000,""]],
    mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[39.00,1700,1700,480]],
    pd:[[510,800,3.0],[420,800,3.0],[420,800,3.0]],
    rdc:[0,860,0], mat:[16.52,16.52,15.81], inv:[0,128,0], aw:[.707,.876,.876], ac:[.54,.64,.64]},
 
-  {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,m0:15.87,
+  {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,sau:3.0,m0:15.87,
    rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,13.0,24100,""]],
    mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.75,800,800,400]],
    pd:[[430,600,3.0],[300,600,3.0],[300,600,3.0]],
    rdc:[0,476,0], mat:[15.06,14.44,13.83], inv:[0,103,0], aw:[.664,.596,.596], ac:[.39,.64,.64]},
 
-  {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,m0:13.62,
+  {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,sau:3.0,m0:13.62,
    rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.0,9.5,18000,""]],
    mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.00,1600,1600,530]],
    pd:[[410,600,3.0],[600,600,3.0],[600,600,3.0]],
    rdc:[0,765,0], mat:[12.62,12.58,11.99], inv:[0,1,3], aw:[.639,.810,.810], ac:[.46,.49,.49]},
 
-  {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,m0:16.82,
+  {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,sau:2.0,m0:16.82,
    rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"]],
    mk:[[18.50,0,0,0],[18.50,0,0,0],[18.50,0,0,0]],
    pd:[[0,0,2.0],[0,200,2.0],[0,200,2.0]],
@@ -256,7 +265,7 @@ function seed(){
  const at=(a,r)=>a[Math.min(r,a.length-1)];
  const st={round:2,cal:{...DEF_CAL},open:{...DEF_OPEN},
   products:P.map(o=>({name:o.n,key:o.n,seg:o.seg,launch:o.launch||0,added:false,
-   sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,m0:o.m0,
+   sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,sau:o.sau,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>{
     const d=at(o.rd,r), m=at(o.mk,r), p=at(o.pd,r);
     return {p:d[0],s:d[1],m:d[2],date:r<o.rd.length?d[3]:"",
@@ -391,7 +400,29 @@ function ageInfo(pi){
   end.push(e);prev=nx;}
  return {end,start};}
 const ages=pi=>ageInfo(pi).end;
-const laborUnit=(a,sh)=>Math.max(0,S.cal.laborBase-S.cal.laborSlope*a)*(1+S.cal.shiftPremium*(sh||0));
+/* Automation ordered in a round is installed for the NEXT one, so the level a
+   product actually runs at is the previous round's decision. Verified against
+   R1: Daze was bought up to 4.5 but produced at 4.0 all year, and its labour
+   cost says so. */
+function opAuto(pi,r){
+ const P=S.products[pi];
+ if(r<=P.launch) return P.sau!=null?P.sau:(P.rounds[r]?P.rounds[r].auto:3);
+ return P.rounds[r-1].auto;}
+/* Wage at automation 3.0 for round r, observed where we have it, projected after. */
+function wageAt(r){
+ const w=S.cal.wage||[];
+ if(w[r]!=null) return w[r];
+ const last=w.length-1;
+ return last<0?9.93:w[last]*Math.pow(1+(S.cal.wageInfl||0),r-last);}
+/* Second shift is a blend, not a flat surcharge: only the units above capacity
+   pay the premium, so it is diluted across the whole run. */
+function shiftBlend(sc,cap,r){
+ const prod=(sc||0)*(1-(S.cal.prodAdj||0));
+ if(prod<=0||cap<=0) return 1;
+ const second=Math.max(0,prod-cap);
+ return 1+(S.cal.shiftPremium||0)*second/prod;}
+function laborUnit(a,sc,cap,r){
+ return Math.max(0,wageAt(r)*(1-(S.cal.autoSave||0)*((a||0)-3)))*shiftBlend(sc,cap,r);}
 const shiftPct=(sc,cap)=>cap>0?Math.max(0,Math.min(1,(sc-cap)/cap)):0;
 const awareGain=b=>S.cal.awareMax*(1-Math.pow(2,-b/S.cal.awareHalf));
 const accessGain=b=>S.cal.accessMax*(1-Math.pow(2,-b/S.cal.accessHalf));
@@ -415,7 +446,7 @@ function survey(pi,r,si){
 const segDemand=(si,r)=>Math.round(SEG[si].u26*Math.pow(1+SEG[si].g,r+1));
 const units=(pi,r)=>S.products[pi].rounds[r].fc||0;
 const varCost=(pi,r)=>{const c=S.products[pi].rounds[r];
- return (c.mat||0)+laborUnit(c.auto,shiftPct(c.sched,c.cap));};
+ return (c.mat||0)+laborUnit(opAuto(pi,r),c.sched,c.cap,r);};
 function plantInvest(pi,r){const c=S.products[pi].rounds[r],pc=r>0?S.products[pi].rounds[r-1]:c;
  return Math.max(0,(c.cap||0)-(pc.cap||0))*(S.cal.capCost+S.cal.autoCost*(c.auto||0))
       + Math.max(0,(c.auto||0)-(pc.auto||0))*S.cal.autoCost*(pc.cap||0);}
@@ -862,7 +893,7 @@ function tMkt(r){
   on your forecast.</div></div>`;}
 
 function tProd(r){
- const P=S.products[sel],c=P.rounds[r],sh=shiftPct(c.sched,c.cap),lab=laborUnit(c.auto,sh);
+ const P=S.products[sel],c=P.rounds[r],sh=shiftPct(c.sched,c.cap),lab=laborUnit(opAuto(sel,r),c.sched,c.cap,r);
  const vc=(c.mat||0)+lab,cm=c.price>0?(c.price-vc)/c.price:0,util=c.cap>0?c.sched/c.cap:0;
  let h=`<div class="row"><div class="col"><div class="card"><h2>Production — ${R(r)}</h2>${ptabs()}
   ${sld("sched","Production schedule","green = first shift; amber = second shift",c.sched,0,3600,10,
@@ -900,7 +931,7 @@ function tProd(r){
   <th>2nd shift</th><th>Labour</th><th>Material</th><th>Var cost</th><th>CM%</th><th>Plant $K</th></tr>`;
  let tot=0;
  S.products.forEach((P2,i)=>{if(r<P2.launch)return;const c2=P2.rounds[r];
-  const s2=shiftPct(c2.sched,c2.cap),l2=laborUnit(c2.auto,s2),v2=(c2.mat||0)+l2;
+  const s2=shiftPct(c2.sched,c2.cap),l2=laborUnit(opAuto(i,r),c2.sched,c2.cap,r),v2=(c2.mat||0)+l2;
   const m2=c2.price>0?(c2.price-v2)/c2.price:0,pi2=plantInvest(i,r);tot+=pi2;
   h+=`<tr class="${i===sel?'hi':''}"><td class="name">${P2.name}</td>
    <td class="num">${c2.cap.toLocaleString()}</td><td class="num">${c2.auto}</td>
@@ -918,8 +949,23 @@ function tProd(r){
   if(c2.m<s2.mlo||c2.m>s2.mhi)fl.push(`<div class="flag w">${P2.name}: MTBF ${c2.m.toLocaleString()}
    is outside ${s2.n}'s ${s2.mlo.toLocaleString()}–${s2.mhi.toLocaleString()} band.</div>`);});
  h+=fl.length?fl.join(""):'<div class="flag o">No capacity or reliability violations this round.</div>';
- return h+`<div class="note">Labour $/unit = ${S.cal.laborBase} − ${S.cal.laborSlope} × automation,
-  fitted to your Round 2 board and reproducing it exactly. Adjust on Calibration if the sim diverges.</div></div>`;}
+ const wr=wageAt(r), obs=(S.cal.wage||[])[r]!=null;
+ return h+`<div class="note"><b>Labour for ${R(r)} is built on a wage of ${$m(wr)} per unit at
+  automation 3.0</b>${obs?", read off the sim":", <b style=\"color:var(--warn)\">projected, not observed</b>"}.
+  Each automation point takes off ${(S.cal.autoSave*100).toFixed(1)}% of that, and second-shift units
+  carry a ${pct(S.cal.shiftPremium)} premium diluted across the whole run.
+  <br><br>
+  <b>Automation you buy now runs next year.</b> ${S.products[sel].name} is producing at
+  ${opAuto(sel,r).toFixed(1)} this round even though the slider reads
+  ${(S.products[sel].rounds[r].auto||0).toFixed(1)} — you pay for the upgrade in ${R(r)} and collect
+  the lower labour from ${R(Math.min(r+1,NR-1))}. That lag is why one round always understates an
+  automation investment.
+  <br><br>
+  <b>Keeping this accurate costs you one number a round.</b> Capsim raises the wage every year
+  (${$m(8.97)} in R1, ${$m(9.19)} in R2, ${$m(9.93)} in R3), so a single fitted constant goes stale
+  immediately. When a round opens, look at any product sitting at automation 3.0 on the sim's
+  Production screen — Duck, Dot and Dune all are — and type its labour cost into the wage row on the
+  <b>Calibration</b> tab. Everything else follows from automation and shift.</div></div>`;}
 
 function tFin(r){
  const p=pnl(r),f=S.fin[r],B=balances(),b=B[r],pb=r>0?B[r-1]:null,pp=r>0?pnl(r-1):null;
@@ -1090,9 +1136,27 @@ function tCal(){
   <p class="sub">Everything marked ${EST} comes from these. As real results post, adjust until the
    model matches the sim.</p>
   <div class="row"><div class="col"><table><tr><th class="l" colspan="2">Production</th></tr>
-  ${f("laborBase","Labour $/unit at automation 0")}${f("laborSlope","Labour saved per automation point")}
-  ${f("shiftPremium","Second-shift premium")}${f("capCost","Capacity cost $/unit",.5)}
-  ${f("autoCost","Automation $/point/unit",.5)}${f("depYears","Depreciation life (years)",1)}</table></div>
+  ${f("autoSave","Wage removed per automation point")}
+  ${f("shiftPremium","Second-shift premium")}${f("prodAdj","Production shortfall vs order")}
+  ${f("capCost","Capacity cost $/unit",.5)}
+  ${f("autoCost","Automation $/point/unit",.5)}${f("depYears","Depreciation life (years)",1)}</table>
+
+  <table style="margin-top:12px"><tr><th class="l" colspan="3">Labour wage by round</th></tr>
+  <tr><th class="l">Round</th><th>$/unit at automation 3.0</th><th class="l">Source</th></tr>
+  ${Array.from({length:NR},(_,r)=>{const obs=(C.wage||[])[r]!=null;
+   return `<tr class="${r===S.round?'hi':''}"><td class="name">${R(r)}</td>
+    <td><input class="bub" type="number" step="0.01" value="${wageAt(r).toFixed(2)}" data-wage="${r}"></td>
+    <td class="l">${obs?'<span class="pill yes">read from the sim</span>'
+      :`<span class="pill rough">projected at ${(C.wageInfl*100).toFixed(0)}%</span>`}</td></tr>`;}).join("")}
+  <tr><td class="l">Projection rate</td><td>
+   <input class="bub" type="number" step="0.005" value="${C.wageInfl}" data-cal="wageInfl"></td>
+   <td class="l" style="color:var(--mut)">used for rounds with no observed figure</td></tr>
+  </table>
+  <div class="note"><b>This is the one number to keep current.</b> Capsim raises the wage every year,
+   so labour cost drifts even when you change nothing. Open the sim's Production screen, read the
+   labour cost of any product at automation 3.0, and type it into the row for that round. Typing a
+   value marks it observed; clearing it back to the projection is not possible from here, so only
+   enter figures you have actually seen.</div></div>
   <div class="col"><table><tr><th class="l" colspan="2">Marketing response ${EST}</th></tr>
   ${f("awareMax","Awareness ceiling")}${f("awareHalf","Promo $K for half ceiling",50)}
   ${f("awarenessKeep","Awareness kept each year")}${f("accessMax","Accessibility ceiling")}
@@ -1154,7 +1218,7 @@ function rpt3(){return `
   <tr><td class="num">4</td><td class="name">Cut Duck's price to $38.00</td><td class="l">Marketing</td><td class="num">$0</td>
    <td class="l">The High End band moved down to $28.50&ndash;$38.50. At $39.00 Duck is now priced outside its own segment.</td></tr>
   <tr><td class="num">5</td><td class="name">Dell automation 5.5 &rarr; 7.0</td><td class="l">Production</td><td class="num">$8,400</td>
-   <td class="l">Low End is 53% price-driven and Dell will never be repositioned, so automation carries no flexibility cost here.</td></tr>
+   <td class="l">Low End is 53% price-driven and Dell will never be repositioned, so automation carries no flexibility cost here. The plant runs at the new level from R4, so 2029 shows the cost and 2030 onward shows the saving.</td></tr>
   <tr><td class="num">6</td><td class="name">Reposition Dune to 6.1 / 7.6 and raise its order</td><td class="l">R&amp;D / Production</td><td class="num">$0</td>
    <td class="l">2.20 off ideal in a segment where position is 43%. It ran 100% of first shift, but second shift takes it to 1,200 without buying plant.</td></tr>
   <tr><td class="num">7</td><td class="name">Commit Dot to Traditional</td><td class="l">R&amp;D / Marketing</td><td class="num">R&amp;D</td>
@@ -1382,7 +1446,7 @@ function rpt3(){return `
   <tr><td class="name">Daze</td><td class="num">1,700</td><td class="num">1,700</td><td class="num">4.5</td><td class="num">4.5</td><td class="num">900</td><td class="num">53%</td>
    <td class="l">Inventory of 338 already on hand against a 1,150 forecast. Do not add plant to a product we are transitioning.</td></tr>
   <tr><td class="name">Dell</td><td class="num">1,400</td><td class="num">1,400</td><td class="num">5.5</td><td class="num"><b>7.0</b></td><td class="num"><b>2,450</b></td><td class="num">175%</td>
-   <td class="l">Order up to roughly 75% second shift. Automation up 1.5 points at $8,400: Low End is 53% price, and Dell will never be repositioned, so there is no flexibility to lose.</td></tr>
+   <td class="l">Order up to roughly 75% second shift. Automation up 1.5 points at $8,400: Low End is 53% price, and Dell will never be repositioned, so there is no flexibility to lose. Capsim installs it for 2030, so budget the cash now and expect the labour saving next year — about $25,000 of it by R8 on the Cost / benefit tab.</td></tr>
   <tr><td class="name">Duck</td><td class="num">800</td><td class="num">800</td><td class="num">3.0</td><td class="num">3.0</td><td class="num"><b>780</b></td><td class="num">98%</td>
    <td class="l">Duck stocked out at 543 against 591 wanted. Plant runs to 1,600 on second shift, so there is no reason to be timid. Hold automation low: Duck is our most actively redesigned product.</td></tr>
   <tr><td class="name">Dot</td><td class="num">600</td><td class="num">600</td><td class="num">3.0</td><td class="num">3.0</td><td class="num"><b>620</b></td><td class="num">103%</td>
@@ -1677,6 +1741,7 @@ function tCBA(){
  h+=`<div class="card"><h2>Investment paybacks</h2>
   <p class="sub">Plant and automation, where cost and saving are both exact. Automation cuts labour
    per unit for as long as you own the plant, so one round always looks worse than six.
+   Automation ordered now runs next year, so the current round often shows nothing saved.
    <b>These columns are cash</b>: labour saved, against cash paid. The net-profit column in the table
    above is the accounting view of the same move, lower because it also carries the extra depreciation
    and tax. Neither is wrong; they answer different questions.</p>
@@ -1702,7 +1767,9 @@ function tCBA(){
    <td class="num" style="color:${sign(sNow)}">${dm(sNow)}</td>
    <td class="num" style="color:${sign(sAll)}"><b>${dm(sAll)}</b></td>
    <td class="l">${yrs?(sAll>cash?`<b style="color:var(--good)">returns its cash in ${yrs.toFixed(1)} yr</b>`
-     :`${yrs.toFixed(1)} yr on cash, still short by ${R(NR-1)}`):"no labour saving"}</td></tr>`;});
+     :`${yrs.toFixed(1)} yr on cash, still short by ${R(NR-1)}`)
+     :sAll>0?`saving starts ${R(Math.min(r+1,NR-1))} — ${sAll>cash?`<b style="color:var(--good)">clears ${money(cash)} by ${R(NR-1)}</b>`:`${money(sAll)} by ${R(NR-1)}`}`
+     :"no labour saving"}</td></tr>`;});
  if(!any) h+=`<tr><td class="l" colspan="7" style="color:var(--mut);font-style:italic">
   No capacity or automation change in ${R(r)}.</td></tr>`;
  h+=`</table><div class="note"><b>Second shift is the alternative you are choosing against.</b>
@@ -1748,7 +1815,7 @@ function wire(){
    const q=idealAt(2,S.round);
    let n=0,nm;do{nm="Product "+(++n);}while(S.products.some(p=>p.name===nm));
    S.products.push({name:nm,key:nm,seg:2,launch:S.round,added:true,
-    sp:q.p,ss:q.s,sm:20000,sa:0,m0:14,
+    sp:q.p,ss:q.s,sm:20000,sa:0,sau:3,m0:14,
     rounds:Array.from({length:NR},()=>({p:q.p,s:q.s,m:20000,date:"",price:35,promo:1000,sales:1000,
      fc:0,cap:400,auto:3,sched:0,inv:0,mat:14,rdc:0,aware:0,access:0}))});
    sel=S.products.length-1;
@@ -1826,6 +1893,12 @@ function wire(){
    S.fin[S.round][k]=v;render();});});
  document.querySelectorAll('[data-cal]').forEach(el=>el.addEventListener("change",()=>{
   let v=parseFloat(el.value);if(isNaN(v))v=0;S.cal[el.dataset.cal]=v;render();}));
+ document.querySelectorAll('[data-wage]').forEach(el=>el.addEventListener("change",()=>{
+  const r=+el.dataset.wage; let v=parseFloat(el.value);
+  if(isNaN(v)||v<=0) return render();
+  S.cal.wage=S.cal.wage||[];
+  while(S.cal.wage.length<r) S.cal.wage.push(wageAt(S.cal.wage.length));
+  S.cal.wage[r]=v; render();}));
  document.querySelectorAll('[data-open]').forEach(el=>el.addEventListener("change",()=>{
   let v=parseFloat(el.value);if(isNaN(v))v=0;S.open[el.dataset.open]=v;render();}));}
 
