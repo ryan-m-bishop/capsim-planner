@@ -221,31 +221,31 @@ function seed(){
    rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
    mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[24.50,1700,2000,1250]],
    pd:[[1380,1800,4.5],[1200,1700,4.5],[1200,1700,4.5]],
-   mat:[9.80,8.95,8.46], inv:[0,404,338], aw:[.73,.89,.89], ac:[.61,.72,.72]},
+   mat:[9.80,8.95,8.46], inv:[0,404,338], aw:[.728,.890,.890], ac:[.61,.72,.72]},
 
   {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,m0:7.81,
    rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
    mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[19.50,1900,1700,2000]],
    pd:[[1770,1400,5.5],[2100,1400,5.5],[2100,1400,5.5]],
-   mat:[6.45,5.78,5.43], inv:[0,0,0], aw:[.71,.91,.91], ac:[.40,.54,.54]},
+   mat:[6.45,5.78,5.43], inv:[0,0,0], aw:[.706,.909,.909], ac:[.40,.54,.54]},
 
   {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,m0:15.98,
    rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[10.3,9.9,25000,""]],
    mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[39.00,1700,1700,480]],
    pd:[[510,800,3.0],[420,800,3.0],[420,800,3.0]],
-   mat:[16.52,16.52,15.81], inv:[0,128,0], aw:[.71,.88,.88], ac:[.54,.64,.64]},
+   mat:[16.52,16.52,15.81], inv:[0,128,0], aw:[.707,.876,.876], ac:[.54,.64,.64]},
 
-  {n:"Dot",seg:3,sp:9.4,ss:15.5,sm:25000,sa:2.5,m0:15.87,
+  {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,m0:15.87,
    rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,13.0,24100,""]],
    mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.75,800,800,400]],
    pd:[[430,600,3.0],[300,600,3.0],[300,600,3.0]],
-   mat:[15.06,14.44,13.83], inv:[0,103,0], aw:[.66,.60,.60], ac:[.39,.64,.64]},
+   mat:[15.06,14.44,13.83], inv:[0,103,0], aw:[.664,.596,.596], ac:[.39,.64,.64]},
 
   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,m0:13.62,
    rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.0,9.5,18000,""]],
    mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.00,1600,1600,530]],
    pd:[[410,600,3.0],[600,600,3.0],[600,600,3.0]],
-   mat:[12.62,12.58,11.99], inv:[0,1,3], aw:[.64,.81,.81], ac:[.46,.49,.49]},
+   mat:[12.62,12.58,11.99], inv:[0,1,3], aw:[.639,.810,.810], ac:[.46,.49,.49]},
 
   {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,m0:16.82,
    rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"]],
@@ -291,11 +291,13 @@ const ACT={
  0:{sales:109849,cmPct:.2869,ebit:5014,interest:5421,net:-265,cum:3921,
     ros:-.002,roa:-.003,roe:-.006,lev:2.01,share:.191,stock:29.63,cash:752,emg:0,
     u:{Daze:1151,Dell:1791,Duck:417,Dot:400,Dune:468},
+    pot:{Daze:1147,Dell:2020,Duck:417,Dot:401,Dune:451},
     so:{Dell:true},
     ind:{net:-4645,cmPct:.2765,ros:-.045,roe:-.105,emg:8815}},
  1:{sales:123279,cmPct:.3044,ebit:6482,interest:5379,net:703,cum:4623,
     ros:.006,roa:.007,roe:.015,lev:1.99,share:.194,stock:24.98,cash:13745,emg:0,
     u:{Daze:1252,Dell:2074,Duck:543,Dot:400,Dune:590,Dino:0},
+    pot:{Daze:1157,Dell:1947,Duck:591,Dot:511,Dune:424,Dino:0},
     so:{Dell:true,Duck:true,Dot:true},
     ind:{net:-3616,cmPct:.2986,ros:-.034,roe:-.106,emg:3836}}
 };
@@ -1033,22 +1035,25 @@ function tScore(){
    capped by us, not by the market.</p>
   <table><tr><th class="l">Product</th>`;
  Object.keys(ACT).map(Number).sort((a,b)=>a-b).forEach(r=>{
-  h+=`<th>${R(r)} forecast</th><th>${R(r)} sold</th><th>${R(r)} gap</th>`;});
+  h+=`<th>${R(r)} forecast</th><th>${R(r)} sold</th><th>${R(r)} demand</th><th>${R(r)} gap</th>`;});
  h+=`</tr>`;
  S.products.forEach(P=>{h+=`<tr><td class="name">${P.name}</td>`;
   Object.keys(ACT).map(Number).sort((a,b)=>a-b).forEach(r=>{
    const a=ACT[r], k=P.key||P.name, sold=a.u[k], fc=P.rounds[r]?P.rounds[r].fc:0;
    if(sold===undefined){h+=`<td class="num" style="color:var(--mut)">—</td>
-     <td class="num" style="color:var(--mut)">—</td><td class="num" style="color:var(--mut)">—</td>`;return;}
-   const gap=sold-fc, so=a.so[k];
+     <td class="num" style="color:var(--mut)">—</td><td class="num" style="color:var(--mut)">—</td>
+     <td class="num" style="color:var(--mut)">—</td>`;return;}
+   const gap=sold-fc, so=a.so[k], pt=(a.pot||{})[k];
    h+=`<td class="num">${fc.toLocaleString()}</td>
     <td class="num">${sold.toLocaleString()}${so?' <span class="pill no">out</span>':''}</td>
+    <td class="num" style="color:${pt!=null&&pt>sold?'var(--bad)':pt!=null&&pt<sold?'var(--good)':'inherit'}">${pt==null?'—':pt.toLocaleString()}</td>
     <td class="num" style="color:${gap<0?'var(--bad)':'var(--good)'}">${gap>0?'+':''}${gap.toLocaleString()}</td>`;});
   h+=`</tr>`;});
- h+=`</table><div class="note"><b>Read the stockouts, not just the gaps.</b> A product marked
-  <b>out</b> hit the end of its inventory, so its sold figure is a floor rather than real demand.
-  In R2 that was Dell, Duck and Dot, and our actual unit share of 20.2% came in above our potential
-  share of 19.2% — the sim's way of saying we sold everything we built.</div></div>
+ h+=`</table><div class="note"><b>Demand</b> is the Courier's potential-sold figure, summed
+  across every segment the product touched. Above sold (red) is demand we could not serve. Below sold
+  (green) is overflow we picked up because a rival ran out. Dune in R2 is the clearest case: 590 sold
+  against 424 of its own demand, because all four rival Size products stocked out. That is 166 units
+  of borrowed volume, and it will not repeat if they order properly this year.</div></div>
 
   <div class="row"><div class="col"><div class="card"><h2>Cumulative profit</h2>
   ${vbars(cums.map((v,k)=>({label:"R"+(k+1),newV:v/1000,c:v<0?"#dc2626":"#166534"})),
@@ -1114,7 +1119,7 @@ function rpt3(){return `
   <div><b>1.99</b><span>R2 leverage</span></div>
   <div><b>1.21x</b><span>Interest coverage</span></div>
   <div><b>$17,512</b><span>Projected closing cash</span></div>
-  <div><b>27,240</b><span>2029 market units</span></div>
+  <div><b>18 / 30</b><span>R2 industry stockouts</span></div>
  </div>
  <div class="note">Round 2 was the turn. Profit of $703 against an industry average loss of $(3,616),
   the contribution margin target cleared for the first time, leverage lowest in the industry, and a
@@ -1137,13 +1142,47 @@ function rpt3(){return `
    <td class="l">The High End band moved down to $28.50&ndash;$38.50. At $39.00 Duck is now priced outside its own segment.</td></tr>
   <tr><td class="num">5</td><td class="name">Dell automation 5.5 &rarr; 7.0</td><td class="l">Production</td><td class="num">$8,400</td>
    <td class="l">Low End is 53% price-driven and Dell will never be repositioned, so automation carries no flexibility cost here.</td></tr>
-  <tr><td class="num">6</td><td class="name">Reposition Dune to 6.1 / 7.6, add 300 capacity</td><td class="l">R&amp;D / Production</td><td class="num">$5,400</td>
-   <td class="l">2.20 off ideal, ran at 100% utilisation, and Size grows 18.6% this year.</td></tr>
+  <tr><td class="num">6</td><td class="name">Reposition Dune to 6.1 / 7.6 and raise its order</td><td class="l">R&amp;D / Production</td><td class="num">$0</td>
+   <td class="l">2.20 off ideal in a segment where position is 43%. It ran 100% of first shift, but second shift takes it to 1,200 without buying plant.</td></tr>
   <tr><td class="num">7</td><td class="name">Commit Dot to Traditional</td><td class="l">R&amp;D / Marketing</td><td class="num">R&amp;D</td>
    <td class="l">Dot sold 400 units across three segments and stocked out in all three. It needs one home and a real budget.</td></tr>
-  <tr><td class="num">8</td><td class="name">Finish Dino's launch</td><td class="l">All</td><td class="num">$2,800</td>
+  <tr><td class="num">8</td><td class="name">Finish Dino's launch</td><td class="l">All</td><td class="num">$0</td>
    <td class="l">Two rounds of R&amp;D spend, 200 units of idle capacity, no sales, and no marketing decisions entered.</td></tr>
  </table>
+ <div class="note"><b>Total plant spend in this plan is $8,400</b>, all of it Dell's automation. The
+  earlier version of this report proposed $16,600 including capacity for Dune and Dino. The Round 2
+  export showed that was unnecessary: second shift doubles any plant, and none of ours is close to
+  that ceiling. Cash covers the whole plan with no new borrowing.</div>
+</div>
+
+<div class="card">
+ <h2>What the Round 2 export changed</h2>
+ <p class="sub">Two recommendations in the first version of this report were wrong. Both came from
+  reading utilisation as a capacity limit.</p>
+ <div class="flag e">18 of the 30 products in this industry with real volume stocked out in Round 2.
+  Nobody is short of plant. Everybody is under-ordering production.</div>
+ <table>
+  <tr><th class="l">Segment</th><th>Products with volume</th><th>Stocked out</th><th class="l">What it means</th></tr>
+  <tr><td class="name">Performance</td><td class="num">5</td><td class="num" style="color:var(--bad)">5</td>
+   <td class="l">Every single product ran out. Dino launches into the least-served segment in the game.</td></tr>
+  <tr><td class="name">Size</td><td class="num">5</td><td class="num" style="color:var(--bad)">4</td>
+   <td class="l">Dune was the only one that did not, which is why it sold 590 against 424 of its own demand.</td></tr>
+  <tr><td class="name">High End</td><td class="num">6</td><td class="num" style="color:var(--bad)">4</td>
+   <td class="l">Duck among them, at 543 sold against 591 wanted.</td></tr>
+  <tr><td class="name">Low End</td><td class="num">7</td><td class="num">3</td><td class="l">Dell among them.</td></tr>
+  <tr><td class="name">Traditional</td><td class="num">7</td><td class="num">2</td><td class="l">The one segment where supply roughly met demand.</td></tr>
+ </table>
+ <div class="note"><b>The correction.</b> A plant running at 100% of first shift is running at 50% of
+  what it can do. Second shift doubles it at a 50% labour premium on the extra units, which is far
+  cheaper than buying capacity at $18 a unit and depreciating it for fifteen years. Dune at 600
+  capacity can produce 1,200. Duck at 800 can produce 1,600. Neither needs a cent of plant investment
+  this round. Buying capacity only makes sense once a product is reliably selling past its second-shift
+  ceiling, and none of ours is close.
+  <br><br>
+  <b>The opportunity.</b> If the rest of the industry keeps under-ordering, the units they cannot
+  deliver go to whoever has stock. That is exactly how Dune picked up 166 units it had not earned.
+  Ordering aggressively this round is close to free upside, and the only real cost of being wrong is
+  inventory carry at roughly 12% of what we hold.</div>
 </div>
 
 <div class="card">
@@ -1297,11 +1336,11 @@ function rpt3(){return `
    <td class="l">Must come inside the band. Duck stocked out at 543 against 591 potential, and High End grows 16.5%, so forecast well above last year.</td></tr>
   <tr><td class="name">Dot</td><td class="num">$31.75</td><td class="num">$28.00</td><td class="num">18.50&ndash;28.50</td><td class="num">$1,500</td><td class="num">$1,500</td><td class="num">550</td>
    <td class="l">Priced above the entire Traditional band, which is why it sold 100 units there. Budgets back to a real level: $800 bought 60% awareness and 32% accessibility.</td></tr>
-  <tr><td class="name">Dune</td><td class="num">$31.00</td><td class="num">$30.50</td><td class="num">23.50&ndash;33.50</td><td class="num">$1,700</td><td class="num">$1,700</td><td class="num">700</td>
-   <td class="l">Size grows 18.6% and Dune ran out of plant at 100% utilisation. Small price cut tracks the band, which slid down $0.50.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">$31.00</td><td class="num">$30.50</td><td class="num">23.50&ndash;33.50</td><td class="num">$1,700</td><td class="num">$1,700</td><td class="num">650</td>
+   <td class="l"><b>Read this one carefully.</b> Dune sold 590 but its own demand was only 424; the rest was overflow from four rival stockouts. Its Size satisfaction score was 33 against Buddy's 72. 650 assumes the reposition lands and lifts real demand. Without the reposition, plan for about 500.</td></tr>
   <tr><td class="name">Dino</td><td class="num" style="color:var(--bad)">not set</td><td class="num">$32.00</td><td class="num">23.50&ndash;33.50</td><td class="num">$1,400</td><td class="num">$1,400</td><td class="num">400</td>
-   <td class="l">The sim is flagging these as missing. Performance weights price at 19%, so mid-band is fine for a first year.</td></tr>
-  <tr class="tot"><td class="l">Total</td><td></td><td></td><td></td><td class="num">$9,700</td><td class="num">$10,000</td><td class="num">5,900</td><td class="l"></td></tr>
+   <td class="l">The sim is flagging these as missing. Every Performance product stocked out last year, so this is the friendliest segment in the game to enter. Performance weights price at 19%, so mid-band is fine for a first year.</td></tr>
+  <tr class="tot"><td class="l">Total</td><td></td><td></td><td></td><td class="num">$9,700</td><td class="num">$10,000</td><td class="num">5,850</td><td class="l"></td></tr>
  </table>
  <div class="note"><b>On the forecast.</b> We forecast 4,660 units for Round 2 and the market handed us
   more than that. Actual unit share came in at 20.2% against a potential share of 19.2%, which is the
@@ -1319,27 +1358,35 @@ function rpt3(){return `
  <div class="flag o">Dell's stockouts were never a capacity problem. We under-ordered.</div>
  <div class="note" style="margin-bottom:12px">Dell's plant is 1,400 units. With second shift it can
   run to 2,800. In Round 2 we ordered 2,100, which is exactly 50% second shift, and stocked out at
-  2,073 units sold. There were 700 units of production available that we never asked for. Raising the
-  order costs nothing but the second-shift labour premium on the extra units, and it is the single
-  cheapest fix in this report.</div>
+  2,073 units sold. There were 700 units of production available that we never asked for.
+  <br><br>
+  The same is true everywhere else. Dune can make 1,200 on its 600 plant, Duck 1,600 on its 800, Dot
+  1,200 on its 600. <b>Not one product in this portfolio needs capacity this round.</b> They need
+  larger orders. The only plant money in this plan is Dell's automation, and that buys lower cost per
+  unit rather than more units.</div>
  <table>
   <tr><th class="l">Product</th><th>Capacity</th><th>Rec capacity</th><th>Automation</th><th>Rec auto</th><th>Rec order</th><th>Utilisation</th><th class="l">Reasoning</th></tr>
   <tr><td class="name">Daze</td><td class="num">1,700</td><td class="num">1,700</td><td class="num">4.5</td><td class="num">4.5</td><td class="num">900</td><td class="num">53%</td>
    <td class="l">Inventory of 338 already on hand against a 1,150 forecast. Do not add plant to a product we are transitioning.</td></tr>
   <tr><td class="name">Dell</td><td class="num">1,400</td><td class="num">1,400</td><td class="num">5.5</td><td class="num"><b>7.0</b></td><td class="num"><b>2,450</b></td><td class="num">175%</td>
    <td class="l">Order up to roughly 75% second shift. Automation up 1.5 points at $8,400: Low End is 53% price, and Dell will never be repositioned, so there is no flexibility to lose.</td></tr>
-  <tr><td class="name">Duck</td><td class="num">800</td><td class="num">800</td><td class="num">3.0</td><td class="num">3.0</td><td class="num">720</td><td class="num">90%</td>
-   <td class="l">Plant is adequate. Hold automation low: Duck is our most actively redesigned product.</td></tr>
-  <tr><td class="name">Dot</td><td class="num">600</td><td class="num">600</td><td class="num">3.0</td><td class="num">3.0</td><td class="num">570</td><td class="num">95%</td>
-   <td class="l">Enough plant for the Traditional relaunch. Revisit once we see whether the reposition takes.</td></tr>
-  <tr><td class="name">Dune</td><td class="num">600</td><td class="num"><b>900</b></td><td class="num">3.0</td><td class="num">3.0</td><td class="num">720</td><td class="num">80%</td>
-   <td class="l">Ran at 100% utilisation into a segment growing 18.6%. 300 units at $18 each is $5,400.</td></tr>
-  <tr><td class="name">Dino</td><td class="num">200</td><td class="num"><b>400</b></td><td class="num">2.0</td><td class="num">2.0</td><td class="num">400</td><td class="num">100%</td>
-   <td class="l">200 units cannot support a Performance entry against a 2,743-unit segment. 200 more at $14 is $2,800. Keep automation at 2.0 while the product is new.</td></tr>
+  <tr><td class="name">Duck</td><td class="num">800</td><td class="num">800</td><td class="num">3.0</td><td class="num">3.0</td><td class="num"><b>780</b></td><td class="num">98%</td>
+   <td class="l">Duck stocked out at 543 against 591 wanted. Plant runs to 1,600 on second shift, so there is no reason to be timid. Hold automation low: Duck is our most actively redesigned product.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">600</td><td class="num">600</td><td class="num">3.0</td><td class="num">3.0</td><td class="num"><b>620</b></td><td class="num">103%</td>
+   <td class="l">Dot's real demand was 511 across three segments even on $800 budgets. Plant runs to 1,200 on second shift. Revisit once we see whether the reposition takes.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">600</td><td class="num">600</td><td class="num">3.0</td><td class="num">3.0</td><td class="num"><b>800</b></td><td class="num">133%</td>
+   <td class="l">No plant needed. 600 capacity runs to 1,200 on second shift, so an 800 order is comfortable. Covers the 650 forecast plus the overflow if rivals stay short again.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">200</td><td class="num">200</td><td class="num">2.0</td><td class="num">2.0</td><td class="num">400</td><td class="num">200%</td>
+   <td class="l">200 capacity runs to 400 on second shift, which matches the forecast exactly. Revisit plant in R4 once we see real demand. Automation stays at 2.0 while the product is new.</td></tr>
  </table>
  <div class="note"><b>Automation policy check.</b> Our strategy says automate only where R&amp;D is done.
   That points at Dell and eventually Daze, and away from Duck, Dot, Dune and Dino. This round follows it
-  exactly: one automation move, on the one product we have committed never to redesign.</div>
+  exactly: one automation move, on the one product we have committed never to redesign.
+  <br><br>
+  <b>On carrying inventory.</b> Ordering above forecast is not free — unsold units carry at roughly 12%
+  of their value. But we have stocked out five product-segments across two rounds, and a stockout costs
+  the entire contribution margin on every unit we could not deliver. At a 30% margin, the arithmetic
+  favours the buffer by a wide margin.</div>
 </div>
 
 <div class="card">
@@ -1349,34 +1396,35 @@ function rpt3(){return `
  <table>
   <tr><th class="l">Item</th><th>Amount</th><th class="l">Note</th></tr>
   <tr><td class="l">Projected closing cash, no investment</td><td class="num">$17,512</td><td class="l">Already net of the $6,950 current-debt repayment.</td></tr>
-  <tr><td class="l">Dell automation 5.5 &rarr; 7.0</td><td class="num">($8,400)</td><td class="l">1.5 points &times; 1,400 units &times; $4.</td></tr>
-  <tr><td class="l">Dune capacity +300</td><td class="num">($5,400)</td><td class="l">$6 + $4 &times; automation 3.0 = $18/unit.</td></tr>
-  <tr><td class="l">Dino capacity +200</td><td class="num">($2,800)</td><td class="l">$6 + $4 &times; automation 2.0 = $14/unit.</td></tr>
+  <tr><td class="l">Dell automation 5.5 &rarr; 7.0</td><td class="num">($8,400)</td><td class="l">1.5 points &times; 1,400 units &times; $4. The only plant spend in the plan.</td></tr>
+  <tr><td class="l">Capacity purchases</td><td class="num">$0</td><td class="l">None needed. Second shift covers every product's order — see the Production tab.</td></tr>
   <tr><td class="l">R&amp;D projects, after tax</td><td class="num">($3,000)</td><td class="l">Estimate. Read the real number off the R&amp;D screen once the revisions are entered.</td></tr>
   <tr><td class="l">Added marketing spend, after tax</td><td class="num">($2,800)</td><td class="l">About $4,200 pre-tax across promo and sales.</td></tr>
-  <tr class="tot"><td class="l">Cash before financing</td><td class="num" style="color:var(--bad)">($4,888)</td><td class="l">Below the $2,000&ndash;$3,000 reserve floor. Needs funding.</td></tr>
-  <tr><td class="l"><b>Issue long-term bonds</b></td><td class="num"><b>$9,000</b></td><td class="l">At 12.2%. Max available is $18,600.</td></tr>
-  <tr class="tot"><td class="l">Closing cash</td><td class="num" style="color:var(--good)">$4,112</td><td class="l">Above the reserve floor with room to spare.</td></tr>
+  <tr><td class="l">Second-shift labour on larger orders</td><td class="num">($1,200)</td><td class="l">Rough. The premium is 50% of base labour on units above first shift.</td></tr>
+  <tr class="tot"><td class="l">Cash before financing</td><td class="num" style="color:var(--good)">$2,112</td><td class="l">Inside the $2,000&ndash;$3,000 reserve, with no borrowing.</td></tr>
+  <tr><td class="l"><b>Issue long-term bonds</b></td><td class="num"><b>$0</b></td><td class="l">Not required this round.</td></tr>
+  <tr class="tot"><td class="l">Closing cash</td><td class="num" style="color:var(--good)">$2,112</td><td class="l">Thin but sufficient. If R&amp;D comes in expensive, issue a small bond rather than cutting the orders.</td></tr>
  </table>
  <div class="row" style="margin-top:12px">
   <div class="col">
-   <div class="note"><b>Why borrow rather than trim.</b> Leverage finished Round 2 at 1.99, which is
-    below the 2.0&ndash;2.8 band we set ourselves. We are the least levered company in the industry and
-    the only one besides Chester holding a B rating. A $9,000 bond takes leverage to roughly 2.1, which
-    is inside our own policy rather than outside it. The alternative is deferring the Dell automation,
-    and that is the highest-return item in the report.</div>
+   <div class="note"><b>Why we are no longer borrowing.</b> The first version of this report proposed
+    a $9,000 bond to fund $16,600 of plant. Dropping the capacity purchases removed the need for it.
+    Borrowing at 12.2% would have added about $1,100 of annual interest against a coverage ratio that
+    only just reached 1.21x, so avoiding it is worth more than the flexibility it would have bought.</div>
   </div>
   <div class="col">
-   <div class="note"><b>The cost of borrowing.</b> $9,000 at 12.2% adds about $1,100 of annual interest.
-    Coverage improved from 0.92x to 1.21x this round and our target is 1.5x, so this works only if EBIT
-    rises. EBIT was $6,482 in Round 2. The moves in this report should push it higher through Dell volume,
-    Duck pricing inside its band, and Dot earning a real margin. If the team does not believe EBIT will
-    clear roughly $8,500, borrow less and defer Dino's capacity.
+   <div class="note"><b>The leverage question.</b> Leverage finished Round 2 at 1.99, just under our own
+    2.0&ndash;2.8 policy floor. That is an argument for carrying more debt, and it will be a real one in
+    Round 4 when Dell or Duck may genuinely need plant. It is not an argument for borrowing money we have
+    no use for this round.
+    <br><br>
+    <b>If R&amp;D runs expensive.</b> Three repositions plus a launch could cost more than the $3,000
+    assumed here. If closing cash drops under $2,000, issue $5,000 of bonds rather than cutting the
+    production orders. The orders are where the return is.
     <br><br>
     <b>No dividend, no buyback.</b> Profit is $703. Our policy says wait for consistent profit, and one
     positive round is not that. Stock at $24.98 against book value of $24.19 makes a buyback poor value anyway.</div>
-  </div>
- </div>
+</div>
 </div>
 
 <div class="card">
@@ -1388,12 +1436,14 @@ function rpt3(){return `
   <tr><td class="name">Every price sits inside its 2029 band</td><td class="l">All five bands slid down $0.50 this year. Duck is already outside.</td></tr>
   <tr><td class="name">Each R&amp;D completion date lands before roughly October</td><td class="l">A revision that finishes in December earns almost no sales in 2029.</td></tr>
   <tr><td class="name">Proforma read aloud, then compared to this page</td><td class="l">Round 2's proforma projected a $(1,830) loss and we booked $703. Treat the gap as information, not noise.</td></tr>
-  <tr><td class="name">Closing cash is above $3,000</td><td class="l">Two rounds without an emergency loan is a real competitive advantage. Baldwin has taken $38,811 across two.</td></tr>
+  <tr><td class="name">Production orders use second shift, not just first</td><td class="l">Every plant here can run to double its capacity. Ordering to first-shift capacity leaves half the factory idle.</td></tr>
+  <tr><td class="name">Closing cash is above $2,000</td><td class="l">Two rounds without an emergency loan is a real competitive advantage. Baldwin has taken $38,811 across two.</td></tr>
  </table>
  <div class="note"><b>How this was built.</b> Read from the Capsim platform on 21 July 2026: R&amp;D,
   Marketing, Production, Finance and Human Resources screens for Round 3, plus the full Round 2 Courier.
-  Strategy anchors come from <i>Outline Your Strategy: World 1 &mdash; Team Digby</i>, the Board Packet,
-  and the Round 1 Position Briefing. <b>No values were changed in the sim.</b> Capsim 2.0 saves slider
+  Cross-checked against the Round 0, 1 and 2 Excel exports in <code>/reports</code>, which is where the
+  potential-demand and industry stockout figures come from. Strategy anchors come from <i>Outline Your
+  Strategy: World 1 &mdash; Team Digby</i>, the Board Packet, and the Round 1 Position Briefing. <b>No values were changed in the sim.</b> Capsim 2.0 saves slider
   changes automatically, with no confirmation step, so any what-if entered on the live screens would have
   overwritten the team's Round 3 decisions. Position gaps, capacity, second-shift headroom, plant and
   automation costs are arithmetic. R&amp;D project cost and completion date are the two things this
