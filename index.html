@@ -178,15 +178,15 @@ const R=r=>`R${r+1} · ${YR0+r}`;
 
 const SEG=[
  {n:"Traditional",cp:5.7,cs:14.3,ox:0,oy:0,dp:.7,ds:-.7,age:2.0,mlo:14000,mhi:19000,
-  plo:19.5,phi:29.5,w:{age:.47,price:.23,pos:.21,mtbf:.09},c:"#2563eb",u26:6156,g:-.072},
+  plo:19.5,phi:29.5,w:{age:.47,price:.23,pos:.21,mtbf:.09},c:"#2563eb",u26:6156,g:.002},
  {n:"Low End",cp:3.0,cs:17.0,ox:-.8,oy:.8,dp:.5,ds:-.5,age:7.0,mlo:12000,mhi:17000,
-  plo:14.5,phi:24.5,w:{price:.53,age:.24,pos:.16,mtbf:.07},c:"#059669",u26:7467,g:-.074},
+  plo:14.5,phi:24.5,w:{price:.53,age:.24,pos:.16,mtbf:.07},c:"#059669",u26:7467,g:-.001},
  {n:"High End",cp:8.4,cs:11.6,ox:1.4,oy:-1.4,dp:.9,ds:-.9,age:0,mlo:20000,mhi:25000,
-  plo:29.5,phi:39.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#dc2626",u26:2128,g:-.07},
+  plo:29.5,phi:39.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#dc2626",u26:2128,g:.001},
  {n:"Performance",cp:9.0,cs:16.3,ox:1.4,oy:-1.0,dp:1.0,ds:-.7,age:1.0,mlo:22000,mhi:27000,
-  plo:24.5,phi:34.5,w:{mtbf:.43,pos:.29,price:.19,age:.09},c:"#d97706",u26:1596,g:-.065},
+  plo:24.5,phi:34.5,w:{mtbf:.43,pos:.29,price:.19,age:.09},c:"#d97706",u26:1596,g:-.001},
  {n:"Size",cp:3.7,cs:11.0,ox:1.0,oy:-1.4,dp:.7,ds:-1.0,age:1.5,mlo:16000,mhi:21000,
-  plo:24.5,phi:34.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#7c3aed",u26:1653,g:-.058}
+  plo:24.5,phi:34.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#7c3aed",u26:1653,g:0}
 ];
 const PD=-0.50;
 const centreAt=(i,r)=>({p:+(SEG[i].cp+SEG[i].dp*r).toFixed(2),s:+(SEG[i].cs+SEG[i].ds*r).toFixed(2)});
@@ -202,7 +202,7 @@ const dist=(a,b,c,d)=>Math.hypot(a-c,b-d);
    wage each automation point removes, which has held at 0.125 all three rounds.
    `prodAdj` is how far actual production falls short of the order; it only
    affects the second-shift blend. */
-const DEF_CAL={wage:[8.97,9.19,9.07,8.76],wageInfl:.05,autoSave:.125,prodAdj:.025,
+const DEF_CAL={wage:[8.97,9.19,9.07,8.76,8.71],wageInfl:.05,autoSave:.125,prodAdj:.025,
  shiftPremium:.5,capCost:6,autoCost:4,
  awarenessKeep:.667,accessKeep:.667,awareMax:.87,awareHalf:1400,accessMax:.85,accessHalf:1700,
  taxRate:.35,depYears:15,adminRate:.00889,profitShareRate:.02,interestLT:.134,interestST:.1025,stockFee:.05,bondFee:.015};
@@ -226,44 +226,44 @@ const DEF_OPEN={assets:96260,equity:47891,ltDebt:34750,cash:3431,shares:2000,pri
    Round index 0 = R1/2027.                                                 */
 function seed(){
  const P=[
-  {n:"Daze",seg:0,sp:5.5,ss:14.5,sm:17500,sa:3.1,sau:4.0,m0:11.59,
-   rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
-   mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[23.50,1350,2000,790],[23.50,1000,1250,748]],
-   pd:[[1380,1800,4.5],[1200,1700,4.5],[1284,1700,5.0],[296,1700,6.7]],
-   rdc:[0,0,0,0], mat:[9.80,8.95,8.18,7.35], inv:[0,404,338,832], aw:[.728,.890,.917,.829], ac:[.61,.72,.80,.85]},
+  {n:"Daze",seg:1,sp:5.5,ss:14.5,sm:17500,sa:3.1,sau:4.0,m0:11.59,
+   rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
+   mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[23.50,1350,2000,790],[23.50,1000,1250,748],[20.50,1400,1500,1245]],
+   pd:[[1380,1800,4.5],[1200,1700,4.5],[1284,1700,5.0],[296,1700,6.7],[1013,1700,7.0]],
+   rdc:[0,0,0,0,0], mat:[9.80,8.95,8.18,7.35,6.72], inv:[0,404,338,832,380], aw:[.728,.890,.917,.829,.89], ac:[.61,.72,.80,.85,.93]},
 
   {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,sau:5.0,m0:7.81,
-   rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
-   mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[18.75,1300,1700,2469],[18.75,1300,1700,2399]],
-   pd:[[1770,1400,5.5],[2100,1400,5.5],[2470,1400,5.5],[2761,1400,5.5]],
-   rdc:[0,0,0,0], mat:[6.45,5.78,5.19,4.58], inv:[0,0,0,1], aw:[.706,.909,.915,.920], ac:[.40,.54,.73,.85]},
+   rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
+   mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[18.75,1300,1700,2469],[18.75,1300,1700,2399],[17.75,1000,1000,1582]],
+   pd:[[1770,1400,5.5],[2100,1400,5.5],[2470,1400,5.5],[2761,1400,5.5],[1672,1400,5.5]],
+   rdc:[0,0,0,0,0], mat:[6.45,5.78,5.19,4.58,4.11], inv:[0,0,0,1,363], aw:[.706,.909,.915,.920,.83], ac:[.40,.54,.73,.85,.93]},
 
   {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,sau:3.0,m0:15.98,
-   rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[11.6,8.4,25000,"2029-12-20"],[12.5,7.5,25000,"2030-07-21"]],
-   mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[38.50,1700,1700,791],[38.50,1100,1600,1232]],
-   pd:[[510,800,3.0],[420,800,3.0],[791,800,3.0],[1232,950,3.0]],
-   rdc:[0,860,967,900], mat:[16.52,16.52,16.70,16.09], inv:[0,128,0,0], aw:[.707,.876,.990,.909], ac:[.54,.64,.76,.88]},
+   rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[11.6,8.4,25000,"2029-12-20"],[12.5,7.5,25000,"2030-07-21"],[13.4,6.6,25000,"2031-07-21"]],
+   mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[38.50,1700,1700,791],[38.50,1100,1600,1232],[38.25,1250,2000,1377]],
+   pd:[[510,800,3.0],[420,800,3.0],[791,800,3.0],[1232,950,3.0],[1475,1100,3.5]],
+   rdc:[0,860,967,900,900], mat:[16.52,16.52,16.70,16.09,15.71], inv:[0,128,0,0,0], aw:[.707,.876,.990,.909,.90], ac:[.54,.64,.76,.88,.87]},
 
-  {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,sau:3.0,m0:15.87,
-   rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,11.7,21000,"2029-09-15"],[9.4,11.7,21000,""]],
-   mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.50,1200,1150,543],[29.50,1600,1700,985]],
-   pd:[[430,600,3.0],[300,600,3.0],[543,600,3.0],[985,800,5.0]],
-   rdc:[0,476,707,0], mat:[15.06,14.44,13.09,11.98], inv:[0,103,0,0], aw:[.664,.596,.676,.835], ac:[.39,.64,.80,.87]},
+  {n:"Dot",seg:0,sp:9.4,ss:15.5,sm:25000,sa:2.5,sau:3.0,m0:15.87,
+   rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,11.7,21000,"2029-09-15"],[9.4,11.7,21000,""],[9.4,11.0,19000,"2031-06-02"]],
+   mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.50,1200,1150,543],[29.50,1600,1700,985],[28.75,1500,2000,1082]],
+   pd:[[430,600,3.0],[300,600,3.0],[543,600,3.0],[985,800,5.0],[1082,1000,5.5]],
+   rdc:[0,476,707,0,800], mat:[15.06,14.44,13.09,11.98,10.81], inv:[0,103,0,0,0], aw:[.664,.596,.676,.835,.92], ac:[.39,.64,.80,.87,.88]},
 
   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,sau:3.0,m0:13.62,
-   rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.6,8.1,18000,"2029-09-22"],[6.0,7.5,18000,"2030-04-16"]],
-   mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.50,1400,1600,446],[31.50,1400,1900,564]],
-   pd:[[410,600,3.0],[600,600,3.0],[711,700,3.0],[296,700,3.0]],
-   rdc:[0,765,724,700], mat:[12.62,12.58,12.64,11.94], inv:[0,1,3,268], aw:[.639,.810,.877,.922], ac:[.46,.49,.52,.60]},
+   rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.6,8.1,18000,"2029-09-22"],[6.0,7.5,18000,"2030-04-16"],[6.7,6.7,18000,"2031-06-13"]],
+   mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.50,1400,1600,446],[31.50,1400,1900,564],[32.00,1200,1600,490]],
+   pd:[[410,600,3.0],[600,600,3.0],[711,700,3.0],[296,700,3.0],[492,700,3.0]],
+   rdc:[0,765,724,700,700], mat:[12.62,12.58,12.64,11.94,11.62], inv:[0,1,3,268,0], aw:[.639,.810,.877,.922,.90], ac:[.46,.49,.52,.60,.62]},
 
   {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,sau:2.0,m0:16.82,
-   rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"],[13.5,13.0,27000,"2030-03-10"]],
-   mk:[[18.50,0,0,0],[18.50,0,0,0],[34.75,0,500,57],[34.25,1300,1500,424]],
-   pd:[[0,0,2.0],[0,200,2.0],[107,400,2.0],[690,700,2.0]],
-   rdc:[0,1000,729,700], mat:[16.82,16.82,16.48,15.34], inv:[0,0,0,50], aw:[0,0,.25,.474], ac:[0,0,.36,.43]}];
+   rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"],[13.5,13.0,27000,"2030-03-10"],[14.5,12.4,27000,"2031-06-26"]],
+   mk:[[18.50,0,0,0],[18.50,0,0,0],[34.75,0,500,57],[34.25,1300,1500,424],[33.75,1500,1700,473]],
+   pd:[[0,0,2.0],[0,200,2.0],[107,400,2.0],[690,700,2.0],[295,700,2.0]],
+   rdc:[0,1000,729,700,700], mat:[16.82,16.82,16.48,15.34,15.02], inv:[0,0,0,50,316], aw:[0,0,.25,.474,.68], ac:[0,0,.36,.43,.48]}];
 
  const at=(a,r)=>a[Math.min(r,a.length-1)];
- const st={round:4,cal:{...DEF_CAL},open:{...DEF_OPEN},
+ const st={round:5,cal:{...DEF_CAL},open:{...DEF_OPEN},
   products:P.map(o=>({name:o.n,key:o.n,seg:o.seg,launch:o.launch||0,added:false,
    sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,sau:o.sau,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>{
@@ -280,15 +280,15 @@ function seed(){
        invCarry   inventory carrying cost from the proforma
        otherFees  the non-HR part of Capsim's "Other" line */
   fin:Array.from({length:NR},(_,r)=>({stockI:0,stockR:0,bondI:0,bondR:0,div:0,curDebt:0,
-    cashStart:[3431,752,13745,0,0][r]!=null?[3431,752,13745,0,0][r]:null,
-    curDebtDue:[0,0,6950,6208,3410][r]!=null?[0,0,6950,6208,3410][r]:0,
-    wcChange:[-5076,5796,-13285,-624][r]!=null?[-5076,5796,-13285,-624][r]:0,
-    invCarry:[0,1190,3190,2800][r]!=null?[0,1190,3190,2800][r]:0,
-    otherFees:[30,0,0,6750][r]!=null?[30,0,0,6750][r]:0}))};
+    cashStart:[3431,752,13745,0,0,9016][r]!=null?[3431,752,13745,0,0,9016][r]:null,
+    curDebtDue:[0,0,6950,6208,3410,0][r]!=null?[0,0,6950,6208,3410,0][r]:0,
+    wcChange:[-5076,5796,-13285,-624,7033][r]!=null?[-5076,5796,-13285,-624,7033][r]:0,
+    invCarry:[0,1190,3190,2800,2500][r]!=null?[0,1190,3190,2800,2500][r]:0,
+    otherFees:[30,0,0,6750,7553][r]!=null?[30,0,0,6750,7553][r]:0}))};
  /* the sim's committed decisions are the baseline everything is measured against */
  /* Human Resources is a company-level spend, not per product. R1 the module was
     inactive; R2 the team put in $3,600; R3 defaults to the recommended $4,500. */
- st.hr=[{mfg:0,sci:0,sales:0},{mfg:1000,sci:2000,sales:600},{mfg:1400,sci:1500,sales:800},{mfg:1000,sci:1000,sales:500}];
+ st.hr=[{mfg:0,sci:0,sales:0},{mfg:1000,sci:2000,sales:600},{mfg:1400,sci:1500,sales:800},{mfg:1000,sci:1000,sales:500},{mfg:1000,sci:1000,sales:500}];
  while(st.hr.length<NR) st.hr.push({mfg:0,sci:0,sales:0});
  st.base=JSON.parse(JSON.stringify({products:st.products,fin:st.fin,hr:st.hr}));
  return st;}
@@ -344,7 +344,13 @@ const ACT={
     u:{Daze:748,Dell:2399,Duck:1232,Dot:985,Dune:564,Dino:424},
     pot:{Daze:594,Dell:2158,Duck:1481,Dot:1459,Dune:742,Dino:423},
     so:{Duck:true,Dune:true},
-    ind:{net:2190,cmPct:.337,ros:.0116,roe:.0512,emg:3717}}
+    ind:{net:2190,cmPct:.337,ros:.0116,roe:.0512,emg:3717}},
+ 4:{sales:169001,cmPct:.3286,ebit:12827,interest:6013,net:4340,cum:10335,
+    ros:.026,roa:.035,roe:.080,lev:2.28,share:.231,stock:35.08,cash:9016,emg:0,
+    u:{Daze:1245,Dell:1582,Duck:1377,Dot:1082,Dune:490,Dino:473},
+    pot:{Daze:1037,Dell:1355,Duck:1172,Dot:1082,Dune:477,Dino:465},
+    so:{Dot:true},
+    ind:{net:2065,cmPct:.3421,ros:.009,roe:.023,emg:1221}}
 };
 function actUnits(r){const a=ACT[r];if(!a)return null;
  return S.products.reduce((t,P)=>t+(a.u[P.key||P.name]||0),0);}
@@ -441,7 +447,28 @@ const COMP={
   {co:"E",n:"Ebb",seg:1,p:3.0,s:17.0,m:12000,age:8.6,pr:19.5,u:2179,cap:1400,au:7.0},
   {co:"E",n:"Echo",seg:2,p:11.0,s:8.9,m:21000,age:1.4,pr:38.0,u:374,cap:600,au:3.0},
   {co:"E",n:"Edge",seg:3,p:12.1,s:13.8,m:27000,age:1.5,pr:33.0,u:628,cap:600,au:3.0},
-  {co:"E",n:"Egg",seg:4,p:6.4,s:7.2,m:19000,age:1.4,pr:32.0,u:625,cap:600,au:3.0}]
+  {co:"E",n:"Egg",seg:4,p:6.4,s:7.2,m:19000,age:1.4,pr:32.0,u:625,cap:600,au:3.0}],
+ 4:[ /* 31 Dec 2031 — Round 5 Courier */
+  {co:"A",n:"Able",seg:0,p:8.5,s:11.5,m:19000,age:1.7,pr:27.5,u:1594,cap:1800,au:6},
+  {co:"A",n:"Acre",seg:1,p:3.6,s:16.8,m:17000,age:3.8,pr:16.0,u:2730,cap:1400,au:8.5},
+  {co:"A",n:"Adam",seg:2,p:13.5,s:6.6,m:25000,age:1.0,pr:39.0,u:730,cap:900,au:8},
+  {co:"A",n:"Aft",seg:3,p:14.5,s:12.5,m:27000,age:1.1,pr:33.0,u:849,cap:1000,au:8.5},
+  {co:"A",n:"Agape",seg:4,p:7.5,s:5.6,m:21000,age:1.3,pr:34.0,u:722,cap:700,au:8},
+  {co:"B",n:"Baker",seg:0,p:8.5,s:11.5,m:19000,age:1.5,pr:25.5,u:2063,cap:2050,au:5},
+  {co:"B",n:"Bead",seg:1,p:3.7,s:16.3,m:15000,age:2.6,pr:17.5,u:1664,cap:1800,au:6},
+  {co:"B",n:"Bid",seg:2,p:13.4,s:6.6,m:23850,age:1.2,pr:38.0,u:1003,cap:800,au:3.8},
+  {co:"B",n:"Bold",seg:3,p:14.4,s:12.5,m:27000,age:1.4,pr:33.5,u:606,cap:600,au:3.4},
+  {co:"B",n:"Buddy",seg:4,p:7.5,s:5.6,m:21000,age:1.4,pr:34.0,u:994,cap:750,au:3.4},
+  {co:"C",n:"Cake",seg:0,p:8.0,s:11.9,m:18000,age:1.7,pr:23.0,u:1787,cap:1800,au:6.2},
+  {co:"C",n:"Cedar",seg:1,p:3.7,s:16.3,m:14000,age:5.5,pr:15.0,u:2346,cap:2150,au:8.3},
+  {co:"C",n:"Cid",seg:2,p:10.9,s:9.2,m:23000,age:2.5,pr:38.0,u:176,cap:800,au:3},
+  {co:"C",n:"Coat",seg:3,p:13.8,s:13.0,m:27000,age:1.5,pr:33.0,u:502,cap:600,au:3},
+  {co:"C",n:"Cure",seg:4,p:7.4,s:5.7,m:19500,age:1.3,pr:34.5,u:291,cap:600,au:3},
+  {co:"E",n:"Eat",seg:0,p:8.0,s:12.0,m:14000,age:1.5,pr:23.75,u:1637,cap:1800,au:6.5},
+  {co:"E",n:"Ebb",seg:1,p:3.0,s:17.0,m:12000,age:9.6,pr:19.5,u:1197,cap:1400,au:7.5},
+  {co:"E",n:"Echo",seg:2,p:12.2,s:7.6,m:21000,age:1.2,pr:37.0,u:283,cap:600,au:3},
+  {co:"E",n:"Edge",seg:3,p:13.2,s:13.8,m:27000,age:1.5,pr:32.0,u:640,cap:600,au:3},
+  {co:"E",n:"Egg",seg:4,p:6.4,s:6.5,m:19000,age:1.6,pr:31.5,u:553,cap:600,au:3}]
 };
 /* Most recent observed snapshot at or before round r. */
 function compAt(r){
@@ -525,7 +552,7 @@ function survey(pi,r,si){
 /* Actual segment market sizes 2027/2028/2029 (R1/R2/R3), read from the Courier.
    Known rounds are exact; later rounds project from the last actual at the
    latest observed growth rate. */
-const SEGSIZE=[[6765,7313,8016,8753],[8408,9316,10406,11623],[2488,2866,3339,3879],[1930,2292,2744,3287],[1967,2307,2737,3237]];
+const SEGSIZE=[[6765,7313,8016,8753,8123],[8408,9316,10406,11623,10763],[2488,2866,3339,3879,3608],[1930,2292,2744,3287,3074],[1967,2307,2737,3237,3050]];
 const segDemand=(si,r)=>{const a=SEGSIZE[si];
  if(r<a.length) return a[r];
  return Math.round(a[a.length-1]*Math.pow(1+SEG[si].g,r-a.length+1));};
@@ -1352,7 +1379,7 @@ function tCal(){
 
 /* ---------------- decision reports -------------------------------------- */
 /* Reports are keyed by round index (0 = R1/2027). Add future rounds here. */
-const REPORTS={2:rpt3,3:rpt4,4:rpt5};
+const REPORTS={2:rpt3,3:rpt4,4:rpt5,5:rpt6};
 
 function tRpt(){
  const f=REPORTS[S.round];
@@ -1362,6 +1389,107 @@ function tRpt(){
    should do, what it costs, and why. Reports exist for the rounds listed in <code>REPORTS</code>
    at the top of this section. Pick a round along the top of the page to read its report.</div></div>`;
  return f();}
+
+function rpt6(){return `
+<div class="card">
+ <h2>Round 6 &middot; 2032 &mdash; Recommended decisions</h2>
+ <p class="sub">From the closed Round 5 results in <code>/reports</code>. We are in the endgame now — three
+  rounds left and a two-horse race for first.</p>
+ <div class="flag o"><b>We broke the emergency-loan streak.</b> R5 finished with $9,016 cash, a $4,340
+  profit, and every reposition (Duck, Dune, Dino, Dot) landed. Discipline finally paid off.</div>
+ <div class="flag w" style="margin-top:8px"><b>But Andrews retook first.</b> They lead cumulative
+  $11,877 to our $10,335 — about $1,542 — on a 44% contribution margin. This is now a two-team race,
+  and they out-earn us per round. To finish first by R8 we have to close that gap, not just hold.</div>
+ <div class="kpi">
+  <div><b>$10,335</b><span>Cumulative (2nd)</span></div>
+  <div><b>$4,340</b><span>R5 net profit</span></div>
+  <div><b>$9,016</b><span>Cash (positive!)</span></div>
+  <div><b>$0</b><span>Emergency loan</span></div>
+  <div><b>2.28</b><span>Leverage</span></div>
+  <div><b>+$1,542</b><span>Gap to Andrews</span></div>
+ </div>
+ <div class="note">The market has stabilized — roughly flat in 2032 after the downturn. That removes the
+  over-production trap of last round, but it also means growth won't bail anyone out: this is won on
+  margin and execution. We can't match Andrews' automation-driven 44% margin head-on, so the plan is to
+  win on volume where we're strong (Duck, the Low End, Dot) and fix our one weak product (Dino).</div>
+</div>
+
+<div class="card">
+ <h2>How to catch Andrews</h2>
+ <p class="sub">They're ahead on margin; we have to make it up on volume and by closing our own gaps.</p>
+ <table>
+  <tr><th class="l">Lever</th><th class="l">The move</th></tr>
+  <tr><td class="name">Feed Duck</td><td class="l">Duck out-sold Andrews' Adam in High End (1,377 vs 730) and captured overflow. Reposition it to the new ideal (14.3/5.7), keep MTBF 25,000, and give it capacity/second shift. It's our single best weapon against them.</td></tr>
+  <tr><td class="name">Fix Dino's margin</td><td class="l">Dino's 19.2% contribution margin is the worst in our portfolio and the biggest drag. It sits at automation 2 while Andrews' Aft runs 8.5. Raise Dino's automation aggressively — Performance rewards it and we can afford it now.</td></tr>
+  <tr><td class="name">Hold the Low End</td><td class="l">Daze and Dell together took ~26% of Low End at 35-37% margins. Keep both selling; Daze is now the anchor as Dell ages out.</td></tr>
+  <tr><td class="name">Keep the margin engine</td><td class="l">HR + TQM are why our costs keep falling. Andrews spends heavily here; we must not cut it in the endgame. Fund the cost-cut lines again.</td></tr>
+ </table>
+</div>
+
+<div class="card">
+ <h2>R&amp;D &mdash; keep the winners on ideal, retire the tail</h2>
+ <p class="sub">2032 ideal spots. Gaps from current position (Dot and Daze now classified in their real segments).</p>
+ <table>
+  <tr><th class="l">Product</th><th>Now</th><th>2032 ideal</th><th>Gap</th><th>Age</th><th class="l">Recommendation</th></tr>
+  <tr><td class="name">Duck</td><td class="num">13.4/6.6</td><td class="num">14.3/5.7</td><td class="num">1.27</td><td class="num">2.4</td>
+   <td class="l"><b>Reposition to 14.3/5.7.</b> The engine. Keep it on the drifting High End ideal, hold MTBF 25,000. Top priority.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">14.5/12.4</td><td class="num">15.4/11.8</td><td class="num">1.08</td><td class="num">2.3</td>
+   <td class="l"><b>Small reposition + big automation.</b> Position is close; the problem is cost. Push automation up (it's at 2) to fix the 19% margin.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">9.4/11.0</td><td class="num">9.2/10.8</td><td class="num" style="color:var(--good)">0.28</td><td class="num">3.0</td>
+   <td class="l"><b>Nearly on ideal — settled in Traditional at last.</b> Tiny nudge, keep feeding it. It finally found a home and stocked out in R5, so it has demand.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">6.7/6.7</td><td class="num">8.2/4.6</td><td class="num">2.58</td><td class="num">2.6</td>
+   <td class="l"><b>Reposition to 8.2/4.6.</b> Size drifts fast and position is 43% of the decision. Worth the move.</td></tr>
+  <tr><td class="name">Daze</td><td class="num">5.7/14.3</td><td class="num">4.7/15.3</td><td class="num">2.40</td><td class="num">7.4</td>
+   <td class="l"><b>Low End anchor now.</b> At 7.4 years it's near Low End's 7.0 age ideal — good. A modest reposition toward 4.7/15.3 would help, but repositioning resets age away from ideal, so leave it and ride the age fit.</td></tr>
+  <tr><td class="name">Dell</td><td class="num">3.0/17.0</td><td class="num">4.7/15.3</td><td class="num">2.40</td><td class="num">10.6</td>
+   <td class="l"><b>Sunset.</b> 10.6 years old and drifting. Daze has taken over Low End. Wind Dell's production down, no R&amp;D, sell the 453 units of inventory, and free its capacity.</td></tr>
+ </table>
+</div>
+
+<div class="card">
+ <h2>Production &amp; Marketing &mdash; flat market, so hold the line</h2>
+ <div class="note" style="margin-bottom:10px">The market is flat, so forecast near R5 actuals — no big cuts,
+  no big builds. The one product to grow is Duck; the one to shrink is Dell. Everything else roughly holds.</div>
+ <table>
+  <tr><th class="l">Product</th><th class="l">Production</th><th class="l">Price (2032 bands shifted down $0.50)</th></tr>
+  <tr><td class="name">Duck</td><td class="l"><b>Grow</b> — order to ~1,400+, use second shift; it keeps stocking out or capturing overflow</td><td class="l">~$38.00, top of the $27-37 band</td></tr>
+  <tr><td class="name">Dino</td><td class="l">Hold ~450-500; ramp only if the automation lifts margin</td><td class="l">~$33.00, mid Performance band</td></tr>
+  <tr><td class="name">Daze / Dell</td><td class="l"><b>Daze holds ~1,250; Dell winds down toward ~1,000</b> and sells inventory</td><td class="l">Daze ~$20, Dell ~$17.50, both inside the $12-22 Low End band</td></tr>
+  <tr><td class="name">Dot</td><td class="l">Hold ~1,100; it stocked out, so don't under-produce</td><td class="l">~$28.50 Traditional</td></tr>
+  <tr><td class="name">Dune</td><td class="l">Hold ~500</td><td class="l">~$31.50 Size</td></tr>
+ </table>
+</div>
+
+<div class="card">
+ <h2>Finance &amp; custom modules &mdash; press the advantage, stay disciplined</h2>
+ <table>
+  <tr><th class="l">Area</th><th class="l">Recommendation</th></tr>
+  <tr><td class="name">Cash</td><td class="l">We start R6 with $9,016 — the first real buffer in rounds. Protect it. Don't repeat the R3/R4 over-investment; fund only Duck capacity and Dino automation, use second shift elsewhere.</td></tr>
+  <tr><td class="name">Debt</td><td class="l">Leverage 2.28 is healthy. We refinanced last round; no need to borrow unless a specific investment needs it. Watch the live closing-cash number and keep it positive.</td></tr>
+  <tr><td class="name">TQM</td><td class="l">Keep funding the cost-cut lines (CCE, CPI, Vendor/JIT, QIT, GEMI ~$500 each). Our cumulative material -2.5% and labor -3.5% are why margins hold. Andrews is deeper in; we can't afford to fall behind on cost.</td></tr>
+  <tr><td class="name">HR</td><td class="l">Keep ~$2,500. Productivity index is 111%, best in the industry — that's real labour savings. Don't cut it in the endgame.</td></tr>
+  <tr><td class="name">Dividend / buyback</td><td class="l">Still no. Every dollar of retained profit is a dollar of cumulative score. Reinvest or bank it.</td></tr>
+ </table>
+ <div class="note"><b>The endgame in one line:</b> we're $1,542 behind Andrews with three rounds left, and they
+  out-earn us on margin. We close the gap by feeding Duck, fixing Dino's cost, retiring Dell cleanly, and
+  never giving back a round to over-spending. Discipline got us here; discipline plus a sharper Duck and
+  Dino wins it.</div>
+</div>
+
+<div class="card">
+ <h2>Before you submit</h2>
+ <table>
+  <tr><th class="l">Check</th><th class="l">Why</th></tr>
+  <tr><td class="name">Closing cash stays positive</td><td class="l">We finally broke the streak — don't restart it. The Finance cash flow shows it live.</td></tr>
+  <tr><td class="name">Duck repositioned to 14.3/5.7 with capacity to sell ~1,400</td><td class="l">Our best weapon against Andrews.</td></tr>
+  <tr><td class="name">Dino automation raised</td><td class="l">Its 19% margin is the one clear drag on the portfolio.</td></tr>
+  <tr><td class="name">Dell production wound down, no Dell R&amp;D</td><td class="l">It's sunsetting; Daze carries Low End.</td></tr>
+  <tr><td class="name">HR and TQM cost lines funded</td><td class="l">The margin engine that keeps us in the race with Andrews.</td></tr>
+  <tr><td class="name">Every price inside its 2032 band</td><td class="l">Bands shifted down again.</td></tr>
+ </table>
+ <div class="note"><b>How this was built.</b> From the Round 5 Courier and the 2032 buying criteria, read into
+  the planner and verified against the sim.</div>
+</div>`;}
 
 function rpt5(){return `
 <div class="card">
@@ -2227,11 +2355,11 @@ function tCBA(){
    Built from the Round 0-2 Courier exports in /reports, parsed once and
    embedded so the deployed page needs no file access. To extend: re-run the
    extract, paste the new COMPHIST, and add the round's snapshot. */
-const COMPHIST={"fin":{"share":{"A":[0.165,0.23,0.242,0.237],"B":[0.238,0.206,0.22,0.219],"C":[0.237,0.198,0.179,0.147],"D":[0.207,0.192,0.181,0.223],"E":[0.153,0.175,0.177,0.174]},"profit":{"A":[-6327.0,-8258.0,5217.0,7340.0],"B":[-6508.0,-6911.0,-1050.0,2614.0],"C":[-621.0,5655.0,1046.0,-6357.0],"D":[-265.0,703.0,-160.0,1531.0],"E":[-9502.0,-9267.0,-439.0,5824.0]},"cumul":{"A":[-2142.0,-10400.0,-5184.0,2156.0],"B":[-2323.0,-9234.0,-10284.0,-7670.0],"C":[3564.0,9219.0,10266.0,3909.0],"D":[3921.0,4623.0,4464.0,5995.0],"E":[-5316.0,-14583.0,-15022.0,-9198.0]},"cm":{"A":[0.3129,0.343,0.4085,0.4231],"B":[0.2846,0.2894,0.2885,0.2811],"C":[0.2592,0.2704,0.2916,0.3447],"D":[0.2869,0.3044,0.2917,0.2872],"E":[0.239,0.2858,0.3348,0.3505]},"lev":{"A":[2.36,2.39,2.56,2.29],"B":[3.13,4.19,4.02,3.55],"C":[2.15,2.02,2.25,2.61],"D":[2.01,1.99,2.03,2.36],"E":[3.08,3.46,3.26,2.79]},"emg":{"A":[7631.0,0.0,0.0,2737.0],"B":[19630.0,19181.0,0.0,0.0],"C":[0.0,0.0,0.0,12440.0],"D":[0.0,0.0,6208.0,3410.0],"E":[16816.0,0.0,0.0,0.0]},"sga":{"A":[0.2171,0.2569,0.1886,0.1793],"B":[0.2045,0.1724,0.146,0.1225],"C":[0.1545,0.1034,0.1075,0.1748],"D":[0.1691,0.1603,0.1549,0.1146],"E":[0.1742,0.2144,0.1602,0.1371]},"sales":{"A":[107524.0,123006.0,163757.0,177758.0],"B":[139155.0,149400.0,162597.0,190951.0],"C":[131851.0,147690.0,147648.0,134817.0],"D":[109849.0,123279.0,128456.0,171334.0],"E":[85359.0,93559.0,119053.0,143021.0]},"ros":{"A":[-0.059,-0.067,0.032,0.041],"B":[-0.047,-0.046,-0.006,0.014],"C":[-0.005,0.038,0.007,-0.047],"D":[-0.002,0.006,-0.001,0.009],"E":[-0.111,-0.099,-0.004,0.041]}},"agg":{"auto":{"A":[4.8,6.4,7.3,7.8],"B":[3.82,4.12,4.12,4.12],"C":[3.7,3.7,4.3,4.7],"D":[3.8,3.5,3.58,4.2],"E":[4.2,4.2,4.2,4.4]},"cap":{"A":[5300,5300,5600,5800],"B":[6200,6500,6500,6650],"C":[5500,6050,6050,6050],"D":[5200,5300,5600,6250],"E":[5300,5300,5300,5000]},"sold":{"A":[3585,4463,5897,6766],"B":[5205,5503,5763,6692],"C":[5191,5551,5615,5244],"D":[4227,4859,5096,6352],"E":[3348,3657,4868,5726]}},"snap":{"0":[{"n":"Able","co":"A","sg":"Trad","pf":5.7,"sz":13.8,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.316,"so":1288},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":24.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.294,"so":1024},{"n":"Adam","co":"A","sg":"High","pf":9.3,"sz":11.0,"pr":39.0,"mt":23000,"au":3.5,"cp":900,"cm":0.364,"so":465},{"n":"Aft","co":"A","sg":"Perf","pf":10.4,"sz":15.0,"pr":34.0,"mt":27000,"au":3.5,"cp":600,"cm":0.263,"so":449},{"n":"Agape","co":"A","sg":"Size","pf":4.8,"sz":9.6,"pr":34.0,"mt":19000,"au":3.5,"cp":600,"cm":0.328,"so":359},{"n":"Baker","co":"B","sg":"Trad","pf":5.7,"sz":14.3,"pr":27.5,"mt":17500,"au":4.2,"cp":1800,"cm":0.298,"so":1660},{"n":"Bead","co":"B","sg":"Low ","pf":2.2,"sz":17.8,"pr":21.0,"mt":14000,"au":5.5,"cp":2400,"cm":0.254,"so":2227},{"n":"Bid","co":"B","sg":"High","pf":9.3,"sz":11.0,"pr":38.5,"mt":23000,"au":3.0,"cp":800,"cm":0.345,"so":517},{"n":"Bold","co":"B","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.23,"so":432},{"n":"Buddy","co":"B","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.2,"cp":600,"cm":0.315,"so":369},{"n":"Cake","co":"C","sg":"Trad","pf":5.7,"sz":14.3,"pr":25.75,"mt":17500,"au":4.2,"cp":1800,"cm":0.252,"so":1706},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":1600,"cm":0.248,"so":2399},{"n":"Cid","co":"C","sg":"High","pf":9.4,"sz":11.0,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.32,"so":398},{"n":"Coat","co":"C","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.5,"mt":27000,"au":3.0,"cp":600,"cm":0.215,"so":374},{"n":"Cure","co":"C","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.0,"cp":600,"cm":0.304,"so":314},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":26.5,"mt":14000,"au":4.5,"cp":1800,"cm":0.276,"so":1151},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.274,"so":1791},{"n":"Dot","co":"D","sg":"Perf","pf":9.4,"sz":14.0,"pr":33.0,"mt":24100,"au":3.0,"cp":600,"cm":0.241,"so":400},{"n":"Duck","co":"D","sg":"High","pf":8.9,"sz":10.8,"pr":39.5,"mt":25000,"au":3.0,"cp":800,"cm":0.36,"so":417},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":11.0,"pr":31.5,"mt":18000,"au":3.0,"cp":600,"cm":0.301,"so":468},{"n":"Eat","co":"E","sg":"Trad","pf":5.5,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.11,"so":648},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":10000,"au":6.0,"cp":1400,"cm":0.245,"so":1484},{"n":"Echo","co":"E","sg":"High","pf":9.0,"sz":11.0,"pr":37.5,"mt":21000,"au":3.0,"cp":900,"cm":0.345,"so":417},{"n":"Edge","co":"E","sg":"Perf","pf":9.7,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.214,"so":452},{"n":"Egg","co":"E","sg":"Size","pf":4.6,"sz":9.9,"pr":32.25,"mt":18000,"au":3.0,"cp":600,"cm":0.291,"so":347}],"1":[{"n":"Able","co":"A","sg":"Trad","pf":6.4,"sz":13.6,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.364,"so":1283},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":19.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.32,"so":1704},{"n":"Adam","co":"A","sg":"High","pf":10.2,"sz":9.8,"pr":39.0,"mt":24000,"au":6.0,"cp":900,"cm":0.378,"so":563},{"n":"Aft","co":"A","sg":"Perf","pf":11.4,"sz":14.6,"pr":34.0,"mt":27000,"au":8.0,"cp":600,"cm":0.276,"so":498},{"n":"Agape","co":"A","sg":"Size","pf":5.4,"sz":8.6,"pr":35.0,"mt":21000,"au":4.5,"cp":600,"cm":0.365,"so":415},{"n":"Baker","co":"B","sg":"Trad","pf":6.4,"sz":13.6,"pr":27.0,"mt":19000,"au":4.7,"cp":2050,"cm":0.257,"so":1782},{"n":"Bead","co":"B","sg":"Low ","pf":2.7,"sz":17.3,"pr":20.0,"mt":15000,"au":6.0,"cp":2450,"cm":0.303,"so":1913},{"n":"Bid","co":"B","sg":"High","pf":10.4,"sz":9.9,"pr":38.0,"mt":23850,"au":3.5,"cp":800,"cm":0.335,"so":641},{"n":"Bold","co":"B","sg":"Perf","pf":11.4,"sz":14.6,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.248,"so":584},{"n":"Buddy","co":"B","sg":"Size","pf":5.4,"sz":8.6,"pr":33.25,"mt":21000,"au":3.2,"cp":600,"cm":0.327,"so":583},{"n":"Cake","co":"C","sg":"Trad","pf":6.1,"sz":13.9,"pr":25.75,"mt":18000,"au":4.2,"cp":1800,"cm":0.244,"so":1824},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":2150,"cm":0.233,"so":2129},{"n":"Cid","co":"C","sg":"High","pf":9.7,"sz":10.7,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.365,"so":550},{"n":"Coat","co":"C","sg":"Perf","pf":11.0,"sz":15.1,"pr":34.0,"mt":27000,"au":3.0,"cp":600,"cm":0.26,"so":551},{"n":"Cure","co":"C","sg":"Size","pf":4.9,"sz":9.2,"pr":34.0,"mt":19500,"au":3.0,"cp":600,"cm":0.331,"so":497},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":24.5,"mt":14000,"au":4.5,"cp":1700,"cm":0.277,"so":1252},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.314,"so":2074},{"n":"Dino","co":"D","sg":"","pf":null,"sz":null,"pr":0.0,"mt":0,"au":2.0,"cp":200,"cm":0.0,"so":0},{"n":"Dot","co":"D","sg":"High","pf":9.4,"sz":13.0,"pr":31.75,"mt":24100,"au":3.0,"cp":600,"cm":0.245,"so":400},{"n":"Duck","co":"D","sg":"High","pf":10.3,"sz":9.9,"pr":39.0,"mt":25000,"au":3.0,"cp":800,"cm":0.359,"so":543},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":9.5,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.308,"so":590},{"n":"Eat","co":"E","sg":"Trad","pf":5.9,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.261,"so":1080},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":12050,"au":6.0,"cp":1400,"cm":0.328,"so":1322},{"n":"Echo","co":"E","sg":"High","pf":9.1,"sz":11.0,"pr":38.0,"mt":21000,"au":3.0,"cp":900,"cm":0.34,"so":374},{"n":"Edge","co":"E","sg":"Perf","pf":9.8,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.222,"so":476},{"n":"Egg","co":"E","sg":"Size","pf":5.4,"sz":9.2,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.27,"so":405}],"2":[{"n":"Able","co":"A","sg":"Trad","pf":6.4,"sz":13.6,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.392,"so":1771},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":17.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.389,"so":1967},{"n":"Adam","co":"A","sg":"High","pf":11.3,"sz":8.7,"pr":40.0,"mt":24000,"au":7.5,"cp":900,"cm":0.462,"so":733},{"n":"Aft","co":"A","sg":"Perf","pf":12.3,"sz":14.0,"pr":34.0,"mt":27000,"au":8.0,"cp":900,"cm":0.419,"so":862},{"n":"Agape","co":"A","sg":"Size","pf":6.1,"sz":7.6,"pr":36.0,"mt":21000,"au":7.5,"cp":600,"cm":0.389,"so":564},{"n":"Baker","co":"B","sg":"Trad","pf":7.1,"sz":12.9,"pr":26.0,"mt":19000,"au":4.7,"cp":2050,"cm":0.283,"so":2081},{"n":"Bead","co":"B","sg":"Low ","pf":3.1,"sz":16.8,"pr":19.75,"mt":15000,"au":6.0,"cp":2450,"cm":0.31,"so":1377},{"n":"Bid","co":"B","sg":"High","pf":11.4,"sz":8.8,"pr":39.0,"mt":23850,"au":3.5,"cp":800,"cm":0.367,"so":834},{"n":"Bold","co":"B","sg":"Perf","pf":12.4,"sz":13.9,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.185,"so":677},{"n":"Buddy","co":"B","sg":"Size","pf":6.2,"sz":7.6,"pr":33.25,"mt":21000,"au":3.2,"cp":600,"cm":0.269,"so":794},{"n":"Cake","co":"C","sg":"Trad","pf":6.1,"sz":13.9,"pr":25.75,"mt":18000,"au":5.2,"cp":1800,"cm":0.276,"so":2120},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":7.3,"cp":2150,"cm":0.311,"so":2033},{"n":"Cid","co":"C","sg":"High","pf":9.9,"sz":10.5,"pr":38.25,"mt":23000,"au":3.0,"cp":900,"cm":0.337,"so":513},{"n":"Coat","co":"C","sg":"Perf","pf":11.5,"sz":14.7,"pr":33.5,"mt":27000,"au":3.0,"cp":600,"cm":0.232,"so":544},{"n":"Cure","co":"C","sg":"Size","pf":5.3,"sz":8.8,"pr":33.5,"mt":19500,"au":3.0,"cp":600,"cm":0.309,"so":405},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":23.5,"mt":14000,"au":5.0,"cp":1700,"cm":0.227,"so":790},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":18.75,"mt":12000,"au":5.5,"cp":1400,"cm":0.308,"so":2469},{"n":"Dino","co":"D","sg":"Perf","pf":13.5,"sz":13.5,"pr":34.75,"mt":27000,"au":2.0,"cp":400,"cm":0.07,"so":57},{"n":"Dot","co":"D","sg":"High","pf":9.4,"sz":11.7,"pr":31.5,"mt":21000,"au":3.0,"cp":600,"cm":0.277,"so":543},{"n":"Duck","co":"D","sg":"High","pf":11.6,"sz":8.4,"pr":38.5,"mt":25000,"au":3.0,"cp":800,"cm":0.35,"so":791},{"n":"Dune","co":"D","sg":"Size","pf":5.6,"sz":8.1,"pr":31.5,"mt":18000,"au":3.0,"cp":700,"cm":0.247,"so":446},{"n":"Eat","co":"E","sg":"Trad","pf":6.9,"sz":13.9,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.382,"so":1355},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":12000,"au":6.0,"cp":1400,"cm":0.348,"so":2164},{"n":"Echo","co":"E","sg":"High","pf":10.0,"sz":10.0,"pr":38.0,"mt":21000,"au":3.0,"cp":900,"cm":0.345,"so":282},{"n":"Edge","co":"E","sg":"Perf","pf":11.0,"sz":14.9,"pr":32.75,"mt":27000,"au":3.0,"cp":600,"cm":0.26,"so":541},{"n":"Egg","co":"E","sg":"Size","pf":5.6,"sz":8.6,"pr":31.0,"mt":19000,"au":3.0,"cp":600,"cm":0.281,"so":526}],"3":[{"n":"Able","co":"A","sg":"Trad","pf":7.5,"sz":12.6,"pr":29.0,"mt":19000,"au":6.0,"cp":1800,"cm":0.372,"so":1637},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":16.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.376,"so":2747},{"n":"Adam","co":"A","sg":"High","pf":12.5,"sz":7.8,"pr":40.0,"mt":24000,"au":8.0,"cp":900,"cm":0.509,"so":772},{"n":"Aft","co":"A","sg":"Perf","pf":13.4,"sz":13.2,"pr":34.0,"mt":27000,"au":8.5,"cp":1000,"cm":0.432,"so":887},{"n":"Agape","co":"A","sg":"Size","pf":7.0,"sz":6.6,"pr":35.0,"mt":21000,"au":8.0,"cp":700,"cm":0.486,"so":723},{"n":"Baker","co":"B","sg":"Trad","pf":7.8,"sz":12.2,"pr":26.5,"mt":19000,"au":4.7,"cp":2050,"cm":0.272,"so":2359},{"n":"Bead","co":"B","sg":"Low ","pf":3.7,"sz":16.3,"pr":19.0,"mt":15000,"au":6.0,"cp":2450,"cm":0.325,"so":1575},{"n":"Bid","co":"B","sg":"High","pf":12.5,"sz":7.5,"pr":39.25,"mt":23850,"au":3.5,"cp":800,"cm":0.333,"so":971},{"n":"Bold","co":"B","sg":"Perf","pf":13.4,"sz":13.2,"pr":33.5,"mt":27000,"au":3.2,"cp":600,"cm":0.202,"so":716},{"n":"Buddy","co":"B","sg":"Size","pf":6.8,"sz":6.6,"pr":34.0,"mt":21000,"au":3.2,"cp":750,"cm":0.26,"so":1071},{"n":"Cake","co":"C","sg":"Trad","pf":7.1,"sz":12.9,"pr":25.75,"mt":18000,"au":6.2,"cp":1800,"cm":0.331,"so":1826},{"n":"Cedar","co":"C","sg":"Low ","pf":3.7,"sz":16.3,"pr":20.0,"mt":14000,"au":8.3,"cp":2150,"cm":0.427,"so":2130},{"n":"Cid","co":"C","sg":"High","pf":10.9,"sz":9.2,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.328,"so":410},{"n":"Coat","co":"C","sg":"Perf","pf":12.8,"sz":13.7,"pr":33.0,"mt":27000,"au":3.0,"cp":600,"cm":0.234,"so":623},{"n":"Cure","co":"C","sg":"Size","pf":6.0,"sz":7.3,"pr":35.5,"mt":19500,"au":3.0,"cp":600,"cm":0.311,"so":255},{"n":"Daze","co":"D","sg":"Low ","pf":5.7,"sz":14.3,"pr":23.5,"mt":14000,"au":6.7,"cp":1700,"cm":0.295,"so":748},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":18.75,"mt":12000,"au":5.5,"cp":1400,"cm":0.334,"so":2399},{"n":"Dino","co":"D","sg":"Perf","pf":13.5,"sz":13.0,"pr":34.25,"mt":27000,"au":2.0,"cp":700,"cm":0.12,"so":424},{"n":"Dot","co":"D","sg":"Trad","pf":9.4,"sz":11.7,"pr":29.5,"mt":21000,"au":5.0,"cp":800,"cm":0.229,"so":985},{"n":"Duck","co":"D","sg":"High","pf":12.5,"sz":7.5,"pr":38.5,"mt":25000,"au":3.0,"cp":950,"cm":0.315,"so":1232},{"n":"Dune","co":"D","sg":"Size","pf":6.0,"sz":7.5,"pr":31.5,"mt":18000,"au":3.0,"cp":700,"cm":0.318,"so":564},{"n":"Eat","co":"E","sg":"Trad","pf":7.6,"sz":12.6,"pr":23.75,"mt":14000,"au":6.0,"cp":1800,"cm":0.366,"so":1920},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":7.0,"cp":1400,"cm":0.386,"so":2179},{"n":"Echo","co":"E","sg":"High","pf":11.0,"sz":8.9,"pr":38.0,"mt":21000,"au":3.0,"cp":600,"cm":0.382,"so":374},{"n":"Edge","co":"E","sg":"Perf","pf":12.1,"sz":13.8,"pr":33.0,"mt":27000,"au":3.0,"cp":600,"cm":0.284,"so":628},{"n":"Egg","co":"E","sg":"Size","pf":6.4,"sz":7.2,"pr":32.0,"mt":19000,"au":3.0,"cp":600,"cm":0.286,"so":625}]}};
+const COMPHIST={"fin":{"share":{"A":[0.165,0.23,0.242,0.237,0.23],"B":[0.238,0.206,0.22,0.219,0.238],"C":[0.237,0.198,0.179,0.147,0.15],"D":[0.207,0.192,0.181,0.223,0.231],"E":[0.153,0.175,0.177,0.174,0.151]},"profit":{"A":[-6327.0,-8258.0,5217.0,7340.0,9720],"B":[-6508.0,-6911.0,-1050.0,2614.0,1303],"C":[-621.0,5655.0,1046.0,-6357.0,-2293],"D":[-265.0,703.0,-160.0,1531.0,4340],"E":[-9502.0,-9267.0,-439.0,5824.0,-2744]},"cumul":{"A":[-2142.0,-10400.0,-5184.0,2156.0,11877],"B":[-2323.0,-9234.0,-10284.0,-7670.0,-6367],"C":[3564.0,9219.0,10266.0,3909.0,1615],"D":[3921.0,4623.0,4464.0,5995.0,10335],"E":[-5316.0,-14583.0,-15022.0,-9198.0,-11942]},"cm":{"A":[0.3129,0.343,0.4085,0.4231,0.4424],"B":[0.2846,0.2894,0.2885,0.2811,0.2795],"C":[0.2592,0.2704,0.2916,0.3447,0.319],"D":[0.2869,0.3044,0.2917,0.2872,0.3286],"E":[0.239,0.2858,0.3348,0.3505,0.3411]},"lev":{"A":[2.36,2.39,2.56,2.29,1.96],"B":[3.13,4.19,4.02,3.55,3.08],"C":[2.15,2.02,2.25,2.61,2.54],"D":[2.01,1.99,2.03,2.36,2.28],"E":[3.08,3.46,3.26,2.79,2.72]},"emg":{"A":[7631.0,0.0,0.0,2737.0,0],"B":[19630.0,19181.0,0.0,0.0,0],"C":[0.0,0.0,0.0,12440.0,0],"D":[0.0,0.0,6208.0,3410.0,0],"E":[16816.0,0.0,0.0,0.0,6106]},"sga":{"A":[0.2171,0.2569,0.1886,0.1793,0.1733],"B":[0.2045,0.1724,0.146,0.1225,0.1369],"C":[0.1545,0.1034,0.1075,0.1748,0.1641],"D":[0.1691,0.1603,0.1549,0.1146,0.1264],"E":[0.1742,0.2144,0.1602,0.1371,0.1809]},"sales":{"A":[107524.0,123006.0,163757.0,177758.0,168547],"B":[139155.0,149400.0,162597.0,190951.0,173955],"C":[131851.0,147690.0,147648.0,134817.0,109596],"D":[109849.0,123279.0,128456.0,171334.0,169001],"E":[85359.0,93559.0,119053.0,143021.0,110609]},"ros":{"A":[-0.059,-0.067,0.032,0.041,0.058],"B":[-0.047,-0.046,-0.006,0.014,0.007],"C":[-0.005,0.038,0.007,-0.047,-0.021],"D":[-0.002,0.006,-0.001,0.009,0.026],"E":[-0.111,-0.099,-0.004,0.041,-0.025]}},"agg":{"auto":{"A":[4.8,6.4,7.3,7.8,7.8],"B":[3.82,4.12,4.12,4.12,4.32],"C":[3.7,3.7,4.3,4.7,4.7],"D":[3.8,3.5,3.58,4.2,4.42],"E":[4.2,4.2,4.2,4.4,4.6]},"cap":{"A":[5300,5300,5600,5800,5800],"B":[6200,6500,6500,6650,6000],"C":[5500,6050,6050,6050,5950],"D":[5200,5300,5600,6250,6600],"E":[5300,5300,5300,5000,5000]},"sold":{"A":[3585,4463,5897,6766,6625],"B":[5205,5503,5763,6692,6330],"C":[5191,5551,5615,5244,5102],"D":[4227,4859,5096,6352,6249],"E":[3348,3657,4868,5726,4310]}},"snap":{"0":[{"n":"Able","co":"A","sg":"Trad","pf":5.7,"sz":13.8,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.316,"so":1288},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":24.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.294,"so":1024},{"n":"Adam","co":"A","sg":"High","pf":9.3,"sz":11.0,"pr":39.0,"mt":23000,"au":3.5,"cp":900,"cm":0.364,"so":465},{"n":"Aft","co":"A","sg":"Perf","pf":10.4,"sz":15.0,"pr":34.0,"mt":27000,"au":3.5,"cp":600,"cm":0.263,"so":449},{"n":"Agape","co":"A","sg":"Size","pf":4.8,"sz":9.6,"pr":34.0,"mt":19000,"au":3.5,"cp":600,"cm":0.328,"so":359},{"n":"Baker","co":"B","sg":"Trad","pf":5.7,"sz":14.3,"pr":27.5,"mt":17500,"au":4.2,"cp":1800,"cm":0.298,"so":1660},{"n":"Bead","co":"B","sg":"Low ","pf":2.2,"sz":17.8,"pr":21.0,"mt":14000,"au":5.5,"cp":2400,"cm":0.254,"so":2227},{"n":"Bid","co":"B","sg":"High","pf":9.3,"sz":11.0,"pr":38.5,"mt":23000,"au":3.0,"cp":800,"cm":0.345,"so":517},{"n":"Bold","co":"B","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.23,"so":432},{"n":"Buddy","co":"B","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.2,"cp":600,"cm":0.315,"so":369},{"n":"Cake","co":"C","sg":"Trad","pf":5.7,"sz":14.3,"pr":25.75,"mt":17500,"au":4.2,"cp":1800,"cm":0.252,"so":1706},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":1600,"cm":0.248,"so":2399},{"n":"Cid","co":"C","sg":"High","pf":9.4,"sz":11.0,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.32,"so":398},{"n":"Coat","co":"C","sg":"Perf","pf":10.4,"sz":15.3,"pr":33.5,"mt":27000,"au":3.0,"cp":600,"cm":0.215,"so":374},{"n":"Cure","co":"C","sg":"Size","pf":4.7,"sz":9.6,"pr":34.0,"mt":19000,"au":3.0,"cp":600,"cm":0.304,"so":314},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":26.5,"mt":14000,"au":4.5,"cp":1800,"cm":0.276,"so":1151},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.274,"so":1791},{"n":"Dot","co":"D","sg":"Perf","pf":9.4,"sz":14.0,"pr":33.0,"mt":24100,"au":3.0,"cp":600,"cm":0.241,"so":400},{"n":"Duck","co":"D","sg":"High","pf":8.9,"sz":10.8,"pr":39.5,"mt":25000,"au":3.0,"cp":800,"cm":0.36,"so":417},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":11.0,"pr":31.5,"mt":18000,"au":3.0,"cp":600,"cm":0.301,"so":468},{"n":"Eat","co":"E","sg":"Trad","pf":5.5,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.11,"so":648},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":10000,"au":6.0,"cp":1400,"cm":0.245,"so":1484},{"n":"Echo","co":"E","sg":"High","pf":9.0,"sz":11.0,"pr":37.5,"mt":21000,"au":3.0,"cp":900,"cm":0.345,"so":417},{"n":"Edge","co":"E","sg":"Perf","pf":9.7,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.214,"so":452},{"n":"Egg","co":"E","sg":"Size","pf":4.6,"sz":9.9,"pr":32.25,"mt":18000,"au":3.0,"cp":600,"cm":0.291,"so":347}],"1":[{"n":"Able","co":"A","sg":"Trad","pf":6.4,"sz":13.6,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.364,"so":1283},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":19.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.32,"so":1704},{"n":"Adam","co":"A","sg":"High","pf":10.2,"sz":9.8,"pr":39.0,"mt":24000,"au":6.0,"cp":900,"cm":0.378,"so":563},{"n":"Aft","co":"A","sg":"Perf","pf":11.4,"sz":14.6,"pr":34.0,"mt":27000,"au":8.0,"cp":600,"cm":0.276,"so":498},{"n":"Agape","co":"A","sg":"Size","pf":5.4,"sz":8.6,"pr":35.0,"mt":21000,"au":4.5,"cp":600,"cm":0.365,"so":415},{"n":"Baker","co":"B","sg":"Trad","pf":6.4,"sz":13.6,"pr":27.0,"mt":19000,"au":4.7,"cp":2050,"cm":0.257,"so":1782},{"n":"Bead","co":"B","sg":"Low ","pf":2.7,"sz":17.3,"pr":20.0,"mt":15000,"au":6.0,"cp":2450,"cm":0.303,"so":1913},{"n":"Bid","co":"B","sg":"High","pf":10.4,"sz":9.9,"pr":38.0,"mt":23850,"au":3.5,"cp":800,"cm":0.335,"so":641},{"n":"Bold","co":"B","sg":"Perf","pf":11.4,"sz":14.6,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.248,"so":584},{"n":"Buddy","co":"B","sg":"Size","pf":5.4,"sz":8.6,"pr":33.25,"mt":21000,"au":3.2,"cp":600,"cm":0.327,"so":583},{"n":"Cake","co":"C","sg":"Trad","pf":6.1,"sz":13.9,"pr":25.75,"mt":18000,"au":4.2,"cp":1800,"cm":0.244,"so":1824},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":5.3,"cp":2150,"cm":0.233,"so":2129},{"n":"Cid","co":"C","sg":"High","pf":9.7,"sz":10.7,"pr":39.0,"mt":23000,"au":3.0,"cp":900,"cm":0.365,"so":550},{"n":"Coat","co":"C","sg":"Perf","pf":11.0,"sz":15.1,"pr":34.0,"mt":27000,"au":3.0,"cp":600,"cm":0.26,"so":551},{"n":"Cure","co":"C","sg":"Size","pf":4.9,"sz":9.2,"pr":34.0,"mt":19500,"au":3.0,"cp":600,"cm":0.331,"so":497},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":24.5,"mt":14000,"au":4.5,"cp":1700,"cm":0.277,"so":1252},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":5.5,"cp":1400,"cm":0.314,"so":2074},{"n":"Dino","co":"D","sg":"","pf":null,"sz":null,"pr":0.0,"mt":0,"au":2.0,"cp":200,"cm":0.0,"so":0},{"n":"Dot","co":"D","sg":"High","pf":9.4,"sz":13.0,"pr":31.75,"mt":24100,"au":3.0,"cp":600,"cm":0.245,"so":400},{"n":"Duck","co":"D","sg":"High","pf":10.3,"sz":9.9,"pr":39.0,"mt":25000,"au":3.0,"cp":800,"cm":0.359,"so":543},{"n":"Dune","co":"D","sg":"Size","pf":5.0,"sz":9.5,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.308,"so":590},{"n":"Eat","co":"E","sg":"Trad","pf":5.9,"sz":14.5,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.261,"so":1080},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":12050,"au":6.0,"cp":1400,"cm":0.328,"so":1322},{"n":"Echo","co":"E","sg":"High","pf":9.1,"sz":11.0,"pr":38.0,"mt":21000,"au":3.0,"cp":900,"cm":0.34,"so":374},{"n":"Edge","co":"E","sg":"Perf","pf":9.8,"sz":15.5,"pr":32.0,"mt":27000,"au":3.0,"cp":600,"cm":0.222,"so":476},{"n":"Egg","co":"E","sg":"Size","pf":5.4,"sz":9.2,"pr":31.0,"mt":18000,"au":3.0,"cp":600,"cm":0.27,"so":405}],"2":[{"n":"Able","co":"A","sg":"Trad","pf":6.4,"sz":13.6,"pr":29.0,"mt":19000,"au":5.0,"cp":1800,"cm":0.392,"so":1771},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":17.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.389,"so":1967},{"n":"Adam","co":"A","sg":"High","pf":11.3,"sz":8.7,"pr":40.0,"mt":24000,"au":7.5,"cp":900,"cm":0.462,"so":733},{"n":"Aft","co":"A","sg":"Perf","pf":12.3,"sz":14.0,"pr":34.0,"mt":27000,"au":8.0,"cp":900,"cm":0.419,"so":862},{"n":"Agape","co":"A","sg":"Size","pf":6.1,"sz":7.6,"pr":36.0,"mt":21000,"au":7.5,"cp":600,"cm":0.389,"so":564},{"n":"Baker","co":"B","sg":"Trad","pf":7.1,"sz":12.9,"pr":26.0,"mt":19000,"au":4.7,"cp":2050,"cm":0.283,"so":2081},{"n":"Bead","co":"B","sg":"Low ","pf":3.1,"sz":16.8,"pr":19.75,"mt":15000,"au":6.0,"cp":2450,"cm":0.31,"so":1377},{"n":"Bid","co":"B","sg":"High","pf":11.4,"sz":8.8,"pr":39.0,"mt":23850,"au":3.5,"cp":800,"cm":0.367,"so":834},{"n":"Bold","co":"B","sg":"Perf","pf":12.4,"sz":13.9,"pr":33.0,"mt":27000,"au":3.2,"cp":600,"cm":0.185,"so":677},{"n":"Buddy","co":"B","sg":"Size","pf":6.2,"sz":7.6,"pr":33.25,"mt":21000,"au":3.2,"cp":600,"cm":0.269,"so":794},{"n":"Cake","co":"C","sg":"Trad","pf":6.1,"sz":13.9,"pr":25.75,"mt":18000,"au":5.2,"cp":1800,"cm":0.276,"so":2120},{"n":"Cedar","co":"C","sg":"Low ","pf":3.0,"sz":17.0,"pr":20.5,"mt":14000,"au":7.3,"cp":2150,"cm":0.311,"so":2033},{"n":"Cid","co":"C","sg":"High","pf":9.9,"sz":10.5,"pr":38.25,"mt":23000,"au":3.0,"cp":900,"cm":0.337,"so":513},{"n":"Coat","co":"C","sg":"Perf","pf":11.5,"sz":14.7,"pr":33.5,"mt":27000,"au":3.0,"cp":600,"cm":0.232,"so":544},{"n":"Cure","co":"C","sg":"Size","pf":5.3,"sz":8.8,"pr":33.5,"mt":19500,"au":3.0,"cp":600,"cm":0.309,"so":405},{"n":"Daze","co":"D","sg":"Trad","pf":5.7,"sz":14.3,"pr":23.5,"mt":14000,"au":5.0,"cp":1700,"cm":0.227,"so":790},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":18.75,"mt":12000,"au":5.5,"cp":1400,"cm":0.308,"so":2469},{"n":"Dino","co":"D","sg":"Perf","pf":13.5,"sz":13.5,"pr":34.75,"mt":27000,"au":2.0,"cp":400,"cm":0.07,"so":57},{"n":"Dot","co":"D","sg":"High","pf":9.4,"sz":11.7,"pr":31.5,"mt":21000,"au":3.0,"cp":600,"cm":0.277,"so":543},{"n":"Duck","co":"D","sg":"High","pf":11.6,"sz":8.4,"pr":38.5,"mt":25000,"au":3.0,"cp":800,"cm":0.35,"so":791},{"n":"Dune","co":"D","sg":"Size","pf":5.6,"sz":8.1,"pr":31.5,"mt":18000,"au":3.0,"cp":700,"cm":0.247,"so":446},{"n":"Eat","co":"E","sg":"Trad","pf":6.9,"sz":13.9,"pr":24.5,"mt":14000,"au":6.0,"cp":1800,"cm":0.382,"so":1355},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.0,"mt":12000,"au":6.0,"cp":1400,"cm":0.348,"so":2164},{"n":"Echo","co":"E","sg":"High","pf":10.0,"sz":10.0,"pr":38.0,"mt":21000,"au":3.0,"cp":900,"cm":0.345,"so":282},{"n":"Edge","co":"E","sg":"Perf","pf":11.0,"sz":14.9,"pr":32.75,"mt":27000,"au":3.0,"cp":600,"cm":0.26,"so":541},{"n":"Egg","co":"E","sg":"Size","pf":5.6,"sz":8.6,"pr":31.0,"mt":19000,"au":3.0,"cp":600,"cm":0.281,"so":526}],"3":[{"n":"Able","co":"A","sg":"Trad","pf":7.5,"sz":12.6,"pr":29.0,"mt":19000,"au":6.0,"cp":1800,"cm":0.372,"so":1637},{"n":"Acre","co":"A","sg":"Low ","pf":3.2,"sz":17.0,"pr":16.0,"mt":17000,"au":8.5,"cp":1400,"cm":0.376,"so":2747},{"n":"Adam","co":"A","sg":"High","pf":12.5,"sz":7.8,"pr":40.0,"mt":24000,"au":8.0,"cp":900,"cm":0.509,"so":772},{"n":"Aft","co":"A","sg":"Perf","pf":13.4,"sz":13.2,"pr":34.0,"mt":27000,"au":8.5,"cp":1000,"cm":0.432,"so":887},{"n":"Agape","co":"A","sg":"Size","pf":7.0,"sz":6.6,"pr":35.0,"mt":21000,"au":8.0,"cp":700,"cm":0.486,"so":723},{"n":"Baker","co":"B","sg":"Trad","pf":7.8,"sz":12.2,"pr":26.5,"mt":19000,"au":4.7,"cp":2050,"cm":0.272,"so":2359},{"n":"Bead","co":"B","sg":"Low ","pf":3.7,"sz":16.3,"pr":19.0,"mt":15000,"au":6.0,"cp":2450,"cm":0.325,"so":1575},{"n":"Bid","co":"B","sg":"High","pf":12.5,"sz":7.5,"pr":39.25,"mt":23850,"au":3.5,"cp":800,"cm":0.333,"so":971},{"n":"Bold","co":"B","sg":"Perf","pf":13.4,"sz":13.2,"pr":33.5,"mt":27000,"au":3.2,"cp":600,"cm":0.202,"so":716},{"n":"Buddy","co":"B","sg":"Size","pf":6.8,"sz":6.6,"pr":34.0,"mt":21000,"au":3.2,"cp":750,"cm":0.26,"so":1071},{"n":"Cake","co":"C","sg":"Trad","pf":7.1,"sz":12.9,"pr":25.75,"mt":18000,"au":6.2,"cp":1800,"cm":0.331,"so":1826},{"n":"Cedar","co":"C","sg":"Low ","pf":3.7,"sz":16.3,"pr":20.0,"mt":14000,"au":8.3,"cp":2150,"cm":0.427,"so":2130},{"n":"Cid","co":"C","sg":"High","pf":10.9,"sz":9.2,"pr":38.0,"mt":23000,"au":3.0,"cp":900,"cm":0.328,"so":410},{"n":"Coat","co":"C","sg":"Perf","pf":12.8,"sz":13.7,"pr":33.0,"mt":27000,"au":3.0,"cp":600,"cm":0.234,"so":623},{"n":"Cure","co":"C","sg":"Size","pf":6.0,"sz":7.3,"pr":35.5,"mt":19500,"au":3.0,"cp":600,"cm":0.311,"so":255},{"n":"Daze","co":"D","sg":"Low ","pf":5.7,"sz":14.3,"pr":23.5,"mt":14000,"au":6.7,"cp":1700,"cm":0.295,"so":748},{"n":"Dell","co":"D","sg":"Low ","pf":3.0,"sz":17.0,"pr":18.75,"mt":12000,"au":5.5,"cp":1400,"cm":0.334,"so":2399},{"n":"Dino","co":"D","sg":"Perf","pf":13.5,"sz":13.0,"pr":34.25,"mt":27000,"au":2.0,"cp":700,"cm":0.12,"so":424},{"n":"Dot","co":"D","sg":"Trad","pf":9.4,"sz":11.7,"pr":29.5,"mt":21000,"au":5.0,"cp":800,"cm":0.229,"so":985},{"n":"Duck","co":"D","sg":"High","pf":12.5,"sz":7.5,"pr":38.5,"mt":25000,"au":3.0,"cp":950,"cm":0.315,"so":1232},{"n":"Dune","co":"D","sg":"Size","pf":6.0,"sz":7.5,"pr":31.5,"mt":18000,"au":3.0,"cp":700,"cm":0.318,"so":564},{"n":"Eat","co":"E","sg":"Trad","pf":7.6,"sz":12.6,"pr":23.75,"mt":14000,"au":6.0,"cp":1800,"cm":0.366,"so":1920},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":7.0,"cp":1400,"cm":0.386,"so":2179},{"n":"Echo","co":"E","sg":"High","pf":11.0,"sz":8.9,"pr":38.0,"mt":21000,"au":3.0,"cp":600,"cm":0.382,"so":374},{"n":"Edge","co":"E","sg":"Perf","pf":12.1,"sz":13.8,"pr":33.0,"mt":27000,"au":3.0,"cp":600,"cm":0.284,"so":628},{"n":"Egg","co":"E","sg":"Size","pf":6.4,"sz":7.2,"pr":32.0,"mt":19000,"au":3.0,"cp":600,"cm":0.286,"so":625}],"4":[{"n":"Able","co":"A","sg":"Trad","pf":8.5,"sz":11.5,"pr":27.5,"mt":19000,"au":6,"cp":1800,"cm":0,"so":1594},{"n":"Acre","co":"A","sg":"Low ","pf":3.6,"sz":16.8,"pr":16.0,"mt":17000,"au":8.5,"cp":1400,"cm":0,"so":2730},{"n":"Adam","co":"A","sg":"High","pf":13.5,"sz":6.6,"pr":39.0,"mt":25000,"au":8,"cp":900,"cm":0,"so":730},{"n":"Aft","co":"A","sg":"Perf","pf":14.5,"sz":12.5,"pr":33.0,"mt":27000,"au":8.5,"cp":1000,"cm":0,"so":849},{"n":"Agape","co":"A","sg":"Size","pf":7.5,"sz":5.6,"pr":34.0,"mt":21000,"au":8,"cp":700,"cm":0,"so":722},{"n":"Baker","co":"B","sg":"Trad","pf":8.5,"sz":11.5,"pr":25.5,"mt":19000,"au":5,"cp":2050,"cm":0,"so":2063},{"n":"Bead","co":"B","sg":"Low ","pf":3.7,"sz":16.3,"pr":17.5,"mt":15000,"au":6,"cp":1800,"cm":0,"so":1664},{"n":"Bid","co":"B","sg":"High","pf":13.4,"sz":6.6,"pr":38.0,"mt":23850,"au":3.8,"cp":800,"cm":0,"so":1003},{"n":"Bold","co":"B","sg":"Perf","pf":14.4,"sz":12.5,"pr":33.5,"mt":27000,"au":3.4,"cp":600,"cm":0,"so":606},{"n":"Buddy","co":"B","sg":"Size","pf":7.5,"sz":5.6,"pr":34.0,"mt":21000,"au":3.4,"cp":750,"cm":0,"so":994},{"n":"Cake","co":"C","sg":"Trad","pf":8.0,"sz":11.9,"pr":23.0,"mt":18000,"au":6.2,"cp":1800,"cm":0,"so":1787},{"n":"Cedar","co":"C","sg":"Low ","pf":3.7,"sz":16.3,"pr":15.0,"mt":14000,"au":8.3,"cp":2150,"cm":0,"so":2346},{"n":"Cid","co":"C","sg":"High","pf":10.9,"sz":9.2,"pr":38.0,"mt":23000,"au":3,"cp":800,"cm":0,"so":176},{"n":"Coat","co":"C","sg":"Perf","pf":13.8,"sz":13.0,"pr":33.0,"mt":27000,"au":3,"cp":600,"cm":0,"so":502},{"n":"Cure","co":"C","sg":"Size","pf":7.4,"sz":5.7,"pr":34.5,"mt":19500,"au":3,"cp":600,"cm":0,"so":291},{"n":"Eat","co":"E","sg":"Trad","pf":8.0,"sz":12.0,"pr":23.75,"mt":14000,"au":6.5,"cp":1800,"cm":0,"so":1637},{"n":"Ebb","co":"E","sg":"Low ","pf":3.0,"sz":17.0,"pr":19.5,"mt":12000,"au":7.5,"cp":1400,"cm":0,"so":1197},{"n":"Echo","co":"E","sg":"High","pf":12.2,"sz":7.6,"pr":37.0,"mt":21000,"au":3,"cp":600,"cm":0,"so":283},{"n":"Edge","co":"E","sg":"Perf","pf":13.2,"sz":13.8,"pr":32.0,"mt":27000,"au":3,"cp":600,"cm":0,"so":640},{"n":"Egg","co":"E","sg":"Size","pf":6.4,"sz":6.5,"pr":31.5,"mt":19000,"au":3,"cp":600,"cm":0,"so":553}]}};
 const RIVAL=[{k:"A",n:"Andrews",c:"#b45309"},{k:"B",n:"Baldwin",c:"#7c3aed"},
  {k:"C",n:"Chester",c:"#0891b2"},{k:"D",n:"Digby",c:"#111"},{k:"E",n:"Erie",c:"#be123c"}];
 const rvOf=k=>RIVAL.find(x=>x.k===k);
-const CH_R=[0,1,2,3];        // rounds we have data for
+const CH_R=[0,1,2,3,4];        // rounds we have data for
 /* The rivals dashboard always shows the newest competitor data we have, not the
    round you happen to be planning — otherwise a saved state on an earlier round
    would freeze it on stale intel. */
@@ -2270,22 +2398,22 @@ function chLegend(){return `<div class="legend">${RIVAL.map(x=>
 
 /* Strategy reads — grounded in the trends above, written from the actual data. */
 const RIVAL_READ={
- C:{tag:"The leader that stumbled — now catchable",
-  doing:"Chester's discipline broke in R4. They posted a $(6,357) loss and took a $12,440 emergency loan — the largest on the board — after sales fell to $134,817 while everyone else grew. They lost the cumulative lead to us and dropped to third.",
-  why:"They over-committed. Chester spent heavily on TQM ($8,000, the most of anyone) and plant while their sales shrank, and the mismatch drained cash into an emergency loan. The lean-operations model that carried them works when volume holds; when it doesn't, their thin contribution margin (34% now, but on falling sales) leaves no cushion. They also separated 245 employees, a sign of retrenchment.",
-  counter:"We just passed them. Chester is wounded and cash-constrained heading into a market downturn — do not let up. Their R&D cycle-time investment (cumulative -28.5%) means they can still reposition cheaply, so expect them to defend their best segments hard. Hold our cost and cash discipline, keep Duck fed, and press wherever their retrenchment opens share. The gap is only ~$2,000 cumulative, so R5 execution decides it."},
- A:{tag:"The margin machine — the real long-term threat",
-  doing:"Andrews had the best round in the industry: $7,340 profit, a 42.3% contribution margin, $177,758 sales, and they clawed cumulative back to positive ($2,156) from deep losses. Their automation is now extreme (Acre 8.5, Aft 8.5, Agape 8.0) and every product sits on its ideal spot.",
-  why:"The long automation-plus-differentiation bet is fully paying off. With the lowest unit costs in the game and perfect positioning, each sale drops a 42% margin, and they have finally out-earned their SG&A. They are the best-run company on a per-unit basis and their trajectory is straight up.",
-  counter:"Andrews owns High End and Performance on cost — Adam at 12.5/7.8 and Aft at 13.4/13.2 are exactly where Duck and Dino compete. We cannot out-cost them, so we win on the balance sheet and on not overreaching: they carry more debt and less cash than we do. Keep Duck on the moving High End ideal and defend on reliability (MTBF 25,000). The coming downturn hurts high-automation players with fixed cost to cover, so a soft R5 may bite Andrews harder than us."},
- B:{tag:"Still overextended, still borrowing",
-  doing:"Baldwin returned to a small profit ($2,614) but cumulative is still deep red (-$7,670) and leverage sits at 3.55. They remain the volume player — Baker 2,359 units, Bead the cheap Low End anchor — and spread a token $300 across every TQM line.",
-  why:"They are treading water: enough profit to avoid an emergency loan this round, not enough to dig out of the hole. The scattershot $300-per-TQM-category spend buys almost nothing (diminishing returns cut both ways) and signals they are guessing. High leverage into a downturn is dangerous.",
-  counter:"Unchanged: don't fight Baldwin on Low End price, let the leverage do the work. A contracting market in R5 is exactly the stress that breaks an over-levered volume player. Hold Dell's margin and be ready to take Low End share if they cut capacity or raise price to survive."},
- E:{tag:"Surging late — watch the momentum",
-  doing:"Erie had a strong R4: $5,824 profit, a 35% margin, and the best ROE in the industry (16.3%). Cumulative is still worst (-$9,198) but the trajectory turned sharply up, and they went all-in on TQM material/labor cuts (CCE and CPI maxed at $2,000 each).",
-  why:"After rounds of drift, Erie finally invested in cost structure (TQM) and it worked — material and labor came down and margin jumped. They are a round or two behind Andrews on the same idea. Still over-levered (3.26 earlier, improving), but no longer the pushover they were.",
-  counter:"Erie is no longer free share. Ebb still anchors Low End cheap (age 8.6, price $19.50) against Dell — hold our position and margin there. Their late surge is real but starts from a deep hole, so a downturn could stall it. Don't divert effort to attack Erie; focus on Chester (catchable) and defending against Andrews."}
+ A:{tag:"Back on top — the team to beat",
+  doing:"Andrews retook first on cumulative profit ($11,877) with the best round in the game: $9,720 profit, a 44.2% contribution margin, and the lowest leverage on the board (1.96). Their stock jumped to $42.37, highest in the industry.",
+  why:"The automation-plus-perfect-positioning machine is now fully compounded. Every product sits on its ideal spot with the industry's lowest unit costs (automation 6-8.5 across the line), so a 44% margin drops to the bottom line even in a flat market. And unlike us, they did it while paying down debt — leverage 1.96 is a fortress balance sheet.",
+  counter:"We are neck-and-neck on cumulative ($10,335 vs $11,877) and share (23.1% vs 23.0%), so this is a two-horse race. We cannot out-cost their automation, so we win on the margins where they are thin and on execution: Duck out-sold Andrews' Adam in High End (1,377 vs 730) because we fed it capacity. Keep doing that — find the segments where our positioning plus volume beats their cost, and don't get dragged into a High-End price fight we can't fund."},
+ C:{tag:"Collapsed — no longer a threat",
+  doing:"Chester fell apart: a $(2,293) loss, sales down to $109,596 (lowest of the majors), and cumulative crashed from the lead to $1,615 — third, barely positive. Their stock is $14.93 and falling, and they spent $0 on TQM and HR this round.",
+  why:"The lean-operations model broke completely. They cut all TQM and HR spend (a retrenchment move), separated 285 employees, and their products drifted — Cid at 10.9/9.2 is badly off the High End ideal. Slashing investment to preserve cash in a downturn just accelerated the decline: no cost cuts, no positioning, falling sales. This is a company managing for survival, not growth.",
+  counter:"Chester is now a source of share, not a rival to fear. Where we meet them, their aging, mispositioned products lose — Cid, Coat and Cure are all off-ideal. Take the High End and Performance share they are vacating. They cannot afford to fight back."},
+ B:{tag:"Volume without profit, still over-levered",
+  doing:"Baldwin posted a thin profit ($1,303) on the highest sales in the industry ($173,955), but cumulative is still deep red (-$6,367) and leverage remains high at 3.08. Baker (2,063 units) and Bead anchor their volume play.",
+  why:"Same story, later chapter: they move the most units at the thinnest margins (27.95%, lowest on the board) and can't convert volume into cumulative profit. They spread TQM $400 across every line again — a token gesture that buys almost nothing. The debt load caps their ability to invest in the cost structure that would actually help.",
+  counter:"Still don't chase Baldwin on Low End price. Their 3.08 leverage and thin margins mean one soft round tips them back into losses. Dell and Daze hold better Low End margins than Bead. Let them have the volume; we take the profit."},
+ E:{tag:"Fell back into the hole",
+  doing:"Erie's late surge reversed: a $(2,744) loss, cumulative worst at -$11,942, and back to an emergency loan ($6,106) — the only company to take one this round. Their stock cratered to $15.88.",
+  why:"They over-reached. After a strong R4, they kept spending (TQM $4,100, plus plant) into the downturn without the balance sheet to support it, and the shrinking market punished it. Ebb at 9.6 years is ancient even for Low End, and their premium products (Echo, Cid-tier) are marginal. They are the cautionary tale of investing aggressively without a cash buffer.",
+  counter:"Erie is back to being free share. They cannot afford a fight after an emergency loan. Press wherever we compete — their aging Low End and thin premium presence are both vulnerable. Focus fire on the two-horse race with Andrews; take Erie's share opportunistically."}
 };
 function tRivals(){
  const r=chLast(), F=COMPHIST.fin, A=COMPHIST.agg;
@@ -2298,8 +2426,8 @@ function tRivals(){
   <p class="sub">Read from the Round 0-2 Courier exports in <code>/reports</code>. Trends are the last
    three closed rounds; strategy reads and counters are below the charts. ${r<2?`Showing data through R${r+1}; later rounds update when their exports are added.`:``}</p>
   <div class="flag ${board[0].k==="D"?"o":"w"}">${board[0].k==="D"
-   ? `<b>We now lead cumulative profit (${m1(F.cumul.D[r])})</b> — Chester's R4 collapse handed us first. But we took a ${m1(F.emg.D[r])} emergency loan and a market downturn is coming, so the lead is fragile.`
-   : `<b>${board[0].n}</b> leads on cumulative profit (${m1(board[0].cumul)}); we sit ${board.findIndex(x=>x.k==="D")+1}${["st","nd","rd","th","th"][board.findIndex(x=>x.k==="D")]} at ${m1(F.cumul.D[r])}.`}</div>
+   ? `<b>We lead cumulative profit (${m1(F.cumul.D[r])})</b> — hold the discipline that got us here.`
+   : `<b>${board[0].n}</b> leads on cumulative profit (${m1(board[0].cumul)}); we sit ${board.findIndex(x=>x.k==="D")+1}${["st","nd","rd","th","th"][board.findIndex(x=>x.k==="D")]} at ${m1(F.cumul.D[r])} — a two-horse race, and ${F.emg.D[r]===0?"we finally broke the emergency-loan streak this round.":"decided in the last rounds."}`}</div>
   <table><tr><th class="l">Rank</th><th class="l">Company</th><th>Cumulative</th><th>Profit ${R(r)}</th>
    <th>Share</th><th>Contribution</th><th>Leverage</th><th>Emergency loan</th></tr>`;
  board.forEach((x,i)=>{h+=`<tr class="${x.k==="D"?"hi":""}">
