@@ -178,15 +178,15 @@ const R=r=>`R${r+1} · ${YR0+r}`;
 
 const SEG=[
  {n:"Traditional",cp:5.7,cs:14.3,ox:0,oy:0,dp:.7,ds:-.7,age:2.0,mlo:14000,mhi:19000,
-  plo:19.5,phi:29.5,w:{age:.47,price:.23,pos:.21,mtbf:.09},c:"#2563eb",u26:6156,g:.099},
+  plo:19.5,phi:29.5,w:{age:.47,price:.23,pos:.21,mtbf:.09},c:"#2563eb",u26:6156,g:.092},
  {n:"Low End",cp:3.0,cs:17.0,ox:-.8,oy:.8,dp:.5,ds:-.5,age:7.0,mlo:12000,mhi:17000,
-  plo:14.5,phi:24.5,w:{price:.53,age:.24,pos:.16,mtbf:.07},c:"#059669",u26:7467,g:.126},
+  plo:14.5,phi:24.5,w:{price:.53,age:.24,pos:.16,mtbf:.07},c:"#059669",u26:7467,g:.117},
  {n:"High End",cp:8.4,cs:11.6,ox:1.4,oy:-1.4,dp:.9,ds:-.9,age:0,mlo:20000,mhi:25000,
-  plo:29.5,phi:39.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#dc2626",u26:2128,g:.169},
+  plo:29.5,phi:39.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#dc2626",u26:2128,g:.162},
  {n:"Performance",cp:9.0,cs:16.3,ox:1.4,oy:-1.0,dp:1.0,ds:-.7,age:1.0,mlo:22000,mhi:27000,
-  plo:24.5,phi:34.5,w:{mtbf:.43,pos:.29,price:.19,age:.09},c:"#d97706",u26:1596,g:.209},
+  plo:24.5,phi:34.5,w:{mtbf:.43,pos:.29,price:.19,age:.09},c:"#d97706",u26:1596,g:.198},
  {n:"Size",cp:3.7,cs:11.0,ox:1.0,oy:-1.4,dp:.7,ds:-1.0,age:1.5,mlo:16000,mhi:21000,
-  plo:24.5,phi:34.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#7c3aed",u26:1653,g:.190}
+  plo:24.5,phi:34.5,w:{pos:.43,age:.29,mtbf:.19,price:.09},c:"#7c3aed",u26:1653,g:.183}
 ];
 const PD=-0.50;
 const centreAt=(i,r)=>({p:+(SEG[i].cp+SEG[i].dp*r).toFixed(2),s:+(SEG[i].cs+SEG[i].ds*r).toFixed(2)});
@@ -230,40 +230,40 @@ function seed(){
    rd:[[5.7,14.3,14000,"2027-05-09"],[5.7,14.3,14000,""],[5.7,14.3,14000,""]],
    mk:[[26.50,1500,1600,1360],[24.50,1700,2000,1250],[23.50,1350,2000,790]],
    pd:[[1380,1800,4.5],[1200,1700,4.5],[1284,1700,5.0]],
-   rdc:[0,0,0], mat:[9.80,8.95,8.18], inv:[0,404,338], aw:[.728,.890,.890], ac:[.61,.72,.72]},
+   rdc:[0,0,0], mat:[9.80,8.95,8.18], inv:[0,404,338], aw:[.728,.890,.917], ac:[.61,.72,.80]},
 
   {n:"Dell",seg:1,sp:3.0,ss:17.0,sm:14000,sa:4.6,sau:5.0,m0:7.81,
    rd:[[3.0,17.0,12000,"2027-01-30"],[3.0,17.0,12000,""],[3.0,17.0,12000,""]],
    mk:[[19.50,1500,1300,1750],[19.50,1900,1700,2000],[18.75,1300,1700,2469]],
    pd:[[1770,1400,5.5],[2100,1400,5.5],[2470,1400,5.5]],
-   rdc:[0,0,0], mat:[6.45,5.78,5.19], inv:[0,0,0], aw:[.706,.909,.909], ac:[.40,.54,.54]},
+   rdc:[0,0,0], mat:[6.45,5.78,5.19], inv:[0,0,0], aw:[.706,.909,.915], ac:[.40,.54,.73]},
 
   {n:"Duck",seg:2,sp:8.0,ss:12.0,sm:23000,sa:1.7,sau:3.0,m0:15.98,
    rd:[[8.9,10.8,25000,"2027-12-16"],[10.3,9.9,25000,"2028-11-10"],[11.6,8.4,25000,"2029-12-20"]],
    mk:[[39.50,1600,1600,500],[39.00,1700,1700,480],[38.50,1700,1700,791]],
    pd:[[510,800,3.0],[420,800,3.0],[791,800,3.0]],
-   rdc:[0,860,967], mat:[16.52,16.52,16.70], inv:[0,128,0], aw:[.707,.876,.876], ac:[.54,.64,.64]},
+   rdc:[0,860,967], mat:[16.52,16.52,16.70], inv:[0,128,0], aw:[.707,.876,.990], ac:[.54,.64,.76]},
 
   {n:"Dot",seg:2,sp:9.4,ss:15.5,sm:25000,sa:2.5,sau:3.0,m0:15.87,
    rd:[[9.4,14.0,24100,"2027-11-30"],[9.4,13.0,24100,"2028-06-23"],[9.4,11.7,21000,"2029-09-15"]],
    mk:[[33.00,1500,1400,420],[31.75,800,800,400],[31.50,1200,1150,543]],
    pd:[[430,600,3.0],[300,600,3.0],[543,600,3.0]],
-   rdc:[0,476,707], mat:[15.06,14.44,13.09], inv:[0,103,0], aw:[.664,.596,.596], ac:[.39,.64,.64]},
+   rdc:[0,476,707], mat:[15.06,14.44,13.09], inv:[0,103,0], aw:[.664,.596,.676], ac:[.39,.64,.80]},
 
   {n:"Dune",seg:4,sp:4.0,ss:11.0,sm:19000,sa:2.6,sau:3.0,m0:13.62,
    rd:[[5.0,11.0,18000,"2027-08-02"],[5.0,9.5,18000,"2028-10-07"],[5.6,8.1,18000,"2029-09-22"]],
    mk:[[31.50,1400,1400,400],[31.00,1600,1600,530],[31.50,1400,1600,446]],
    pd:[[410,600,3.0],[600,600,3.0],[711,700,3.0]],
-   rdc:[0,765,724], mat:[12.62,12.58,12.64], inv:[0,1,3], aw:[.639,.810,.810], ac:[.46,.49,.49]},
+   rdc:[0,765,724], mat:[12.62,12.58,12.64], inv:[0,1,3], aw:[.639,.810,.877], ac:[.46,.49,.52]},
 
   {n:"Dino",seg:3,launch:2,sp:13.5,ss:13.5,sm:27000,sa:0,sau:2.0,m0:16.82,
    rd:[[13.5,13.5,27000,""],[13.5,13.5,27000,""],[13.5,13.5,27000,"2029-09-24"]],
    mk:[[18.50,0,0,0],[18.50,0,0,0],[34.75,0,500,57]],
    pd:[[0,0,2.0],[0,200,2.0],[107,400,2.0]],
-   rdc:[0,1000,729], mat:[16.82,16.82,16.48], inv:[0,0,0], aw:[0,0,0], ac:[0,0,0]}];
+   rdc:[0,1000,729], mat:[16.82,16.82,16.48], inv:[0,0,0], aw:[0,0,.25], ac:[0,0,.36]}];
 
  const at=(a,r)=>a[Math.min(r,a.length-1)];
- const st={round:2,cal:{...DEF_CAL},open:{...DEF_OPEN},
+ const st={round:3,cal:{...DEF_CAL},open:{...DEF_OPEN},
   products:P.map(o=>({name:o.n,key:o.n,seg:o.seg,launch:o.launch||0,added:false,
    sp:o.sp,ss:o.ss,sm:o.sm,sa:o.sa,sau:o.sau,m0:o.m0,
    rounds:Array.from({length:NR},(_,r)=>{
@@ -495,7 +495,13 @@ function survey(pi,r,si){
  const mt=c.m<g.mlo||c.m>g.mhi?0:.5+.5*((c.m-g.mlo)/(g.mhi-g.mlo));
  const w=g.w;
  return 100*((w.pos||0)*pos+(w.price||0)*price+(w.age||0)*age+(w.mtbf||0)*mt);}
-const segDemand=(si,r)=>Math.round(SEG[si].u26*Math.pow(1+SEG[si].g,r+1));
+/* Actual segment market sizes 2027/2028/2029 (R1/R2/R3), read from the Courier.
+   Known rounds are exact; later rounds project from the last actual at the
+   latest observed growth rate. */
+const SEGSIZE=[[6765,7313,8016],[8408,9316,10406],[2488,2866,3339],[1930,2292,2744],[1967,2307,2737]];
+const segDemand=(si,r)=>{const a=SEGSIZE[si];
+ if(r<a.length) return a[r];
+ return Math.round(a[a.length-1]*Math.pow(1+SEG[si].g,r-a.length+1));};
 const units=(pi,r)=>S.products[pi].rounds[r].fc||0;
 const varCost=(pi,r)=>{const c=S.products[pi].rounds[r];
  return (c.mat||0)+laborUnit(opAuto(pi,r),c.sched,opCap(pi,r),r);};
@@ -1319,7 +1325,7 @@ function tCal(){
 
 /* ---------------- decision reports -------------------------------------- */
 /* Reports are keyed by round index (0 = R1/2027). Add future rounds here. */
-const REPORTS={2:rpt3};
+const REPORTS={2:rpt3,3:rpt4};
 
 function tRpt(){
  const f=REPORTS[S.round];
@@ -1329,6 +1335,146 @@ function tRpt(){
    should do, what it costs, and why. Reports exist for the rounds listed in <code>REPORTS</code>
    at the top of this section. Pick a round along the top of the page to read its report.</div></div>`;
  return f();}
+
+function rpt4(){return `
+<div class="card">
+ <h2>Round 4 &middot; 2030 &mdash; Recommended decisions</h2>
+ <p class="sub">Written from the closed Round 3 results in <code>/reports</code>. Round 3 did not go to
+  plan, and this report is mostly about not repeating it.</p>
+ <div class="flag e">Round 3 was our worst round: a net loss of $(160), our <b>first emergency loan
+  ($6,208)</b>, and cash to $0. We over-produced into a demand that came in $12,000 under forecast,
+  built inventory, and drained the cash that had been our advantage.</div>
+ <div class="kpi">
+  <div><b>($160)</b><span>R3 net profit</span></div>
+  <div><b>$4,464</b><span>Cumulative (2nd)</span></div>
+  <div><b>$0</b><span>Closing cash</span></div>
+  <div><b>$6,208</b><span>Emergency loan due</span></div>
+  <div><b>2.03</b><span>Leverage</span></div>
+  <div><b>1,150</b><span>Units of dead inventory</span></div>
+ </div>
+ <div class="note">We are still second on cumulative profit, and the products we repositioned worked:
+  Duck sold out (791 against 930 wanted) with a 65 satisfaction score, and Dell moved 2,469 units. The
+  damage was self-inflicted on the production and cash side, not the market side. Round 4 is a recovery
+  round: sell down inventory, feed the winners, rebuild the cash buffer, and do not let Andrews' 40.9%
+  margin pull us into a fight we can't fund.</div>
+</div>
+
+<div class="card">
+ <h2>The one lesson from Round 3</h2>
+ <div class="flag w">We produced for a forecast the market didn't deliver, and inventory ate the cash.</div>
+ <table>
+  <tr><th class="l">Product</th><th>R3 forecast</th><th>Sold</th><th>Ending inventory</th><th class="l">R4 consequence</th></tr>
+  <tr><td class="name">Daze</td><td class="num">790</td><td class="num">790</td><td class="num" style="color:var(--bad)">832</td><td class="l">A full year of sales sitting unsold. Produce almost nothing in R4.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">446</td><td class="num">446</td><td class="num" style="color:var(--bad)">268</td><td class="l">Over half a year of stock. Cut the order hard.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">57</td><td class="num">57</td><td class="num" style="color:var(--bad)">50</td><td class="l">Launch year; carry it forward rather than build more.</td></tr>
+  <tr class="hi"><td class="name">Duck</td><td class="num">791</td><td class="num">791</td><td class="num">0</td><td class="l"><b>Stocked out — 139 units of demand we turned away. This is where to add, not cut.</b></td></tr>
+ </table>
+ <div class="note"><b>Carrying inventory costs ~12% a year, but the real cost was cash.</b> The inventory
+  build turned an operating profit into negative operating cash of $(4,992), which forced the emergency
+  loan. The fix is not complicated: forecast to the low side, and let second shift cover an upside
+  surprise rather than building plant and stock for one that may not come.</div>
+</div>
+
+<div class="card">
+ <h2>Production &mdash; sell down, then feed Duck</h2>
+ <table>
+  <tr><th class="l">Product</th><th>Inventory in</th><th>R4 demand est.</th><th class="l">Order</th><th class="l">Why</th></tr>
+  <tr><td class="name">Daze</td><td class="num">832</td><td class="num">~800</td><td class="l"><b>~0&ndash;100</b></td><td class="l">Inventory alone nearly covers the year. Build essentially nothing and let it clear.</td></tr>
+  <tr><td class="name">Dell</td><td class="num">1</td><td class="num">~2,600</td><td class="l"><b>~2,500 (second shift)</b></td><td class="l">Our volume engine, 30.8% margin, sold 2,469. Low End grows to 11,624. Run it hard again — but on second shift, not new plant.</td></tr>
+  <tr><td class="name">Duck</td><td class="num">0</td><td class="num">~950</td><td class="l"><b>~950, raise capacity</b></td><td class="l">Stocked out at 930 demand. High End grows to 3,880. This is the one product worth adding capacity for.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">0</td><td class="num">~500</td><td class="l"><b>~450</b></td><td class="l">Held its own but see the Dot problem below. Don't overbuild a product without a clear home.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">268</td><td class="num">~500</td><td class="l"><b>~250</b></td><td class="l">Inventory covers half the year. Order the balance only.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">50</td><td class="num">~350</td><td class="l"><b>~300</b></td><td class="l">Now on the Performance ideal (gap 0.3). Ramp it, but modestly — awareness is only 25%.</td></tr>
+ </table>
+ <div class="note"><b>Net effect on cash:</b> cutting Daze, Dune and Dino production frees the cash R3
+  locked in inventory. Use the Cost / benefit tab to confirm each order against the forecast before you
+  commit — that tab now flags any order that builds inventory above forecast.</div>
+</div>
+
+<div class="card">
+ <h2>R&amp;D &mdash; keep the winners on their ideal, decide on the laggards</h2>
+ <p class="sub">2030 ideal spots have drifted. Gaps are from each product's current position.</p>
+ <table>
+  <tr><th class="l">Product</th><th>Now</th><th>2030 ideal</th><th>Gap</th><th>Age</th><th class="l">Recommendation</th></tr>
+  <tr><td class="name">Duck</td><td class="num">11.6/8.4</td><td class="num">12.5/7.5</td><td class="num">1.27</td><td class="num">2.1</td>
+   <td class="l"><b>Reposition to 12.5/7.5.</b> Our best product, stocking out, in a segment growing 16%. Keep it on the dot and hold MTBF 25,000. Top priority.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">13.5/13.5</td><td class="num">13.4/13.2</td><td class="num" style="color:var(--good)">0.32</td><td class="num">1.3</td>
+   <td class="l"><b>Tiny nudge or leave.</b> Already essentially on the Performance ideal. Spend the R&amp;D elsewhere; it just needs awareness and volume.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">5.6/8.1</td><td class="num">6.8/6.6</td><td class="num">1.92</td><td class="num">2.4</td>
+   <td class="l"><b>Reposition to 6.8/6.6.</b> Size weights position 43% and it is drifting. Halving its age helps too (Size ideal age 1).</td></tr>
+  <tr><td class="name">Dell</td><td class="num">3.0/17.0</td><td class="num">3.7/16.3</td><td class="num">0.99</td><td class="num">8.6</td>
+   <td class="l"><b>No R&amp;D.</b> At 8.6 years it has aged just past Low End's 7.0 ideal, but repositioning would slash age toward 4 and cost a 24%-weight criterion to fix a 16% one. Leave it and ride the volume.</td></tr>
+  <tr><td class="name">Daze</td><td class="num">5.7/14.3</td><td class="num">7.8/12.2</td><td class="num" style="color:var(--bad)">2.97</td><td class="num">5.4</td>
+   <td class="l"><b>Sunset.</b> 5.4 years old, 2.97 off ideal, 832 units of inventory. Stop investing, sell the stock down, and free the Traditional capacity. See below.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">9.4/11.7</td><td class="num">12.5/7.5</td><td class="num" style="color:var(--bad)">5.22</td><td class="num">2.5</td>
+   <td class="l"><b>Decide its home.</b> 5.22 off the High End ideal is hopeless there. Either commit a large multi-round reposition to High End, or pull it back toward Traditional/Performance. It cannot stay stranded between segments.</td></tr>
+ </table>
+ <div class="row" style="margin-top:12px">
+  <div class="col"><div class="flag w">The Daze and Dot problem is the same problem.</div>
+   <div class="note">Both are stranded: Daze aged out of Traditional, Dot never landed in High End. We
+    have been paying to keep them nominally alive without committing to a segment. Round 4 is the round
+    to choose: sunset Daze (let inventory clear, no R&amp;D, minimal marketing) and give Dot one real
+    home with the R&amp;D to reach it, or retire it too. Two half-funded products cost more than one
+    properly funded one.</div></div>
+  <div class="col"><div class="flag o">Duck and Dino are the future.</div>
+   <div class="note">Duck is a proven winner in a growing premium segment, and Dino is finally
+    well-positioned in the fastest-growing segment (Performance, +19.8%). These two are where R&amp;D,
+    capacity and marketing should concentrate. Andrews owns Performance today (Aft at 12.3/14.0), so
+    Dino's job in R4 is to establish presence with awareness, not to win the segment yet.</div></div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>Marketing &mdash; fund awareness where it converts</h2>
+ <p class="sub">R3 customer awareness: Duck 99%, Daze 92%, Dell 92%, Dune 88%, Dot 68%, Dino 25%.</p>
+ <table>
+  <tr><th class="l">Product</th><th>R3 price</th><th class="l">R4 price</th><th class="l">Promo / Sales</th><th class="l">Reasoning</th></tr>
+  <tr><td class="name">Dell</td><td class="num">$18.75</td><td class="l">~$18.50</td><td class="l">hold</td><td class="l">Inside the new $13&ndash;23 band, winning. Don't overspend on 92% awareness.</td></tr>
+  <tr><td class="name">Duck</td><td class="num">$38.50</td><td class="l">~$38.00</td><td class="l">hold high</td><td class="l">Top of the $28&ndash;38 band. It stocks out, so demand isn't the constraint — keep awareness at 99% and let production catch up.</td></tr>
+  <tr><td class="name">Dino</td><td class="num">$34.75</td><td class="l">~$32.00</td><td class="l"><b>raise both</b></td><td class="l">25% awareness is why it sold 57. Performance price band is $23&ndash;33, so $34.75 was above it. Cut into band and fund awareness.</td></tr>
+  <tr><td class="name">Dune</td><td class="num">$31.50</td><td class="l">~$31.00</td><td class="l">hold</td><td class="l">Fine. Sell down inventory first.</td></tr>
+  <tr><td class="name">Dot</td><td class="num">$31.50</td><td class="l">depends</td><td class="l">tied to R&amp;D</td><td class="l">Price follows whichever segment you commit it to.</td></tr>
+  <tr><td class="name">Daze</td><td class="num">$23.50</td><td class="l">~$23.00</td><td class="l"><b>cut promo</b></td><td class="l">Sunsetting — price to move the 832 units of inventory, spend nothing on promotion.</td></tr>
+ </table>
+ <div class="note">Dino is the clearest marketing opportunity: it is well-positioned and cheap to make
+  visible. Daze is the clearest place to stop spending. Shifting budget from Daze to Dino is close to
+  free.</div>
+</div>
+
+<div class="card">
+ <h2>Finance &mdash; rebuild the cash buffer, then hold discipline</h2>
+ <p class="sub">Opening cash R4: $0. Emergency loan of $6,208 converts to current debt due this year.
+  Leverage 2.03, the lowest in the industry.</p>
+ <table>
+  <tr><th class="l">Priority</th><th class="l">Action</th><th>Amount</th><th class="l">Why</th></tr>
+  <tr><td class="num">1</td><td class="name">Cut plant investment</td><td class="num">~$0</td><td class="l">Only Duck justifies added capacity. Everything else uses second shift. This is the fastest cash fix.</td></tr>
+  <tr><td class="num">2</td><td class="name">Sell down inventory</td><td class="num">+cash</td><td class="l">The 1,150 units of dead stock convert back to cash as they clear — that is the recovery, if we don't rebuild it.</td></tr>
+  <tr><td class="num">3</td><td class="name">Issue a modest bond</td><td class="num">~$8,000</td><td class="l">At 2.03 leverage we have room to 2.8. A bond rebuilds the $2,000&ndash;3,000 reserve so a soft round doesn't force another emergency loan.</td></tr>
+  <tr><td class="num">4</td><td class="name">Fund HR again</td><td class="num">~$3,700</td><td class="l">It cut the labour wage to $9.07 and lifted demand and accessibility. Best return on the board; hold it.</td></tr>
+  <tr><td class="num">5</td><td class="name">No dividend, no buyback</td><td class="num">$0</td><td class="l">We just lost money and took an emergency loan. Rebuild the balance sheet first.</td></tr>
+ </table>
+ <div class="note"><b>The discipline that made us second is still intact</b> — leverage 2.03, no structural
+  debt problem, and the Andrews/Baldwin/Erie field is carrying real losses. R3 was a production and
+  cash mistake, not a strategy failure. Fix the production discipline, rebuild the buffer, and keep
+  feeding Duck and Dino, and we defend second place with a path at Chester.</div>
+</div>
+
+<div class="card">
+ <h2>Before you submit</h2>
+ <table>
+  <tr><th class="l">Check</th><th class="l">Why</th></tr>
+  <tr><td class="name">No product's order exceeds its forecast + starting inventory</td><td class="l">This is exactly what caused R3. The Cost / benefit tab flags it.</td></tr>
+  <tr><td class="name">Daze production is near zero</td><td class="l">832 units of inventory already on hand.</td></tr>
+  <tr><td class="name">Duck has enough capacity or second shift for ~950</td><td class="l">It stocked out last round; don't leave demand on the table twice.</td></tr>
+  <tr><td class="name">HR sliders are not $0</td><td class="l">They reset every round and drive the labour wage.</td></tr>
+  <tr><td class="name">Closing cash projects above $2,000</td><td class="l">We just hit zero. The Finance tab's cash flow shows the closing position.</td></tr>
+  <tr><td class="name">Every price sits inside its 2030 band</td><td class="l">All bands slid down $0.50 again.</td></tr>
+ </table>
+ <div class="note"><b>How this was built.</b> From the Round 3 Courier export in <code>/reports</code> and the
+  2030 buying criteria the sim publishes. 2030 ideal spots, price bands and segment demand are read
+  directly into this planner and verified against the sim. R&amp;D project cost and the launch-year
+  labour premium are the two figures the model does not derive — read them off the sim before committing.</div>
+</div>`;}
 
 function rpt3(){return `
 <div class="card">
