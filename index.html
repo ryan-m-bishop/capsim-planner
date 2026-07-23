@@ -141,12 +141,17 @@ svg[data-map]{touch-action:none}
 .pdfbar button:hover{filter:brightness(1.08)}
 #printhdr{display:none}
 @media print{
+ /* Print landscape at the on-screen width and scale to fit, so the PDF is a
+    faithful copy of the wide layout instead of a reflowed narrow one. */
+ @page{size:landscape;margin:8mm}
  header,.rounds,nav,#toast,#modal,.noprint,.pdfbar{display:none !important}
- .wrap{padding:0 !important;max-width:none !important}
  body{background:#fff !important}
+ .wrap{width:1120px !important;max-width:none !important;padding:0 !important;zoom:.85}
  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
- .card{break-inside:avoid;box-shadow:none;margin-bottom:10px}
- .card svg,.card.map svg{max-width:100% !important}
+ .card{break-inside:avoid;box-shadow:none;margin-bottom:12px}
+ /* keep charts at their on-screen size, don't stretch them */
+ .card svg{max-width:330px}
+ .card.map svg{max-width:470px}
  #printhdr{display:block !important;border-bottom:2px solid var(--nav);margin-bottom:14px;padding-bottom:8px}
  #printhdr b{font-size:16px;color:var(--nav)}
  #printhdr span{display:block;font-size:11px;color:var(--mut)}
