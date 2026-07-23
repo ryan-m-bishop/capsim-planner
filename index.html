@@ -135,6 +135,22 @@ svg[data-map]{touch-action:none}
 .mbd{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto}
 .mbd svg{max-width:none;width:auto;height:min(76vh,880px);max-height:100%}
 @media (max-width:820px){.mbd svg{width:100%;height:auto}}
+.pdfbar{display:flex;justify-content:flex-end;margin:0 0 12px}
+.pdfbar button{border:1px solid var(--acc);background:var(--acc);color:#fff;padding:7px 14px;
+ border-radius:7px;cursor:pointer;font-size:12.5px;font-weight:650}
+.pdfbar button:hover{filter:brightness(1.08)}
+#printhdr{display:none}
+@media print{
+ header,.rounds,nav,#toast,#modal,.noprint,.pdfbar{display:none !important}
+ .wrap{padding:0 !important;max-width:none !important}
+ body{background:#fff !important}
+ *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+ .card{break-inside:avoid;box-shadow:none;margin-bottom:10px}
+ .card svg,.card.map svg{max-width:100% !important}
+ #printhdr{display:block !important;border-bottom:2px solid var(--nav);margin-bottom:14px;padding-bottom:8px}
+ #printhdr b{font-size:16px;color:var(--nav)}
+ #printhdr span{display:block;font-size:11px;color:var(--mut)}
+}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--nav);
  color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;
  transition:opacity .25s;pointer-events:none;z-index:99}
@@ -312,6 +328,15 @@ function load(){
 function stamp(){
  const d=new Date(),p=n=>String(n).padStart(2,"0");
  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;}
+function exportPDF(title){
+ const prev=document.title;
+ let hdr=document.getElementById("printhdr");
+ if(!hdr){hdr=document.createElement("div");hdr.id="printhdr";
+  document.querySelector(".wrap").prepend(hdr);}
+ hdr.innerHTML=`<b>${title}</b><span>Digby Capsim &middot; CP135726_1 &middot; generated ${new Date().toLocaleDateString()}</span>`;
+ document.title=title;
+ window.print();
+ setTimeout(()=>{document.title=prev;},600);}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");
  setTimeout(()=>t.classList.remove("on"),1900);}
 
@@ -1412,7 +1437,7 @@ function tRpt(){
   <div class="note">This tab holds a written recommendation for each round: what each department
    should do, what it costs, and why. Reports exist for the rounds listed in <code>REPORTS</code>
    at the top of this section. Pick a round along the top of the page to read its report.</div></div>`;
- return f();}
+ return `<div class="pdfbar"><button onclick="exportPDF('Digby Capsim — ${R(S.round)} Decision Report')">&#8681; Export to PDF</button></div>`+f();}
 
 function rpt7(){return `
 <div class="card">
@@ -2533,7 +2558,8 @@ function tRivals(){
  const board=RIVAL.map(x=>({...x,cumul:F.cumul[x.k][r],share:F.share[x.k][r],profit:F.profit[x.k][r],
    cm:F.cm[x.k][r],lev:F.lev[x.k][r],emg:F.emg[x.k][r]})).sort((a,b)=>b.cumul-a.cumul);
 
- let h=`<div class="card"><h2>Competitor intelligence &mdash; through ${R(r)}</h2>
+ let h=`<div class="pdfbar"><button onclick="exportPDF('Digby Capsim — Rivals through ${R(r)}')">&#8681; Export to PDF</button></div>`;
+ h+=`<div class="card"><h2>Competitor intelligence &mdash; through ${R(r)}</h2>
   <p class="sub">Read from the Round 0-2 Courier exports in <code>/reports</code>. Trends are the last
    three closed rounds; strategy reads and counters are below the charts. ${r<2?`Showing data through R${r+1}; later rounds update when their exports are added.`:``}</p>
   <div class="flag ${board[0].k==="D"?"o":"w"}">${board[0].k==="D"
